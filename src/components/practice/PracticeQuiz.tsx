@@ -25,7 +25,6 @@ export default function PracticeQuiz() {
   const [loading, setLoading] = useState(true);
   const [assessing, setAssessing] = useState(false);
   const [listening, setListening] = useState(false);
-  const [sessionStart] = useState(Date.now());
 
   useEffect(() => {
     if (topicId) {

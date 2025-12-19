@@ -6,7 +6,6 @@
 class VoiceService {
   private synthesis: SpeechSynthesis;
   private recognition: any; // SpeechRecognition type not globally available
-  private currentUtterance: SpeechSynthesisUtterance | null = null;
   private isListening = false;
 
   constructor() {
@@ -51,7 +50,6 @@ class VoiceService {
       utterance.onend = options.onEnd;
     }
 
-    this.currentUtterance = utterance;
     this.synthesis.speak(utterance);
   }
 
@@ -62,7 +60,6 @@ class VoiceService {
     if (this.synthesis.speaking) {
       this.synthesis.cancel();
     }
-    this.currentUtterance = null;
   }
 
   /**

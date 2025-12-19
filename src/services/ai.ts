@@ -20,7 +20,6 @@ const genAI = new GoogleGenerativeAI(apiKey || 'dummy-key');
 
 // Models
 const textModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
-const imageModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' }); // Will use for image prompts
 
 /**
  * Generate a personalized lesson based on user interests

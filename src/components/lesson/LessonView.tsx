@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { db } from '@/services/supabase';
-import { generateLesson, generateExample, simplifyExplanation, rethemeContent, generateImage } from '@/services/ai';
+import { generateLesson, generateExample, simplifyExplanation, rethemeContent } from '@/services/ai';
 import { speakText, stopSpeaking } from '@/services/voice';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
@@ -23,7 +23,6 @@ export default function LessonView() {
   const [currentSection, setCurrentSection] = useState(0);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [sectionImages, setSectionImages] = useState<Record<number, string>>({});
 
   useEffect(() => {
     if (topicId) {
