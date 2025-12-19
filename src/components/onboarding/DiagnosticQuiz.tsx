@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { db, supabase } from '@/services/supabase';
 import { generateQuestions } from '@/services/ai';
-import { storage, getDefaultDifficultyForGrade } from '@/utils/helpers';
-import Button from '../shared/Button';
+import { storage } from '@/utils/helpers';
+import { getDefaultDifficultyForGrade } from '@/utils/difficulty';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
 import type { Question } from '@/types';
@@ -27,7 +27,7 @@ export default function DiagnosticQuiz() {
 
   const loadDiagnosticQuestions = async () => {
     try {
-      const onboardingData = storage.get('learnlit_onboarding', {});
+      const onboardingData = storage.get<any>('learnlit_onboarding', {});
       const gradeLevel = onboardingData.gradeLevel || 5;
       const primaryInterest = onboardingData.primaryInterest || 'general';
 
@@ -103,7 +103,7 @@ export default function DiagnosticQuiz() {
   };
 
   const completeOnboarding = async (difficulty: number) => {
-    const onboardingData = storage.get('learnlit_onboarding', {});
+    const onboardingData = storage.get<any>('learnlit_onboarding', {});
 
     try {
       // Create user profile if authenticated

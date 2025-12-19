@@ -21,7 +21,7 @@ export default function Dashboard() {
   useEffect(() => {
     // Check if onboarding is complete
     if (!user && !profile) {
-      const onboardingData = storage.get('learnlit_onboarding', null);
+      const onboardingData = storage.get<any>('learnlit_onboarding', null);
       if (!onboardingData || !onboardingData.name) {
         navigate('/onboarding/profile');
       }
@@ -43,7 +43,7 @@ export default function Dashboard() {
     return <Loading fullScreen message="Loading your dashboard..." />;
   }
 
-  const userName = profile?.name || storage.get('learnlit_onboarding', {}).name || 'Student';
+  const userName = profile?.name || storage.get<any>('learnlit_onboarding', {}).name || 'Student';
   const greeting = getTimeBasedGreeting();
 
   // Get current progress stats
