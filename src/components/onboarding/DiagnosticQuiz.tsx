@@ -132,14 +132,23 @@ export default function DiagnosticQuiz() {
         }
       }
 
-      // Clear onboarding data
-      storage.remove('learnlit_onboarding');
+      // Mark onboarding as complete (preserve the data for Dashboard to use)
+      storage.set('learnlit_onboarding', {
+        ...onboardingData,
+        completed: true,
+        difficulty_level: difficulty,
+      });
 
       // Navigate to home
       navigate('/');
     } catch (error) {
       console.error('Error completing onboarding:', error);
-      // Still navigate to home even if there's an error
+      // Still mark as complete and navigate to home even if there's an error saving to DB
+      storage.set('learnlit_onboarding', {
+        ...onboardingData,
+        completed: true,
+        difficulty_level: difficulty,
+      });
       navigate('/');
     }
   };

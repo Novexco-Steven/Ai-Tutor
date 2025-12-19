@@ -6,6 +6,11 @@ import { SettingsProvider } from './contexts/SettingsContext';
 // Lazy load components for code splitting
 import { lazy, Suspense } from 'react';
 import Loading from './components/shared/Loading';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+
+// Auth
+const Login = lazy(() => import('./components/auth/Login'));
+const AuthCallback = lazy(() => import('./components/auth/AuthCallback'));
 
 // Onboarding
 const ProfileSetup = lazy(() => import('./components/onboarding/ProfileSetup'));
@@ -31,26 +36,30 @@ function App() {
           <SettingsProvider>
             <Suspense fallback={<Loading fullScreen />}>
               <Routes>
-                {/* Onboarding Flow */}
+                {/* Auth Routes - Public */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/auth/callback" element={<AuthCallback />} />
+
+                {/* Onboarding Flow - Requires auth only */}
                 <Route path="/onboarding">
-                  <Route path="profile" element={<ProfileSetup />} />
-                  <Route path="interests" element={<InterestPicker />} />
-                  <Route path="subject" element={<SubjectPicker />} />
-                  <Route path="diagnostic" element={<DiagnosticQuiz />} />
+                  <Route path="profile" element={<ProtectedRoute><ProfileSetup /></ProtectedRoute>} />
+                  <Route path="interests" element={<ProtectedRoute><InterestPicker /></ProtectedRoute>} />
+                  <Route path="subject" element={<ProtectedRoute><SubjectPicker /></ProtectedRoute>} />
+                  <Route path="diagnostic" element={<ProtectedRoute><DiagnosticQuiz /></ProtectedRoute>} />
                 </Route>
 
-                {/* Main App */}
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/topics/:subjectId" element={<TopicSelection />} />
-                <Route path="/lesson/:topicId" element={<LessonView />} />
-                <Route path="/practice/:topicId" element={<PracticeQuiz />} />
-                <Route path="/summary/:topicId" element={<LessonSummary />} />
+                {/* Main App - Requires auth + profile */}
+                <Route path="/" element={<ProtectedRoute requireProfile><Dashboard /></ProtectedRoute>} />
+                <Route path="/topics/:subjectId" element={<ProtectedRoute requireProfile><TopicSelection /></ProtectedRoute>} />
+                <Route path="/lesson/:topicId" element={<ProtectedRoute requireProfile><LessonView /></ProtectedRoute>} />
+                <Route path="/practice/:topicId" element={<ProtectedRoute requireProfile><PracticeQuiz /></ProtectedRoute>} />
+                <Route path="/summary/:topicId" element={<ProtectedRoute requireProfile><LessonSummary /></ProtectedRoute>} />
 
-                {/* Settings */}
-                <Route path="/settings" element={<SettingsScreen />} />
+                {/* Settings - Requires auth + profile */}
+                <Route path="/settings" element={<ProtectedRoute requireProfile><SettingsScreen /></ProtectedRoute>} />
 
-                {/* Default redirect */}
-                <Route path="*" element={<Navigate to="/" replace />} />
+                {/* Default redirect to login */}
+                <Route path="*" element={<Navigate to="/login" replace />} />
               </Routes>
             </Suspense>
           </SettingsProvider>

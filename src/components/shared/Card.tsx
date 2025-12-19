@@ -24,8 +24,8 @@ export default function Card({
   return (
     <div
       className={cn(
-        'card',
-        interactive && 'card-interactive',
+        'bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700',
+        interactive && 'cursor-pointer transition-all hover:shadow-lg hover:-translate-y-0.5',
         paddingClasses[padding],
         className
       )}

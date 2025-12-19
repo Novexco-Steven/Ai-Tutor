@@ -5,10 +5,8 @@ import { supabase, getCurrentUser } from '@/services/supabase';
 interface AuthContextType {
   user: SupabaseUser | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
-  sendMagicLink: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,13 +33,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-  };
-
-  const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
     if (error) throw error;
   };
 
@@ -50,18 +48,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
-  const sendMagicLink = async (email: string) => {
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) throw error;
-  };
-
   const value = {
     user,
     loading,
-    signIn,
-    signUp,
+    signInWithGoogle,
     signOut,
-    sendMagicLink,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

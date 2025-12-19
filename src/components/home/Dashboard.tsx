@@ -1,34 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
-import { useAuth } from '@/contexts/AuthContext';
 import { db } from '@/services/supabase';
-import { storage, getTimeBasedGreeting } from '@/utils/helpers';
+import { getTimeBasedGreeting } from '@/utils/helpers';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
 import VoiceToggle from '../shared/VoiceToggle';
+import ThemeToggle from '../shared/ThemeToggle';
 import { Settings, BookOpen, TrendingUp, Clock } from 'lucide-react';
-import { useState } from 'react';
 import type { Subject } from '@/types';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { profile, progress, loading } = useUser();
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
-    // Check if onboarding is complete
-    if (!user && !profile) {
-      const onboardingData = storage.get<any>('learnlit_onboarding', null);
-      if (!onboardingData || !onboardingData.name) {
-        navigate('/onboarding/profile');
-      }
-    }
-
     loadSubjects();
-  }, [user, profile, navigate]);
+  }, []);
 
   const loadSubjects = async () => {
     try {
@@ -43,7 +33,7 @@ export default function Dashboard() {
     return <Loading fullScreen message="Loading your dashboard..." />;
   }
 
-  const userName = profile?.name || storage.get<any>('learnlit_onboarding', {}).name || 'Student';
+  const userName = profile?.name || 'Student';
   const greeting = getTimeBasedGreeting();
 
   // Get current progress stats
@@ -66,6 +56,7 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <VoiceToggle />
               <Button
                 variant="ghost"

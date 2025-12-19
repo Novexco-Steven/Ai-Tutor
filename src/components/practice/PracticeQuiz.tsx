@@ -4,12 +4,12 @@ import { useUser } from '@/contexts/UserContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { db } from '@/services/supabase';
 import { generateQuestions, assessAnswer } from '@/services/ai';
-import { speakText, stopSpeaking, listenForSpeech } from '@/services/voice';
+import { speakText, listenForSpeech } from '@/services/voice';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
 import type { Question, AIAssessAnswerResponse } from '@/types';
-import { CheckCircle2, XCircle, Mic, ArrowRight } from 'lucide-react';
+import { CheckCircle2, XCircle, Mic, ArrowRight, AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { cn } from '@/utils/helpers';
 
 export default function PracticeQuiz() {
@@ -25,6 +25,7 @@ export default function PracticeQuiz() {
   const [loading, setLoading] = useState(true);
   const [assessing, setAssessing] = useState(false);
   const [listening, setListening] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (topicId) {
@@ -32,20 +33,26 @@ export default function PracticeQuiz() {
     }
   }, [topicId]);
 
-  useEffect(() => {
-    if (settings.audio.voiceMode && questions[currentIndex]) {
-      speakText(questions[currentIndex].question, {
-        rate: settings.audio.voiceSpeed
-      });
-    }
-    return () => stopSpeaking();
-  }, [currentIndex, settings.audio.voiceMode]);
+  // Voice auto-play disabled for now
+  // useEffect(() => {
+  //   if (settings.audio.voiceMode && questions[currentIndex]) {
+  //     speakText(questions[currentIndex].question, {
+  //       rate: settings.audio.voiceSpeed
+  //     });
+  //   }
+  //   return () => stopSpeaking();
+  // }, [currentIndex, settings.audio.voiceMode]);
 
   const loadQuestions = async () => {
     if (!topicId) return;
     try {
       setLoading(true);
+      setError(null);
       const topic = await db.getTopic(topicId);
+      if (!topic) {
+        setError('Topic not found. It may have been removed.');
+        return;
+      }
       const primaryInterest = interests.find(i => i.is_primary)?.interest?.name || 'general';
       const practiceQuestions = await generateQuestions({
         topicId: topicId,
@@ -58,8 +65,9 @@ export default function PracticeQuiz() {
         questionTypes: ['multiple_choice', 'true_false']
       });
       setQuestions(practiceQuestions);
-    } catch (error) {
-      console.error('Error loading questions:', error);
+    } catch (err) {
+      console.error('Error loading questions:', err);
+      setError('Failed to generate practice questions. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -141,6 +149,26 @@ export default function PracticeQuiz() {
 
   if (loading) {
     return <Loading fullScreen message="Generating practice questions..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <Card className="max-w-md text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Unable to Load Questions</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <Button variant="secondary" onClick={() => navigate(-1)}>
+              <ArrowLeft className="w-4 h-4 mr-2" />Go Back
+            </Button>
+            <Button variant="primary" onClick={loadQuestions}>
+              <RefreshCw className="w-4 h-4 mr-2" />Try Again
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
   }
 
   const question = questions[currentIndex];

@@ -7,6 +7,9 @@ interface VoiceToggleProps {
 }
 
 export default function VoiceToggle({ className }: VoiceToggleProps) {
+  // Voice features temporarily disabled - will be enabled in a future update
+  return null;
+
   const { settings, updateAudioSettings } = useSettings();
 
   const toggleVoiceMode = () => {

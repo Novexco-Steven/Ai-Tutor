@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
-import { useSettings } from '@/contexts/SettingsContext';
 import { db } from '@/services/supabase';
 import { generateLesson, generateExample, simplifyExplanation, rethemeContent } from '@/services/ai';
-import { speakText, stopSpeaking } from '@/services/voice';
+// Voice features disabled - import removed
+// import { speakText, stopSpeaking } from '@/services/voice';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
 import VoiceToggle from '../shared/VoiceToggle';
 import type { Topic, LessonContent } from '@/types';
-import { ArrowLeft, ArrowRight, RefreshCw, Lightbulb, Palette, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, RefreshCw, Lightbulb, Palette, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function LessonView() {
   const { topicId } = useParams<{ topicId: string }>();
   const navigate = useNavigate();
   const { profile, interests } = useUser();
-  const { settings } = useSettings();
 
   const [topic, setTopic] = useState<Topic | null>(null);
   const [lesson, setLesson] = useState<LessonContent | null>(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (topicId) {
@@ -30,21 +30,27 @@ export default function LessonView() {
     }
   }, [topicId]);
 
-  useEffect(() => {
-    if (settings.audio.voiceMode && lesson?.sections[currentSection]) {
-      const section = lesson.sections[currentSection];
-      speakText(`${section.title}. ${section.explanation}`, {
-        rate: settings.audio.voiceSpeed
-      });
-    }
-    return () => stopSpeaking();
-  }, [currentSection, settings.audio.voiceMode]);
+  // Voice auto-play disabled for now
+  // useEffect(() => {
+  //   if (settings.audio.voiceMode && lesson?.sections[currentSection]) {
+  //     const section = lesson.sections[currentSection];
+  //     speakText(`${section.title}. ${section.explanation}`, {
+  //       rate: settings.audio.voiceSpeed
+  //     });
+  //   }
+  //   return () => stopSpeaking();
+  // }, [currentSection, settings.audio.voiceMode]);
 
   const loadLesson = async () => {
     if (!topicId) return;
     try {
       setLoading(true);
+      setError(null);
       const topicData = await db.getTopic(topicId);
+      if (!topicData) {
+        setError('Topic not found. It may have been removed.');
+        return;
+      }
       setTopic(topicData);
       const primaryInterest = interests.find(i => i.is_primary)?.interest?.name || 'general learning';
       const lessonContent = await generateLesson({
@@ -61,8 +67,9 @@ export default function LessonView() {
           last_accessed: new Date().toISOString()
         });
       }
-    } catch (error) {
-      console.error('Error loading lesson:', error);
+    } catch (err) {
+      console.error('Error loading lesson:', err);
+      setError('Failed to generate lesson. Please check your internet connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -145,10 +152,33 @@ export default function LessonView() {
     return <Loading fullScreen message="Generating your personalized lesson..." />;
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <Card className="max-w-md text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Unable to Load Lesson</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <Button variant="secondary" onClick={() => navigate(-1)}>
+              <ArrowLeft className="w-4 h-4 mr-2" />Go Back
+            </Button>
+            <Button variant="primary" onClick={loadLesson}>
+              <RefreshCw className="w-4 h-4 mr-2" />Try Again
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
   if (!topic || !lesson) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card><p className="text-center text-gray-600 dark:text-gray-300">Lesson not found</p><Button onClick={() => navigate('/')} className="mt-4">Go Home</Button></Card>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+        <Card className="max-w-md text-center">
+          <p className="text-gray-600 dark:text-gray-300 mb-4">Lesson not found</p>
+          <Button onClick={() => navigate('/')}>Go Home</Button>
+        </Card>
       </div>
     );
   }

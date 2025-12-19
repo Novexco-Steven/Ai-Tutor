@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run db:check:*)",
+      "Bash(npm run build:*)",
+      "Bash(cat:*)",
+      "Bash(git -C /c/Users/stevenla/Documents/GitHub/Ai-Tutor log --oneline -20)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout:*)"
+    ]
+  }
+}
