@@ -1,58 +1,31 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-/**
- * Merge Tailwind CSS classes
- */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/**
- * Format time duration in seconds to readable format
- */
 export function formatDuration(seconds: number): string {
-  if (seconds < 60) {
-    return `${seconds}s`;
-  }
-
+  if (seconds < 60) return `${seconds}s`;
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-
-  if (minutes < 60) {
-    return remainingSeconds > 0
-      ? `${minutes}m ${remainingSeconds}s`
-      : `${minutes}m`;
-  }
-
+  if (minutes < 60) return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
   const hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
-
-  return remainingMinutes > 0
-    ? `${hours}h ${remainingMinutes}m`
-    : `${hours}h`;
+  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
 }
 
-/**
- * Calculate percentage
- */
 export function calculatePercentage(part: number, total: number): number {
   if (total === 0) return 0;
   return Math.round((part / total) * 100);
 }
 
-/**
- * Determine grade level from age
- */
 export function ageToGradeLevel(age: number): number {
-  if (age < 5) return 0; // Pre-K
-  if (age >= 18) return 12; // Grade 12+
-  return age - 5; // Ages 5-17 map to K-12
+  if (age < 5) return 0;
+  if (age >= 18) return 12;
+  return age - 5;
 }
 
-/**
- * Get reading level description
- */
 export function getReadingLevelDescription(gradeLevel: number): string {
   if (gradeLevel <= 0) return 'Early Learning';
   if (gradeLevel <= 2) return 'Beginning Reader';
@@ -61,9 +34,6 @@ export function getReadingLevelDescription(gradeLevel: number): string {
   return 'Advanced Reader';
 }
 
-/**
- * Shuffle array (Fisher-Yates algorithm)
- */
 export function shuffleArray<T>(array: T[]): T[] {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -73,72 +43,56 @@ export function shuffleArray<T>(array: T[]): T[] {
   return newArray;
 }
 
-/**
- * Debounce function
- */
-export function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number
-): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
-
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
       timeout = null;
       func(...args);
     };
-
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   };
 }
 
-/**
- * Truncate text to specified length
- */
 export function truncate(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength - 3) + '...';
 }
 
-/**
- * Sleep/delay function
- */
 export function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/**
- * Get greeting based on time of day
- */
 export function getTimeBasedGreeting(): string {
   const hour = new Date().getHours();
-
   if (hour < 12) return 'Good morning';
   if (hour < 17) return 'Good afternoon';
   return 'Good evening';
 }
 
-/**
- * Validate email format
- */
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
 
-/**
- * Generate a random ID
- */
 export function generateId(prefix = ''): string {
   const timestamp = Date.now().toString(36);
   const randomStr = Math.random().toString(36).substring(2, 9);
   return prefix ? `${prefix}_${timestamp}_${randomStr}` : `${timestamp}_${randomStr}`;
 }
 
-/**
- * Local storage helpers with error handling
- */
+export function getPerformanceLevel(successRate: number): {
+  level: 'excellent' | 'good' | 'fair' | 'needs-improvement';
+  message: string;
+  color: string;
+} {
+  if (successRate >= 90) return { level: 'excellent', message: 'Excellent work!', color: 'green' };
+  if (successRate >= 70) return { level: 'good', message: 'Great job!', color: 'blue' };
+  if (successRate >= 50) return { level: 'fair', message: 'Keep practicing!', color: 'yellow' };
+  return { level: 'needs-improvement', message: "Let's work on this together!", color: 'orange' };
+}
+
 export const storage = {
   get<T>(key: string, defaultValue: T): T {
     try {
@@ -148,7 +102,6 @@ export const storage = {
       return defaultValue;
     }
   },
-
   set(key: string, value: any): void {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
@@ -156,7 +109,6 @@ export const storage = {
       console.error('Error saving to localStorage:', error);
     }
   },
-
   remove(key: string): void {
     try {
       window.localStorage.removeItem(key);
@@ -164,7 +116,6 @@ export const storage = {
       console.error('Error removing from localStorage:', error);
     }
   },
-
   clear(): void {
     try {
       window.localStorage.clear();
