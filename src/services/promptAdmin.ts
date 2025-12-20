@@ -8,7 +8,6 @@
 import { supabase } from './supabase';
 import { promptComposer } from './promptComposer';
 import type {
-  PromptType,
   PromptTemplate,
   PromptVersion,
   LearningPreferences,
@@ -163,7 +162,7 @@ export async function createPromptTemplate(
 export async function updatePromptTemplate(
   id: string,
   input: UpdatePromptTemplateInput,
-  updatedBy: string
+  _updatedBy: string
 ): Promise<PromptTemplate> {
   // Get current version for change tracking
   const current = await getPromptTemplate(id);

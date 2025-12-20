@@ -13,7 +13,6 @@ import { getLearningPreferences, saveLearningPreferences } from '@/services/prom
 import {
   TEACHER_PERSONAS,
   TEACHING_METHODS,
-  FEEDBACK_METHODS,
 } from '@/services/prompts';
 import type {
   LearningPreferences,

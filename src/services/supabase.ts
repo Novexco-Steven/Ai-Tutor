@@ -25,6 +25,9 @@ export const signOut = async () => {
 
 // Database query helpers
 export const db = {
+  // Expose supabase client for direct queries when needed
+  supabase,
+
   // Users
   async getUser(userId: string) {
     const { data, error } = await supabase
@@ -727,5 +730,160 @@ export const db = {
       .eq('id', customTopicId);
 
     return newTopic;
+  },
+
+  // ============ PARENT-CHILD RELATIONSHIPS ============
+
+  /**
+   * Get all children for a parent using the RPC function
+   */
+  async getChildrenForParent(parentId: string) {
+    const { data, error } = await supabase.rpc('get_children_for_parent', {
+      p_parent_id: parentId
+    });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Get parent-child relationships (raw table data)
+   */
+  async getParentChildRelationships(parentId: string) {
+    const { data, error } = await supabase
+      .from('parent_children')
+      .select(`
+        *,
+        child:users!child_id(id, name, email, avatar, grade_level)
+      `)
+      .eq('parent_id', parentId)
+      .eq('status', 'active');
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Invite a child by email
+   */
+  async inviteChildByEmail(parentId: string, childEmail: string, relationship: string = 'parent') {
+    const { data, error } = await supabase.rpc('invite_child_by_email', {
+      p_parent_id: parentId,
+      p_child_email: childEmail,
+      p_relationship: relationship
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Accept a parent invitation (called by child)
+   */
+  async acceptParentInvitation(childId: string, linkId: string) {
+    const { data, error } = await supabase.rpc('accept_parent_invitation', {
+      p_child_id: childId,
+      p_link_id: linkId
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Get pending invitations for a child
+   */
+  async getPendingInvitations(childId: string) {
+    const { data, error } = await supabase
+      .from('parent_children')
+      .select(`
+        *,
+        parent:users!parent_id(id, name, email)
+      `)
+      .eq('child_id', childId)
+      .eq('status', 'pending');
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Update parent-child settings (time limits, notifications, etc.)
+   */
+  async updateParentChildSettings(
+    parentId: string,
+    childId: string,
+    settings: {
+      daily_time_limit?: number;
+      notify_on_completion?: boolean;
+      notify_on_low_score?: boolean;
+      low_score_threshold?: number;
+      weekly_summary_email?: boolean;
+    }
+  ) {
+    const { data, error } = await supabase
+      .from('parent_children')
+      .update({ ...settings, updated_at: new Date().toISOString() })
+      .eq('parent_id', parentId)
+      .eq('child_id', childId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Revoke parent access to a child
+   */
+  async revokeParentAccess(parentId: string, childId: string) {
+    const { error } = await supabase
+      .from('parent_children')
+      .update({ status: 'revoked', updated_at: new Date().toISOString() })
+      .eq('parent_id', parentId)
+      .eq('child_id', childId);
+
+    if (error) throw error;
+  },
+
+  /**
+   * Get child's study time for today
+   */
+  async getChildStudyTimeToday(childId: string) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const { data, error } = await supabase
+      .from('session_logs')
+      .select('duration')
+      .eq('user_id', childId)
+      .gte('created_at', today.toISOString());
+
+    if (error) throw error;
+
+    const totalMinutes = (data || []).reduce(
+      (sum, log) => sum + (log.duration || 0),
+      0
+    ) / 60;
+
+    return Math.round(totalMinutes);
+  },
+
+  /**
+   * Get child's recent activity
+   */
+  async getChildRecentActivity(childId: string, limit: number = 10) {
+    const { data, error } = await supabase
+      .from('user_progress')
+      .select(`
+        *,
+        topic:topics(id, name, subject_id)
+      `)
+      .eq('user_id', childId)
+      .order('updated_at', { ascending: false })
+      .limit(limit);
+
+    if (error) throw error;
+    return data || [];
   }
 };

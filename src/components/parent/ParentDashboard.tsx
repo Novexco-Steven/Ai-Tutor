@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '@/contexts/UserContext';
+import { useState, useEffect, useCallback } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNotification } from '@/contexts/NotificationContext';
+import { db } from '@/services/supabase';
 import { storage } from '@/utils/helpers';
 import Header from '../shared/Header';
 import Card from '../shared/Card';
 import Button from '../shared/Button';
+import Modal from '../shared/Modal';
+import Loading from '../shared/Loading';
 import { AvatarDisplay } from '../avatar';
 import {
   Users,
@@ -18,11 +21,34 @@ import {
   TrendingUp,
   ChevronRight,
   BarChart3,
-  Calendar
+  Calendar,
+  Mail,
+  AlertCircle,
+  UserPlus
 } from 'lucide-react';
 import { cn } from '@/utils/helpers';
-import type { ChildProfile, ParentSettings, AvatarConfig } from '@/types';
-import { AVATAR_OPTIONS } from '@/types';
+import type { ParentSettings, AvatarConfig } from '@/types';
+
+// Types for database data
+interface ChildData {
+  child_id: string;
+  child_name: string;
+  child_email: string;
+  child_avatar: AvatarConfig | null;
+  relationship: string;
+  daily_time_limit: number;
+  status: string;
+  total_xp: number;
+  current_level: number;
+  current_streak: number;
+  lessons_completed: number;
+  quizzes_passed: number;
+  avg_score: number;
+}
+
+interface ChildWithStudyTime extends ChildData {
+  timeSpentToday: number;
+}
 
 const defaultParentSettings: ParentSettings = {
   emailNotifications: true,
@@ -31,104 +57,87 @@ const defaultParentSettings: ParentSettings = {
   contentRestrictions: 'none'
 };
 
-const defaultAvatar: AvatarConfig = {
-  skinTone: AVATAR_OPTIONS.skinTones[0],
-  hairStyle: 'short',
-  hairColor: AVATAR_OPTIONS.hairColors[0],
-  eyeStyle: 'round',
-  eyeColor: AVATAR_OPTIONS.eyeColors[0],
-  mouthStyle: 'smile',
-  accessory: 'none',
-  outfit: 'tshirt',
-  outfitColor: AVATAR_OPTIONS.outfitColors[0],
-  background: AVATAR_OPTIONS.backgrounds[0]
-};
-
-// Mock child data for demo
-const mockChildren: ChildProfile[] = [
-  {
-    id: '1',
-    parent_id: 'parent1',
-    user_profile_id: 'user1',
-    name: 'Emma',
-    avatar: { ...defaultAvatar, hairStyle: 'long', outfitColor: '#E91E63', background: '#F3E5F5' },
-    daily_time_limit: 60,
-    progress_summary: {
-      totalXP: 1250,
-      currentLevel: 5,
-      currentStreak: 7,
-      lessonsCompleted: 15,
-      quizzesPassed: 12,
-      averageScore: 85,
-      timeSpentToday: 25,
-      lastActive: new Date().toISOString()
-    }
-  },
-  {
-    id: '2',
-    parent_id: 'parent1',
-    user_profile_id: 'user2',
-    name: 'Lucas',
-    avatar: { ...defaultAvatar, hairStyle: 'spiky', outfitColor: '#3498DB', background: '#E3F2FD' },
-    daily_time_limit: 45,
-    progress_summary: {
-      totalXP: 850,
-      currentLevel: 3,
-      currentStreak: 3,
-      lessonsCompleted: 8,
-      quizzesPassed: 6,
-      averageScore: 78,
-      timeSpentToday: 15,
-      lastActive: new Date(Date.now() - 86400000).toISOString()
-    }
-  }
-];
-
 export default function ParentDashboard() {
-  useNavigate();
-  useUser();
-  const [children, setChildren] = useState<ChildProfile[]>([]);
+  const { user } = useAuth();
+  const { success, error: showError } = useNotification();
+
+  const [children, setChildren] = useState<ChildWithStudyTime[]>([]);
   const [settings, setSettings] = useState<ParentSettings>(defaultParentSettings);
-  const [selectedChild, setSelectedChild] = useState<ChildProfile | null>(null);
+  const [selectedChild, setSelectedChild] = useState<ChildWithStudyTime | null>(null);
   const [showAddChild, setShowAddChild] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadChildren = useCallback(async () => {
+    if (!user?.id) return;
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Fetch children using the RPC function
+      const childrenData = await db.getChildrenForParent(user.id);
+
+      // Fetch study time for each child
+      const childrenWithTime = await Promise.all(
+        childrenData.map(async (child: ChildData) => {
+          const timeSpentToday = await db.getChildStudyTimeToday(child.child_id);
+          return { ...child, timeSpentToday };
+        })
+      );
+
+      setChildren(childrenWithTime);
+    } catch (err) {
+      console.error('Failed to load children:', err);
+      setError('Failed to load children. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]);
 
   useEffect(() => {
-    // Load children from storage (or use mock data for demo)
-    const savedChildren = storage.get<ChildProfile[]>('learnlit_children', mockChildren);
-    setChildren(savedChildren);
+    loadChildren();
 
     const savedSettings = storage.get<ParentSettings>('learnlit_parent_settings', defaultParentSettings);
     setSettings(savedSettings);
-  }, []);
+  }, [loadChildren]);
 
   const getTotalStats = () => {
     return {
-      totalXP: children.reduce((sum, c) => sum + (c.progress_summary?.totalXP || 0), 0),
-      totalLessons: children.reduce((sum, c) => sum + (c.progress_summary?.lessonsCompleted || 0), 0),
-      totalQuizzes: children.reduce((sum, c) => sum + (c.progress_summary?.quizzesPassed || 0), 0),
+      totalXP: children.reduce((sum, c) => sum + (c.total_xp || 0), 0),
+      totalLessons: children.reduce((sum, c) => sum + (c.lessons_completed || 0), 0),
+      totalQuizzes: children.reduce((sum, c) => sum + (c.quizzes_passed || 0), 0),
       avgScore: children.length > 0
-        ? Math.round(children.reduce((sum, c) => sum + (c.progress_summary?.averageScore || 0), 0) / children.length)
+        ? Math.round(children.reduce((sum, c) => sum + (c.avg_score || 0), 0) / children.length)
         : 0,
-      totalTimeToday: children.reduce((sum, c) => sum + (c.progress_summary?.timeSpentToday || 0), 0)
+      totalTimeToday: children.reduce((sum, c) => sum + (c.timeSpentToday || 0), 0)
     };
   };
 
   const stats = getTotalStats();
 
-  const formatLastActive = (dateStr: string) => {
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
+  const handleInviteChild = async (email: string) => {
+    if (!user?.id) return;
 
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays === 1) return 'Yesterday';
-    return `${diffDays} days ago`;
+    try {
+      await db.inviteChildByEmail(user.id, email);
+      success('Invitation sent!', `An invitation has been sent to ${email}`);
+      setShowAddChild(false);
+      loadChildren();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to send invitation';
+      showError('Invitation failed', errorMessage);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <Loading fullScreen />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -155,6 +164,23 @@ export default function ParentDashboard() {
       />
 
       <main className="container-app py-8 max-w-6xl">
+        {error && (
+          <Card className="bg-red-900/20 border-red-800 mb-6">
+            <div className="flex items-center gap-3 text-red-400">
+              <AlertCircle className="w-5 h-5" />
+              <p>{error}</p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={loadChildren}
+                className="ml-auto text-red-400 hover:text-red-300"
+              >
+                Retry
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Overview Stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <Card className="bg-slate-800/50 border-slate-700 text-center">
@@ -199,106 +225,147 @@ export default function ParentDashboard() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {children.map(child => (
-              <ChildCard
-                key={child.id}
-                child={child}
-                onSelect={() => setSelectedChild(child)}
-                formatLastActive={formatLastActive}
-              />
-            ))}
-          </div>
+          {children.length === 0 ? (
+            <EmptyState onAddChild={() => setShowAddChild(true)} />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {children.map(child => (
+                <ChildCard
+                  key={child.child_id}
+                  child={child}
+                  onSelect={() => setSelectedChild(child)}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Recent Activity */}
-        <Card className="bg-slate-800/50 border-slate-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-slate-400" />
-              This Week's Activity
-            </h3>
-          </div>
-          <div className="space-y-3">
-            {children.map(child => (
-              <div
-                key={child.id}
-                className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg"
-              >
-                <div className="flex items-center gap-3">
-                  {child.avatar && (
-                    <AvatarDisplay config={child.avatar} size="sm" />
-                  )}
-                  <span className="text-white font-medium">{child.name}</span>
+        {children.length > 0 && (
+          <Card className="bg-slate-800/50 border-slate-700">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-slate-400" />
+                This Week's Activity
+              </h3>
+            </div>
+            <div className="space-y-3">
+              {children.map(child => (
+                <div
+                  key={child.child_id}
+                  className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    {child.child_avatar ? (
+                      <AvatarDisplay config={child.child_avatar} size="sm" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center">
+                        <Users className="w-4 h-4 text-slate-400" />
+                      </div>
+                    )}
+                    <span className="text-white font-medium">{child.child_name}</span>
+                  </div>
+                  <div className="flex items-center gap-6 text-sm">
+                    <div className="text-center">
+                      <p className="text-white font-bold">{child.lessons_completed || 0}</p>
+                      <p className="text-slate-400">lessons</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-white font-bold">{child.quizzes_passed || 0}</p>
+                      <p className="text-slate-400">quizzes</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-white font-bold">{child.current_streak || 0}</p>
+                      <p className="text-slate-400">streak</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-6 text-sm">
-                  <div className="text-center">
-                    <p className="text-white font-bold">{child.progress_summary?.lessonsCompleted || 0}</p>
-                    <p className="text-slate-400">lessons</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold">{child.progress_summary?.quizzesPassed || 0}</p>
-                    <p className="text-slate-400">quizzes</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white font-bold">{child.progress_summary?.currentStreak || 0}</p>
-                    <p className="text-slate-400">streak</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
+              ))}
+            </div>
+          </Card>
+        )}
 
         {/* Settings Modal */}
-        {showSettings && (
-          <SettingsModal
+        <Modal
+          isOpen={showSettings}
+          onClose={() => setShowSettings(false)}
+          title="Parent Settings"
+          size="md"
+        >
+          <SettingsModalContent
             settings={settings}
             onSave={(newSettings) => {
               setSettings(newSettings);
               storage.set('learnlit_parent_settings', newSettings);
               setShowSettings(false);
+              success('Settings saved', 'Your preferences have been updated.');
             }}
             onClose={() => setShowSettings(false)}
           />
-        )}
+        </Modal>
 
         {/* Child Detail Modal */}
-        {selectedChild && (
-          <ChildDetailModal
-            child={selectedChild}
-            onClose={() => setSelectedChild(null)}
-            formatLastActive={formatLastActive}
-          />
-        )}
+        <Modal
+          isOpen={!!selectedChild}
+          onClose={() => setSelectedChild(null)}
+          title={selectedChild?.child_name || 'Learner Details'}
+          size="lg"
+        >
+          {selectedChild && (
+            <ChildDetailModalContent
+              child={selectedChild}
+              onClose={() => setSelectedChild(null)}
+            />
+          )}
+        </Modal>
 
         {/* Add Child Modal */}
-        {showAddChild && (
-          <AddChildModal
-            onAdd={(child) => {
-              const newChildren = [...children, child];
-              setChildren(newChildren);
-              storage.set('learnlit_children', newChildren);
-              setShowAddChild(false);
-            }}
+        <Modal
+          isOpen={showAddChild}
+          onClose={() => setShowAddChild(false)}
+          title="Add a Learner"
+          size="md"
+        >
+          <AddChildModalContent
+            onInvite={handleInviteChild}
             onClose={() => setShowAddChild(false)}
           />
-        )}
+        </Modal>
       </main>
     </div>
   );
 }
 
-interface ChildCardProps {
-  child: ChildProfile;
-  onSelect: () => void;
-  formatLastActive: (date: string) => string;
+function EmptyState({ onAddChild }: { onAddChild: () => void }) {
+  return (
+    <Card className="bg-slate-800/50 border-slate-700 text-center py-12">
+      <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-4">
+        <UserPlus className="w-8 h-8 text-indigo-400" />
+      </div>
+      <h3 className="text-xl font-semibold text-white mb-2">No learners yet</h3>
+      <p className="text-slate-400 mb-6 max-w-md mx-auto">
+        Link your children's accounts to track their progress, set time limits, and stay involved in their learning journey.
+      </p>
+      <Button
+        variant="primary"
+        onClick={onAddChild}
+        className="bg-gradient-to-r from-indigo-500 to-purple-600"
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        Add Your First Learner
+      </Button>
+    </Card>
+  );
 }
 
-function ChildCard({ child, onSelect, formatLastActive }: ChildCardProps) {
-  const progress = child.progress_summary;
+interface ChildCardProps {
+  child: ChildWithStudyTime;
+  onSelect: () => void;
+}
+
+function ChildCard({ child, onSelect }: ChildCardProps) {
   const timeProgress = child.daily_time_limit
-    ? Math.min(100, ((progress?.timeSpentToday || 0) / child.daily_time_limit) * 100)
+    ? Math.min(100, ((child.timeSpentToday || 0) / child.daily_time_limit) * 100)
     : 0;
 
   return (
@@ -309,13 +376,17 @@ function ChildCard({ child, onSelect, formatLastActive }: ChildCardProps) {
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          {child.avatar && (
-            <AvatarDisplay config={child.avatar} size="lg" />
+          {child.child_avatar ? (
+            <AvatarDisplay config={child.child_avatar} size="lg" />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-slate-600 flex items-center justify-center">
+              <Users className="w-6 h-6 text-slate-400" />
+            </div>
           )}
           <div>
-            <h3 className="text-lg font-semibold text-white">{child.name}</h3>
+            <h3 className="text-lg font-semibold text-white">{child.child_name}</h3>
             <p className="text-slate-400 text-sm">
-              Level {progress?.currentLevel || 1}
+              Level {child.current_level || 1}
             </p>
           </div>
         </div>
@@ -326,17 +397,17 @@ function ChildCard({ child, onSelect, formatLastActive }: ChildCardProps) {
       <div className="grid grid-cols-3 gap-3 mb-4">
         <div className="text-center p-2 bg-slate-700/50 rounded-lg">
           <Flame className="w-5 h-5 text-orange-400 mx-auto mb-1" />
-          <p className="text-white font-bold">{progress?.currentStreak || 0}</p>
+          <p className="text-white font-bold">{child.current_streak || 0}</p>
           <p className="text-slate-400 text-xs">streak</p>
         </div>
         <div className="text-center p-2 bg-slate-700/50 rounded-lg">
           <Trophy className="w-5 h-5 text-amber-400 mx-auto mb-1" />
-          <p className="text-white font-bold">{(progress?.totalXP || 0).toLocaleString()}</p>
+          <p className="text-white font-bold">{(child.total_xp || 0).toLocaleString()}</p>
           <p className="text-slate-400 text-xs">XP</p>
         </div>
         <div className="text-center p-2 bg-slate-700/50 rounded-lg">
           <BarChart3 className="w-5 h-5 text-green-400 mx-auto mb-1" />
-          <p className="text-white font-bold">{progress?.averageScore || 0}%</p>
+          <p className="text-white font-bold">{Math.round(child.avg_score || 0)}%</p>
           <p className="text-slate-400 text-xs">avg</p>
         </div>
       </div>
@@ -347,7 +418,7 @@ function ChildCard({ child, onSelect, formatLastActive }: ChildCardProps) {
           <div className="flex justify-between text-sm mb-1">
             <span className="text-slate-400">Today's time</span>
             <span className="text-white">
-              {progress?.timeSpentToday || 0}m / {child.daily_time_limit}m
+              {child.timeSpentToday || 0}m / {child.daily_time_limit}m
             </span>
           </div>
           <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
@@ -361,313 +432,260 @@ function ChildCard({ child, onSelect, formatLastActive }: ChildCardProps) {
           </div>
         </div>
       )}
-
-      {/* Last Active */}
-      <p className="text-slate-500 text-xs mt-3">
-        Last active: {progress?.lastActive ? formatLastActive(progress.lastActive) : 'Never'}
-      </p>
     </Card>
   );
 }
 
-interface SettingsModalProps {
+interface SettingsModalContentProps {
   settings: ParentSettings;
   onSave: (settings: ParentSettings) => void;
   onClose: () => void;
 }
 
-function SettingsModal({ settings, onSave, onClose }: SettingsModalProps) {
+function SettingsModalContent({ settings, onSave, onClose }: SettingsModalContentProps) {
   const [localSettings, setLocalSettings] = useState(settings);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <Card className="bg-slate-800 border-slate-700 max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          <Settings className="w-5 h-5" />
-          Parent Settings
-        </h2>
-
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white font-medium">Email Notifications</p>
-              <p className="text-slate-400 text-sm">Get updates about your children's progress</p>
-            </div>
-            <button
-              onClick={() => setLocalSettings(prev => ({ ...prev, emailNotifications: !prev.emailNotifications }))}
-              className={cn(
-                "relative w-12 h-6 rounded-full transition",
-                localSettings.emailNotifications ? "bg-indigo-600" : "bg-slate-600"
-              )}
-            >
-              <div className={cn(
-                "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform",
-                localSettings.emailNotifications ? "translate-x-6" : "translate-x-1"
-              )} />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white font-medium">Weekly Reports</p>
-              <p className="text-slate-400 text-sm">Receive weekly progress summaries</p>
-            </div>
-            <button
-              onClick={() => setLocalSettings(prev => ({ ...prev, weeklyReports: !prev.weeklyReports }))}
-              className={cn(
-                "relative w-12 h-6 rounded-full transition",
-                localSettings.weeklyReports ? "bg-indigo-600" : "bg-slate-600"
-              )}
-            >
-              <div className={cn(
-                "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform",
-                localSettings.weeklyReports ? "translate-x-6" : "translate-x-1"
-              )} />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-white font-medium">Progress Alerts</p>
-              <p className="text-slate-400 text-sm">Get notified of achievements and milestones</p>
-            </div>
-            <button
-              onClick={() => setLocalSettings(prev => ({ ...prev, progressAlerts: !prev.progressAlerts }))}
-              className={cn(
-                "relative w-12 h-6 rounded-full transition",
-                localSettings.progressAlerts ? "bg-indigo-600" : "bg-slate-600"
-              )}
-            >
-              <div className={cn(
-                "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform",
-                localSettings.progressAlerts ? "translate-x-6" : "translate-x-1"
-              )} />
-            </button>
-          </div>
-
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
           <div>
-            <p className="text-white font-medium mb-2">Content Restrictions</p>
-            <div className="flex gap-2">
-              {(['none', 'moderate', 'strict'] as const).map(level => (
-                <button
-                  key={level}
-                  onClick={() => setLocalSettings(prev => ({ ...prev, contentRestrictions: level }))}
-                  className={cn(
-                    "flex-1 py-2 rounded-lg capitalize transition-colors",
-                    localSettings.contentRestrictions === level
-                      ? "bg-indigo-600 text-white"
-                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
-                  )}
-                >
-                  {level}
-                </button>
-              ))}
-            </div>
+            <p className="text-gray-900 dark:text-white font-medium">Email Notifications</p>
+            <p className="text-gray-500 dark:text-slate-400 text-sm">Get updates about your children's progress</p>
           </div>
-        </div>
-
-        <div className="flex gap-3 mt-6">
-          <Button variant="secondary" onClick={onClose} className="flex-1 bg-slate-700 border-slate-600">
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => onSave(localSettings)}
-            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600"
+          <button
+            onClick={() => setLocalSettings(prev => ({ ...prev, emailNotifications: !prev.emailNotifications }))}
+            className={cn(
+              "relative w-12 h-6 rounded-full transition",
+              localSettings.emailNotifications ? "bg-indigo-600" : "bg-gray-300 dark:bg-slate-600"
+            )}
           >
-            Save Settings
-          </Button>
+            <div className={cn(
+              "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform",
+              localSettings.emailNotifications ? "translate-x-6" : "translate-x-1"
+            )} />
+          </button>
         </div>
-      </Card>
-    </div>
-  );
-}
 
-interface ChildDetailModalProps {
-  child: ChildProfile;
-  onClose: () => void;
-  formatLastActive: (date: string) => string;
-}
-
-function ChildDetailModal({ child, onClose, formatLastActive }: ChildDetailModalProps) {
-  const progress = child.progress_summary;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <Card className="bg-slate-800 border-slate-700 max-w-lg w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          {child.avatar && (
-            <AvatarDisplay config={child.avatar} size="xl" />
-          )}
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white">{child.name}</h2>
-            <p className="text-slate-400">Level {progress?.currentLevel || 1} Learner</p>
-            <p className="text-slate-500 text-sm">
-              Last active: {progress?.lastActive ? formatLastActive(progress.lastActive) : 'Never'}
-            </p>
+            <p className="text-gray-900 dark:text-white font-medium">Weekly Reports</p>
+            <p className="text-gray-500 dark:text-slate-400 text-sm">Receive weekly progress summaries</p>
           </div>
+          <button
+            onClick={() => setLocalSettings(prev => ({ ...prev, weeklyReports: !prev.weeklyReports }))}
+            className={cn(
+              "relative w-12 h-6 rounded-full transition",
+              localSettings.weeklyReports ? "bg-indigo-600" : "bg-gray-300 dark:bg-slate-600"
+            )}
+          >
+            <div className={cn(
+              "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform",
+              localSettings.weeklyReports ? "translate-x-6" : "translate-x-1"
+            )} />
+          </button>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="p-4 bg-slate-700/50 rounded-xl text-center">
-            <Trophy className="w-8 h-8 text-amber-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{(progress?.totalXP || 0).toLocaleString()}</p>
-            <p className="text-slate-400">Total XP</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-900 dark:text-white font-medium">Progress Alerts</p>
+            <p className="text-gray-500 dark:text-slate-400 text-sm">Get notified of achievements and milestones</p>
           </div>
-          <div className="p-4 bg-slate-700/50 rounded-xl text-center">
-            <Flame className="w-8 h-8 text-orange-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{progress?.currentStreak || 0} days</p>
-            <p className="text-slate-400">Current Streak</p>
-          </div>
-          <div className="p-4 bg-slate-700/50 rounded-xl text-center">
-            <BookOpen className="w-8 h-8 text-blue-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{progress?.lessonsCompleted || 0}</p>
-            <p className="text-slate-400">Lessons</p>
-          </div>
-          <div className="p-4 bg-slate-700/50 rounded-xl text-center">
-            <Target className="w-8 h-8 text-green-400 mx-auto mb-2" />
-            <p className="text-2xl font-bold text-white">{progress?.averageScore || 0}%</p>
-            <p className="text-slate-400">Avg Score</p>
-          </div>
+          <button
+            onClick={() => setLocalSettings(prev => ({ ...prev, progressAlerts: !prev.progressAlerts }))}
+            className={cn(
+              "relative w-12 h-6 rounded-full transition",
+              localSettings.progressAlerts ? "bg-indigo-600" : "bg-gray-300 dark:bg-slate-600"
+            )}
+          >
+            <div className={cn(
+              "absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform",
+              localSettings.progressAlerts ? "translate-x-6" : "translate-x-1"
+            )} />
+          </button>
         </div>
 
-        {/* Time Limit Setting */}
-        <div className="p-4 bg-slate-700/50 rounded-xl mb-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-cyan-400" />
-              <span className="text-white font-medium">Daily Time Limit</span>
-            </div>
-            <span className="text-white font-bold">{child.daily_time_limit || 'No limit'} min</span>
+        <div>
+          <p className="text-gray-900 dark:text-white font-medium mb-2">Content Restrictions</p>
+          <div className="flex gap-2">
+            {(['none', 'moderate', 'strict'] as const).map(level => (
+              <button
+                key={level}
+                onClick={() => setLocalSettings(prev => ({ ...prev, contentRestrictions: level }))}
+                className={cn(
+                  "flex-1 py-2 rounded-lg capitalize transition-colors",
+                  localSettings.contentRestrictions === level
+                    ? "bg-indigo-600 text-white"
+                    : "bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600"
+                )}
+              >
+                {level}
+              </button>
+            ))}
           </div>
-          {child.daily_time_limit && (
-            <div className="mt-3">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-slate-400">Today's progress</span>
-                <span className="text-slate-300">
-                  {progress?.timeSpentToday || 0} / {child.daily_time_limit} min
-                </span>
-              </div>
-              <div className="h-3 bg-slate-600 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
-                  style={{
-                    width: `${Math.min(100, ((progress?.timeSpentToday || 0) / child.daily_time_limit) * 100)}%`
-                  }}
-                />
-              </div>
-            </div>
-          )}
         </div>
+      </div>
 
-        <Button
-          variant="secondary"
-          onClick={onClose}
-          fullWidth
-          className="bg-slate-700 border-slate-600"
-        >
-          Close
+      <div className="flex gap-3">
+        <Button variant="secondary" onClick={onClose} className="flex-1">
+          Cancel
         </Button>
-      </Card>
+        <Button
+          variant="primary"
+          onClick={() => onSave(localSettings)}
+          className="flex-1"
+        >
+          Save Settings
+        </Button>
+      </div>
     </div>
   );
 }
 
-interface AddChildModalProps {
-  onAdd: (child: ChildProfile) => void;
+interface ChildDetailModalContentProps {
+  child: ChildWithStudyTime;
   onClose: () => void;
 }
 
-function AddChildModal({ onAdd, onClose }: AddChildModalProps) {
-  const [name, setName] = useState('');
-  const [timeLimit, setTimeLimit] = useState(60);
+function ChildDetailModalContent({ child, onClose }: ChildDetailModalContentProps) {
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-6">
+        {child.child_avatar ? (
+          <AvatarDisplay config={child.child_avatar} size="xl" />
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-slate-600 flex items-center justify-center">
+            <Users className="w-8 h-8 text-slate-400" />
+          </div>
+        )}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{child.child_name}</h2>
+          <p className="text-gray-500 dark:text-slate-400">Level {child.current_level || 1} Learner</p>
+          <p className="text-gray-400 dark:text-slate-500 text-sm">{child.child_email}</p>
+        </div>
+      </div>
 
-  const handleAdd = () => {
-    if (!name.trim()) return;
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl text-center">
+          <Trophy className="w-8 h-8 text-amber-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{(child.total_xp || 0).toLocaleString()}</p>
+          <p className="text-gray-500 dark:text-slate-400">Total XP</p>
+        </div>
+        <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl text-center">
+          <Flame className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{child.current_streak || 0} days</p>
+          <p className="text-gray-500 dark:text-slate-400">Current Streak</p>
+        </div>
+        <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl text-center">
+          <BookOpen className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{child.lessons_completed || 0}</p>
+          <p className="text-gray-500 dark:text-slate-400">Lessons</p>
+        </div>
+        <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl text-center">
+          <Target className="w-8 h-8 text-green-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{Math.round(child.avg_score || 0)}%</p>
+          <p className="text-gray-500 dark:text-slate-400">Avg Score</p>
+        </div>
+      </div>
 
-    const newChild: ChildProfile = {
-      id: Date.now().toString(),
-      parent_id: 'parent1',
-      user_profile_id: `user_${Date.now()}`,
-      name: name.trim(),
-      avatar: {
-        ...defaultAvatar,
-        outfitColor: AVATAR_OPTIONS.outfitColors[Math.floor(Math.random() * AVATAR_OPTIONS.outfitColors.length)],
-        background: AVATAR_OPTIONS.backgrounds[Math.floor(Math.random() * AVATAR_OPTIONS.backgrounds.length)]
-      },
-      daily_time_limit: timeLimit,
-      progress_summary: {
-        totalXP: 0,
-        currentLevel: 1,
-        currentStreak: 0,
-        lessonsCompleted: 0,
-        quizzesPassed: 0,
-        averageScore: 0,
-        timeSpentToday: 0,
-        lastActive: new Date().toISOString()
-      }
-    };
+      {/* Time Limit Setting */}
+      <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl mb-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Clock className="w-5 h-5 text-cyan-400" />
+            <span className="text-gray-900 dark:text-white font-medium">Daily Time Limit</span>
+          </div>
+          <span className="text-gray-900 dark:text-white font-bold">{child.daily_time_limit || 'No limit'} min</span>
+        </div>
+        {child.daily_time_limit && (
+          <div className="mt-3">
+            <div className="flex justify-between text-sm mb-1">
+              <span className="text-gray-500 dark:text-slate-400">Today's progress</span>
+              <span className="text-gray-700 dark:text-slate-300">
+                {child.timeSpentToday || 0} / {child.daily_time_limit} min
+              </span>
+            </div>
+            <div className="h-3 bg-gray-200 dark:bg-slate-600 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full"
+                style={{
+                  width: `${Math.min(100, ((child.timeSpentToday || 0) / child.daily_time_limit) * 100)}%`
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
-    onAdd(newChild);
+      <Button
+        variant="secondary"
+        onClick={onClose}
+        fullWidth
+      >
+        Close
+      </Button>
+    </div>
+  );
+}
+
+interface AddChildModalContentProps {
+  onInvite: (email: string) => void;
+  onClose: () => void;
+}
+
+function AddChildModalContent({ onInvite, onClose }: AddChildModalContentProps) {
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!email.trim() || !email.includes('@')) return;
+
+    setIsSubmitting(true);
+    try {
+      await onInvite(email.trim());
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-      <Card className="bg-slate-800 border-slate-700 max-w-md w-full">
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          <Plus className="w-5 h-5" />
-          Add a Learner
-        </h2>
+    <div className="space-y-6">
+      <p className="text-gray-600 dark:text-slate-400">
+        Enter your child's email address to link their account. They will receive an invitation to accept the connection.
+      </p>
 
-        <div className="space-y-4">
-          <div>
-            <label className="text-slate-300 text-sm mb-2 block">Child's Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="Enter name"
-              className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label className="text-slate-300 text-sm mb-2 block">
-              Daily Time Limit (minutes)
-            </label>
-            <input
-              type="range"
-              min="15"
-              max="120"
-              step="15"
-              value={timeLimit}
-              onChange={e => setTimeLimit(Number(e.target.value))}
-              className="w-full"
-            />
-            <div className="flex justify-between text-slate-400 text-sm">
-              <span>15 min</span>
-              <span className="text-white font-bold">{timeLimit} min</span>
-              <span>120 min</span>
-            </div>
-          </div>
+      <div>
+        <label className="text-gray-700 dark:text-slate-300 text-sm mb-2 block">
+          Child's Email Address
+        </label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="child@example.com"
+            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+          />
         </div>
+      </div>
 
-        <div className="flex gap-3 mt-6">
-          <Button variant="secondary" onClick={onClose} className="flex-1 bg-slate-700 border-slate-600">
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleAdd}
-            disabled={!name.trim()}
-            className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-600"
-          >
-            Add Learner
-          </Button>
-        </div>
-      </Card>
+      <div className="flex gap-3">
+        <Button variant="secondary" onClick={onClose} className="flex-1">
+          Cancel
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={!email.trim() || !email.includes('@') || isSubmitting}
+          className="flex-1"
+        >
+          {isSubmitting ? 'Sending...' : 'Send Invitation'}
+        </Button>
+      </div>
     </div>
   );
 }

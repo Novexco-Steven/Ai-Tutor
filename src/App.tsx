@@ -4,6 +4,8 @@ import { UserProvider } from './contexts/UserContext';
 import { SettingsProvider } from './contexts/SettingsContext';
 import { GamificationProvider } from './contexts/GamificationContext';
 import { StudySessionProvider } from './contexts/StudySessionContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import ErrorBoundary from './components/shared/ErrorBoundary';
 
 // Lazy load components for code splitting
 import { lazy, Suspense } from 'react';
@@ -51,8 +53,10 @@ const PromptTemplateForm = lazy(() => import('./components/admin/prompts/PromptT
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
+    <ErrorBoundary>
+      <NotificationProvider>
+        <Router>
+          <AuthProvider>
         <UserProvider>
           <SettingsProvider>
             <GamificationProvider>
@@ -115,8 +119,10 @@ function App() {
             </GamificationProvider>
           </SettingsProvider>
         </UserProvider>
-      </AuthProvider>
-    </Router>
+          </AuthProvider>
+        </Router>
+      </NotificationProvider>
+    </ErrorBoundary>
   );
 }
 

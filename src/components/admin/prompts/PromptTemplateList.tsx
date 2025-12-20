@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   Plus,
   Search,
-  Filter,
   Edit,
   Trash2,
   Eye,
@@ -15,12 +14,14 @@ import {
   FileText,
   User,
   MessageSquare,
+  GraduationCap,
 } from 'lucide-react';
 import { getPromptTemplates, deletePromptTemplate, duplicatePromptTemplate } from '@/services/promptAdmin';
 import { useUser } from '@/contexts/UserContext';
 import type { PromptTemplate, PromptType, PromptTemplateFilters } from '@/types/prompts';
 
 const PROMPT_TYPE_ICONS: Record<PromptType, React.ReactNode> = {
+  grade_global: <GraduationCap className="w-4 h-4" />,
   user_profile: <User className="w-4 h-4" />,
   user_learning_preference: <User className="w-4 h-4" />,
   subject_global: <BookOpen className="w-4 h-4" />,
@@ -33,6 +34,7 @@ const PROMPT_TYPE_ICONS: Record<PromptType, React.ReactNode> = {
 };
 
 const PROMPT_TYPE_LABELS: Record<PromptType, string> = {
+  grade_global: 'Grade (Global)',
   user_profile: 'User Profile',
   user_learning_preference: 'Learning Preference',
   subject_global: 'Subject (Global)',
@@ -45,6 +47,7 @@ const PROMPT_TYPE_LABELS: Record<PromptType, string> = {
 };
 
 const PROMPT_TYPE_COLORS: Record<PromptType, string> = {
+  grade_global: 'bg-indigo-500/10 text-indigo-400',
   user_profile: 'bg-purple-500/10 text-purple-400',
   user_learning_preference: 'bg-purple-500/10 text-purple-400',
   subject_global: 'bg-blue-500/10 text-blue-400',

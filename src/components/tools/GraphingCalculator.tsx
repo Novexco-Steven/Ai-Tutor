@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { evaluate, parse } from 'mathjs';
 import Card from '../shared/Card';
 import Button from '../shared/Button';
 import { Plus, Trash2, RotateCcw } from 'lucide-react';
@@ -153,23 +154,29 @@ export default function GraphingCalculator() {
   };
 
   const evaluateExpression = (expr: string, x: number): number => {
-    // Simple expression evaluator for basic functions
-    // Replace common math functions
-    let sanitized = expr
-      .toLowerCase()
-      .replace(/\^/g, '**')
-      .replace(/sin/g, 'Math.sin')
-      .replace(/cos/g, 'Math.cos')
-      .replace(/tan/g, 'Math.tan')
-      .replace(/sqrt/g, 'Math.sqrt')
-      .replace(/abs/g, 'Math.abs')
-      .replace(/log/g, 'Math.log')
-      .replace(/pi/g, 'Math.PI')
-      .replace(/e(?![a-z])/g, 'Math.E');
+    // Use mathjs for safe expression evaluation
+    // mathjs provides a secure sandbox that prevents code injection
+    try {
+      const result = evaluate(expr, { x });
+      if (typeof result === 'number') {
+        return result;
+      }
+      throw new Error('Expression did not return a number');
+    } catch {
+      throw new Error('Invalid expression');
+    }
+  };
 
-    // Create function and evaluate
-    const func = new Function('x', `return ${sanitized}`);
-    return func(x);
+  const validateExpression = (expr: string): boolean => {
+    // Pre-validate expression syntax using mathjs parse
+    try {
+      parse(expr);
+      // Test evaluate with x=1 to ensure it works
+      const result = evaluate(expr, { x: 1 });
+      return typeof result === 'number' && isFinite(result);
+    } catch {
+      return false;
+    }
   };
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -189,9 +196,8 @@ export default function GraphingCalculator() {
   const addFunction = () => {
     if (!newFunction.trim()) return;
 
-    // Validate by trying to evaluate
-    try {
-      evaluateExpression(newFunction, 1);
+    // Validate using mathjs parse and evaluate
+    if (validateExpression(newFunction)) {
       setFunctions(prev => [
         ...prev,
         {
@@ -202,7 +208,7 @@ export default function GraphingCalculator() {
       ]);
       setNewFunction('');
       setError(null);
-    } catch (e) {
+    } else {
       setError('Invalid expression. Try something like: x^2, sin(x), 2*x+1');
     }
   };

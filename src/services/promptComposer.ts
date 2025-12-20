@@ -27,23 +27,7 @@ import type {
   PromptCompositionOptions,
   LearningPreferences,
   UserPromptCustomization,
-  PROMPT_LAYER_ORDER,
-  PROMPT_TYPE_LABELS,
 } from '@/types/prompts';
-
-// Layer order defines composition sequence
-const LAYER_ORDER: PromptType[] = [
-  'grade_global',
-  'user_profile',
-  'user_learning_preference',
-  'subject_global',
-  'subject_location',
-  'unit_global',
-  'unit_location',
-  'topic_global',
-  'topic_location',
-  'user_customization',
-];
 
 // Request type headers for different AI operations
 const REQUEST_TYPE_HEADERS: Record<string, (ctx: PromptCompositionContext) => string> = {

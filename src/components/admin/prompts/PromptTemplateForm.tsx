@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Save,
-  X,
   Loader2,
-  ChevronDown,
   HelpCircle,
   Eye,
 } from 'lucide-react';
@@ -16,7 +14,6 @@ import {
 } from '@/services/promptAdmin';
 import { useUser } from '@/contexts/UserContext';
 import type {
-  PromptTemplate,
   PromptType,
   CreatePromptTemplateInput,
   UpdatePromptTemplateInput,
