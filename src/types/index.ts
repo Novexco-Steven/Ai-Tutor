@@ -1,3 +1,6 @@
+// Re-export prompt system types
+export * from './prompts';
+
 // User Types
 export interface User {
   id: string;
@@ -10,7 +13,83 @@ export interface User {
   settings: UserSettings;
   created_at: string;
   updated_at: string;
+
+  // Extended profile fields
+  dateOfBirth?: string;        // ISO date string (YYYY-MM-DD)
+  country?: string;
+  timezone?: string;
+  pronouns?: string;
+  location?: string;           // City/State
+  school?: string;
+  parentEmail?: string;        // Required for users under 13
+  learningStyle?: LearningStyleType;
+  goals?: string[];
+  languages?: string[];
+  bio?: string;
+  gradeOverride?: boolean;     // If true, grade_level was manually set
 }
+
+export type LearningStyleType = 'visual' | 'auditory' | 'reading' | 'kinesthetic';
+
+// Profile Constants
+export const LEARNING_STYLES = [
+  { id: 'visual', label: 'Visual', icon: 'Eye', description: 'Learn best with diagrams, videos, and charts' },
+  { id: 'auditory', label: 'Auditory', icon: 'Ear', description: 'Learn best through explanations and discussions' },
+  { id: 'reading', label: 'Reading/Writing', icon: 'BookOpen', description: 'Learn best with text and notes' },
+  { id: 'kinesthetic', label: 'Hands-on', icon: 'Hand', description: 'Learn best through practice and activities' },
+] as const;
+
+export const LEARNING_GOALS = [
+  'Get better grades',
+  'Learn for fun',
+  'Prepare for tests',
+  'Explore new topics',
+  'Keep up with class',
+  'Get ahead of class',
+  'Review past material',
+] as const;
+
+export const PRONOUNS_OPTIONS = [
+  'he/him',
+  'she/her',
+  'they/them',
+  'Custom',
+] as const;
+
+export const COMMON_COUNTRIES = [
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'IN', name: 'India' },
+  { code: 'PH', name: 'Philippines' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'FR', name: 'France' },
+  { code: 'JP', name: 'Japan' },
+  { code: 'BR', name: 'Brazil' },
+  { code: 'MX', name: 'Mexico' },
+  { code: 'KR', name: 'South Korea' },
+  { code: 'SG', name: 'Singapore' },
+  { code: 'NZ', name: 'New Zealand' },
+  { code: 'IE', name: 'Ireland' },
+] as const;
+
+export const COMMON_LANGUAGES = [
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Chinese',
+  'Japanese',
+  'Korean',
+  'Portuguese',
+  'Hindi',
+  'Arabic',
+  'Russian',
+  'Italian',
+  'Vietnamese',
+  'Tagalog',
+] as const;
 
 export interface UserSettings {
   display: DisplaySettings;
@@ -37,6 +116,9 @@ export interface LearningSettings {
   practiceQuestionCount: 5 | 10 | 15;
   autoAdvance: boolean;
   difficultyMode: 'auto' | 'challenge' | 'easier';
+  socraticMode: boolean; // Guide with questions instead of direct answers
+  subjectDifficulties?: Record<string, number>; // subjectId -> difficulty override
+  topicDifficulties?: Record<string, number>; // topicId -> difficulty override
 }
 
 // Interest Types
@@ -67,10 +149,37 @@ export interface Subject {
   created_at: string;
 }
 
+// Curriculum Unit (groups topics within a subject for a specific grade)
+export interface Unit {
+  id: string;
+  subject_id: string;
+  subject?: Subject;
+  grade_level: number;
+  name: string;
+  description: string;
+  order_index: number;
+  icon?: string;
+  estimated_total_time?: number; // sum of topic times in minutes
+  learning_objectives: string[];
+  created_at: string;
+}
+
+// Unit with nested topics and progress tracking
+export interface UnitWithTopics extends Unit {
+  topics: Topic[];
+  progress?: {
+    completed: number;
+    total: number;
+    percentage: number;
+  };
+}
+
 export interface Topic {
   id: string;
   subject_id: string;
   subject?: Subject;
+  unit_id?: string; // optional unit grouping
+  unit?: Unit;
   name: string;
   description: string;
   grade_level_min: number;
@@ -139,6 +248,9 @@ export interface Question {
   concept: string;
   difficulty_level: number;
   explanation?: string;
+  hint?: string;
+  imageUrl?: string;
+  imagePrompt?: string;
   interest_theme?: string;
 }
 
@@ -291,4 +403,336 @@ export interface PracticeContextValue {
   nextQuestion: () => void;
   previousQuestion: () => void;
   retryQuestion: () => void;
+}
+
+// Gamification Types
+export interface GamificationData {
+  xp: number;
+  level: number;
+  currentStreak: number;
+  longestStreak: number;
+  lastActivityDate: string | null;
+  badges: UserBadge[];
+  totalLessonsCompleted: number;
+  totalQuizzesPassed: number;
+  totalQuestionsCorrect: number;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: 'learning' | 'streak' | 'mastery' | 'exploration' | 'achievement';
+  requirement: BadgeRequirement;
+  xpReward: number;
+}
+
+export interface BadgeRequirement {
+  type: 'lessons_completed' | 'quizzes_passed' | 'streak_days' | 'xp_earned' | 'perfect_quiz' | 'subjects_explored' | 'questions_correct';
+  threshold: number;
+}
+
+export interface UserBadge {
+  badgeId: string;
+  earnedAt: string;
+}
+
+export interface XPEvent {
+  type: 'lesson_complete' | 'quiz_complete' | 'perfect_quiz' | 'streak_bonus' | 'badge_earned' | 'question_correct';
+  amount: number;
+  description: string;
+  timestamp: string;
+}
+
+// Study Session Types
+export interface StudySessionData {
+  sessionStartTime: number | null;
+  totalStudyTimeToday: number; // in seconds
+  lastBreakTime: number | null;
+  breaksTaken: number;
+  dailyGoalMinutes: number;
+  dailyGoalCompleted: boolean;
+  focusModeEnabled: boolean;
+  lastActivityDate: string | null;
+}
+
+export interface BreakActivity {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  duration: number; // suggested duration in seconds
+  category: 'movement' | 'relaxation' | 'fun' | 'mindfulness';
+}
+
+export interface DailyGoal {
+  type: 'time' | 'lessons' | 'xp';
+  target: number;
+  current: number;
+}
+
+// ============================================================================
+// Custom Topic Types
+// ============================================================================
+
+export interface CustomTopicOutline {
+  sections: CustomTopicSection[];
+  keyPoints: string[];
+  concepts: string[];
+}
+
+export interface CustomTopicSection {
+  title: string;
+  summary: string;
+  learningObjectives: string[];
+}
+
+export interface CustomTopic {
+  id: string;
+  created_by: string;
+  name: string;
+  description?: string;
+  subject_id?: string;
+  subject?: Subject;
+  grade_level: number;
+  difficulty_level: number;
+  estimated_time: number;
+  topic_outline: CustomTopicOutline;
+  ai_prompt: string;
+  status: CustomTopicStatus;
+  review_notes?: string;
+  reviewed_by?: string;
+  reviewed_at?: string;
+  promoted_to_topic_id?: string;
+  promoted_at?: string;
+  usage_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export type CustomTopicStatus = 'draft' | 'published' | 'pending_review' | 'approved' | 'rejected';
+
+// AI Service Types for Custom Topics
+export interface AIGenerateTopicOutlineRequest {
+  userPrompt: string;
+  gradeLevel: number;
+  difficultyLevel?: number;
+}
+
+export interface AIGenerateTopicOutlineResponse {
+  name: string;
+  description: string;
+  outline: CustomTopicOutline;
+  suggestedSubject: string;
+  suggestedDifficulty: number;
+  estimatedTime: number;
+}
+
+// AI Service Types for Custom Lesson Generation
+export interface AIGenerateCustomLessonRequest {
+  topicName: string;
+  topicDescription: string;
+  outline: CustomTopicOutline;
+  interestTheme: string;
+  difficultyLevel: number;
+  gradeLevel: number;
+}
+
+// Admin Types
+export interface AdminUser {
+  id: string;
+  user_id: string;
+  role: 'moderator' | 'admin' | 'super_admin';
+  granted_by?: string;
+  created_at: string;
+}
+
+// ============================================================================
+// AI Chat Tutor Types
+// ============================================================================
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
+
+export interface ChatContext {
+  topicName: string;
+  topicDescription?: string;
+  subjectName: string;
+  gradeLevel: number;
+  difficultyLevel: number;
+  interestTheme: string;
+  lessonContent?: LessonContent;
+  currentQuestion?: Question;
+}
+
+export interface AIChatRequest {
+  message: string;
+  context: ChatContext;
+  conversationHistory: ChatMessage[];
+}
+
+export interface AIChatResponse {
+  response: string;
+  suggestedFollowUp?: string;
+}
+
+// Socratic Mode Types
+export interface AISocraticGuidanceRequest {
+  question: string;
+  studentAnswer: string;
+  correctAnswer: string;
+  concept: string;
+  gradeLevel: number;
+  interestTheme: string;
+  previousHints?: string[];
+}
+
+export interface AISocraticGuidanceResponse {
+  isCorrect: boolean;
+  guidingQuestion: string;
+  thinkingPrompt: string;
+  encouragement: string;
+  hintLevel: 1 | 2 | 3; // How direct the hint is
+}
+
+// Dive Deeper Types
+export interface AIDiveDeeperRequest {
+  concept: string;
+  currentExplanation: string;
+  gradeLevel: number;
+  difficultyLevel: number;
+  interestTheme: string;
+}
+
+export interface AIDiveDeeperResponse {
+  deeperExplanation: string;
+  funFacts: string[];
+  realWorldConnections: string[];
+  whyItMatters: string;
+  relatedConcepts: string[];
+}
+
+// ============================================================================
+// Scan-to-Solve Types
+// ============================================================================
+
+export interface AIScanSolveRequest {
+  imageBase64: string;
+  gradeLevel: number;
+  subject?: string;
+}
+
+export interface AIScanSolveResponse {
+  problemDetected: string;
+  subject: 'math' | 'science' | 'other';
+  solution: string;
+  steps: SolutionStep[];
+  explanation: string;
+  tips: string[];
+}
+
+export interface SolutionStep {
+  stepNumber: number;
+  description: string;
+  result?: string;
+}
+
+// ============================================================================
+// Avatar/Customization Types
+// ============================================================================
+
+export interface AvatarConfig {
+  skinTone: string;
+  hairStyle: string;
+  hairColor: string;
+  eyeStyle: string;
+  eyeColor: string;
+  mouthStyle: string;
+  accessory?: string;
+  outfit: string;
+  outfitColor: string;
+  background: string;
+}
+
+export const AVATAR_OPTIONS = {
+  skinTones: ['#FFDFC4', '#F0C8A0', '#D4A574', '#C68642', '#8D5524', '#5C3811'],
+  hairStyles: ['short', 'long', 'curly', 'wavy', 'ponytail', 'bun', 'spiky', 'none'],
+  hairColors: ['#2C1810', '#4A3728', '#8B4513', '#D4A574', '#FFD700', '#FF6B35', '#9B59B6', '#3498DB'],
+  eyeStyles: ['round', 'almond', 'wide', 'sleepy', 'happy'],
+  eyeColors: ['#4A3728', '#2E86AB', '#27AE60', '#8E44AD', '#2C3E50'],
+  mouthStyles: ['smile', 'grin', 'neutral', 'open', 'surprised'],
+  accessories: ['none', 'glasses', 'sunglasses', 'headband', 'bow', 'cap', 'crown'],
+  outfits: ['tshirt', 'hoodie', 'dress', 'jersey', 'formal'],
+  outfitColors: ['#E74C3C', '#3498DB', '#2ECC71', '#9B59B6', '#F39C12', '#1ABC9C', '#E91E63'],
+  backgrounds: ['#E8F5E9', '#E3F2FD', '#FFF3E0', '#F3E5F5', '#FFEBEE', '#E0F7FA'],
+} as const;
+
+// ============================================================================
+// Virtual Manipulatives Types
+// ============================================================================
+
+export interface GraphPoint {
+  x: number;
+  y: number;
+  label?: string;
+}
+
+export interface GraphFunction {
+  expression: string;
+  color: string;
+  label?: string;
+}
+
+export interface FractionVisualization {
+  numerator: number;
+  denominator: number;
+  type: 'circle' | 'bar' | 'grid';
+}
+
+// ============================================================================
+// Parent Dashboard Types
+// ============================================================================
+
+export interface ParentProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  email: string;
+  children: ChildProfile[];
+  settings: ParentSettings;
+  created_at: string;
+}
+
+export interface ChildProfile {
+  id: string;
+  parent_id: string;
+  user_profile_id: string; // links to User profile
+  name: string;
+  avatar?: AvatarConfig;
+  daily_time_limit?: number; // minutes
+  allowed_subjects?: string[];
+  progress_summary?: ChildProgressSummary;
+}
+
+export interface ChildProgressSummary {
+  totalXP: number;
+  currentLevel: number;
+  currentStreak: number;
+  lessonsCompleted: number;
+  quizzesPassed: number;
+  averageScore: number;
+  timeSpentToday: number; // minutes
+  lastActive: string;
+}
+
+export interface ParentSettings {
+  emailNotifications: boolean;
+  weeklyReports: boolean;
+  progressAlerts: boolean;
+  contentRestrictions: 'none' | 'moderate' | 'strict';
 }

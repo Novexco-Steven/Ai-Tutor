@@ -8,6 +8,10 @@ interface SettingsContextType {
   updateDisplaySettings: (settings: Partial<DisplaySettings>) => void;
   updateAudioSettings: (settings: Partial<AudioSettings>) => void;
   updateLearningSettings: (settings: Partial<LearningSettings>) => void;
+  setSubjectDifficulty: (subjectId: string, difficulty: number) => void;
+  setTopicDifficulty: (topicId: string, difficulty: number) => void;
+  getSubjectDifficulty: (subjectId: string) => number | undefined;
+  getTopicDifficulty: (topicId: string) => number | undefined;
   applySettings: () => void;
 }
 
@@ -28,6 +32,7 @@ const defaultSettings: UserSettings = {
     practiceQuestionCount: 10,
     autoAdvance: false,
     difficultyMode: 'auto',
+    socraticMode: false,
   },
 };
 
@@ -36,19 +41,32 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const { profile, updateProfile } = useUser();
   const [settings, setSettings] = useState<UserSettings>(defaultSettings);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
-  // Load settings from profile or localStorage
+  // Apply localStorage settings immediately on mount to prevent flash
   useEffect(() => {
+    const savedSettings = storage.get<UserSettings>('learnlit_settings', defaultSettings);
+    applySettingsToDOM(savedSettings);
+  }, []);
+
+  // Load settings from profile or localStorage (only on initial load)
+  useEffect(() => {
+    // Only apply settings on initial load, not on every profile change
+    if (hasInitialized) return;
+
     if (profile?.settings) {
       setSettings(profile.settings);
       applySettingsToDOM(profile.settings);
-    } else {
-      // Try localStorage for guest users
+      setHasInitialized(true);
+    } else if (profile === null) {
+      // Profile loaded but no settings - use localStorage for guest
       const savedSettings = storage.get<UserSettings>('learnlit_settings', defaultSettings);
       setSettings(savedSettings);
       applySettingsToDOM(savedSettings);
+      setHasInitialized(true);
     }
-  }, [profile]);
+    // Don't set hasInitialized if profile is undefined (still loading)
+  }, [profile, hasInitialized]);
 
   const applySettingsToDOM = (settings: UserSettings) => {
     const body = document.body;
@@ -113,6 +131,42 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     saveSettings(newSettings);
   };
 
+  const setSubjectDifficulty = (subjectId: string, difficulty: number) => {
+    const newSettings = {
+      ...settings,
+      learning: {
+        ...settings.learning,
+        subjectDifficulties: {
+          ...settings.learning.subjectDifficulties,
+          [subjectId]: difficulty,
+        },
+      },
+    };
+    saveSettings(newSettings);
+  };
+
+  const setTopicDifficulty = (topicId: string, difficulty: number) => {
+    const newSettings = {
+      ...settings,
+      learning: {
+        ...settings.learning,
+        topicDifficulties: {
+          ...settings.learning.topicDifficulties,
+          [topicId]: difficulty,
+        },
+      },
+    };
+    saveSettings(newSettings);
+  };
+
+  const getSubjectDifficulty = (subjectId: string): number | undefined => {
+    return settings.learning.subjectDifficulties?.[subjectId];
+  };
+
+  const getTopicDifficulty = (topicId: string): number | undefined => {
+    return settings.learning.topicDifficulties?.[topicId];
+  };
+
   const applySettings = () => {
     applySettingsToDOM(settings);
   };
@@ -122,6 +176,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     updateDisplaySettings,
     updateAudioSettings,
     updateLearningSettings,
+    setSubjectDifficulty,
+    setTopicDifficulty,
+    getSubjectDifficulty,
+    getTopicDifficulty,
     applySettings,
   };
 

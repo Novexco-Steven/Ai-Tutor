@@ -51,10 +51,26 @@ CREATE TABLE subjects (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Units table (curriculum organization between subjects and topics)
+CREATE TABLE units (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  subject_id UUID REFERENCES subjects(id) ON DELETE CASCADE NOT NULL,
+  grade_level INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT,
+  order_index INTEGER NOT NULL,
+  icon TEXT,
+  estimated_total_time INTEGER, -- sum of topic times in minutes
+  learning_objectives JSONB DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(subject_id, grade_level, name)
+);
+
 -- Topics table
 CREATE TABLE topics (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   subject_id UUID REFERENCES subjects(id) ON DELETE CASCADE NOT NULL,
+  unit_id UUID REFERENCES units(id) ON DELETE SET NULL, -- optional unit grouping
   name TEXT NOT NULL,
   description TEXT,
   grade_level_min INTEGER NOT NULL,
@@ -123,7 +139,7 @@ CREATE TABLE question_responses (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Generated content table (for caching AI responses)
+-- Generated content table (for caching AI responses per user)
 CREATE TABLE generated_content (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
@@ -137,13 +153,41 @@ CREATE TABLE generated_content (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Content library table (shared cache for lessons/questions across all users)
+-- Stores canonical, theme-agnostic content that can be re-themed per user
+CREATE TABLE content_library (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+  -- Content identification (unique per topic/grade/difficulty/type combination)
+  topic_id UUID REFERENCES topics(id) ON DELETE CASCADE NOT NULL,
+  grade_level INTEGER NOT NULL,
+  difficulty_level INTEGER NOT NULL CHECK (difficulty_level BETWEEN 1 AND 10),
+  content_type TEXT NOT NULL CHECK (content_type IN ('lesson', 'questions')),
+
+  -- Content storage (LessonContent or Question[] as JSONB)
+  content JSONB NOT NULL,
+
+  -- Metadata for analytics and versioning
+  version INTEGER DEFAULT 1,
+  usage_count INTEGER DEFAULT 0,
+  avg_rating DECIMAL(3,2),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+
+  -- Ensure one version per topic/grade/difficulty/type
+  UNIQUE(topic_id, grade_level, difficulty_level, content_type)
+);
+
 -- ============================================================================
 -- INDEXES
 -- ============================================================================
 
 CREATE INDEX idx_user_interests_user_id ON user_interests(user_id);
 CREATE INDEX idx_user_interests_interest_id ON user_interests(interest_id);
+CREATE INDEX idx_units_subject_grade ON units(subject_id, grade_level);
+CREATE INDEX idx_units_grade_level ON units(grade_level);
 CREATE INDEX idx_topics_subject_id ON topics(subject_id);
+CREATE INDEX idx_topics_unit_id ON topics(unit_id);
 CREATE INDEX idx_topics_grade_level ON topics(grade_level_min, grade_level_max);
 CREATE INDEX idx_user_progress_user_id ON user_progress(user_id);
 CREATE INDEX idx_user_progress_topic_id ON user_progress(topic_id);
@@ -153,6 +197,10 @@ CREATE INDEX idx_question_responses_session_log_id ON question_responses(session
 CREATE INDEX idx_question_responses_user_id ON question_responses(user_id);
 CREATE INDEX idx_generated_content_user_id ON generated_content(user_id);
 CREATE INDEX idx_generated_content_topic_id ON generated_content(topic_id);
+
+-- Content library index for fast lookups
+CREATE INDEX idx_content_library_lookup
+  ON content_library(topic_id, grade_level, difficulty_level, content_type);
 
 -- ============================================================================
 -- ROW LEVEL SECURITY (RLS)
@@ -237,6 +285,12 @@ CREATE POLICY "Anyone can view subjects"
   TO authenticated
   USING (true);
 
+ALTER TABLE units ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can view units"
+  ON units FOR SELECT
+  TO authenticated
+  USING (true);
+
 ALTER TABLE topics ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can view topics"
   ON topics FOR SELECT
@@ -246,6 +300,23 @@ CREATE POLICY "Anyone can view topics"
 ALTER TABLE lessons ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Anyone can view lessons"
   ON lessons FOR SELECT
+  TO authenticated
+  USING (true);
+
+-- Content library is a shared public cache
+ALTER TABLE content_library ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Anyone can view content library"
+  ON content_library FOR SELECT
+  TO authenticated
+  USING (true);
+
+CREATE POLICY "Anyone can insert to content library"
+  ON content_library FOR INSERT
+  TO authenticated
+  WITH CHECK (true);
+
+CREATE POLICY "Anyone can update content library"
+  ON content_library FOR UPDATE
   TO authenticated
   USING (true);
 
@@ -274,6 +345,11 @@ CREATE TRIGGER update_user_progress_updated_at
 
 CREATE TRIGGER update_lessons_updated_at
   BEFORE UPDATE ON lessons
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_content_library_updated_at
+  BEFORE UPDATE ON content_library
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
@@ -354,4 +430,5 @@ COMMENT ON TABLE topics IS 'Specific topics within each subject';
 COMMENT ON TABLE user_progress IS 'Tracks student progress through topics';
 COMMENT ON TABLE session_logs IS 'Records of learning sessions';
 COMMENT ON TABLE question_responses IS 'Individual question answers and performance';
-COMMENT ON TABLE generated_content IS 'Cache for AI-generated content';
+COMMENT ON TABLE generated_content IS 'Cache for AI-generated content per user';
+COMMENT ON TABLE content_library IS 'Shared public library of lessons/questions by grade/topic/difficulty';

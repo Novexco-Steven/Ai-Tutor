@@ -3,14 +3,20 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { db } from '@/services/supabase';
-import { generateQuestions, assessAnswer } from '@/services/ai';
+import { generateQuestions, assessAnswer, provideSocraticGuidance } from '@/services/ai';
 import { speakText, listenForSpeech } from '@/services/voice';
+import { sessionCache } from '@/utils/sessionCache';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
-import type { Question, AIAssessAnswerResponse } from '@/types';
-import { CheckCircle2, XCircle, Mic, ArrowRight, AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
-import { cn } from '@/utils/helpers';
+import Header from '../shared/Header';
+import StudyTimer from '../shared/StudyTimer';
+import QuestionCard from './QuestionCard';
+import SocraticFeedback from './SocraticFeedback';
+import type { Question, AIAssessAnswerResponse, AISocraticGuidanceResponse, Topic, ChatContext } from '@/types';
+import { Mic, ArrowRight, AlertCircle, RefreshCw, ArrowLeft, Trophy, Target, Brain } from 'lucide-react';
+import { cn, getEffectiveDifficulty } from '@/utils/helpers';
+import { ChatTutor } from '../chat';
 
 export default function PracticeQuiz() {
   const { topicId } = useParams<{ topicId: string }>();
@@ -18,20 +24,31 @@ export default function PracticeQuiz() {
   const { profile, interests } = useUser();
   const { settings } = useSettings();
 
+  const [topic, setTopic] = useState<Topic | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<number, string>>(new Map());
   const [feedback, setFeedback] = useState<Map<number, AIAssessAnswerResponse>>(new Map());
+  const [socraticFeedback, setSocraticFeedback] = useState<Map<number, AISocraticGuidanceResponse>>(new Map());
+  const [socraticHints, setSocraticHints] = useState<Map<number, string[]>>(new Map());
   const [loading, setLoading] = useState(true);
   const [assessing, setAssessing] = useState(false);
   const [listening, setListening] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [socraticModeEnabled, setSocraticModeEnabled] = useState(settings.learning.socraticMode);
 
   useEffect(() => {
     if (topicId) {
       loadQuestions();
     }
   }, [topicId]);
+
+  // Save session cache whenever quiz state changes
+  useEffect(() => {
+    if (topicId && questions.length > 0) {
+      sessionCache.saveQuiz(topicId, questions, currentIndex, answers, feedback);
+    }
+  }, [topicId, questions, currentIndex, answers, feedback]);
 
   // Voice auto-play disabled for now
   // useEffect(() => {
@@ -48,23 +65,50 @@ export default function PracticeQuiz() {
     try {
       setLoading(true);
       setError(null);
-      const topic = await db.getTopic(topicId);
-      if (!topic) {
+
+      // 1. Check session cache first for existing quiz state
+      const cached = sessionCache.getQuiz(topicId);
+      if (cached) {
+        console.log('Restored quiz from session cache');
+        setQuestions(cached.questions);
+        setCurrentIndex(cached.currentIndex);
+        setAnswers(new Map(Object.entries(cached.answers).map(([k, v]) => [Number(k), v])));
+        setFeedback(new Map(Object.entries(cached.feedback).map(([k, v]) => [Number(k), v])));
+        setLoading(false);
+        return;
+      }
+
+      // 2. Load topic data
+      const topicData = await db.getTopic(topicId);
+      if (!topicData) {
         setError('Topic not found. It may have been removed.');
         return;
       }
+      setTopic(topicData);
+
+      // 3. Generate questions (uses content library cache internally)
       const primaryInterest = interests.find(i => i.is_primary)?.interest?.name || 'general';
+      const effectiveDifficulty = getEffectiveDifficulty(
+        profile?.difficulty_level || 5,
+        settings.learning.subjectDifficulties,
+        settings.learning.topicDifficulties,
+        topicData.subject_id,
+        topicId
+      );
       const practiceQuestions = await generateQuestions({
         topicId: topicId,
-        topicName: topic.name,
-        concepts: [topic.description || 'core concepts'],
+        topicName: topicData.name,
+        concepts: [topicData.description || 'core concepts'],
         interestTheme: primaryInterest,
-        difficultyLevel: profile?.difficulty_level || 5,
+        difficultyLevel: effectiveDifficulty,
         gradeLevel: profile?.grade_level || 5,
         count: settings.learning.practiceQuestionCount,
         questionTypes: ['multiple_choice', 'true_false']
       });
       setQuestions(practiceQuestions);
+
+      // 4. Save initial state to session cache
+      sessionCache.saveQuiz(topicId, practiceQuestions, 0, new Map(), new Map());
     } catch (err) {
       console.error('Error loading questions:', err);
       setError('Failed to generate practice questions. Please try again.');
@@ -83,6 +127,95 @@ export default function PracticeQuiz() {
 
     setAssessing(true);
     try {
+      if (socraticModeEnabled) {
+        // Socratic mode: Guide with questions instead of direct feedback
+        const primaryInterest = interests.find(i => i.is_primary)?.interest?.name || 'general';
+        const previousHints = socraticHints.get(currentIndex) || [];
+
+        const guidance = await provideSocraticGuidance({
+          question: question.question,
+          studentAnswer: answer,
+          correctAnswer: question.correct_answer,
+          concept: question.concept,
+          gradeLevel: profile?.grade_level || 5,
+          interestTheme: primaryInterest,
+          previousHints
+        });
+
+        const newSocraticFeedback = new Map(socraticFeedback);
+        newSocraticFeedback.set(currentIndex, guidance);
+        setSocraticFeedback(newSocraticFeedback);
+
+        // Save the hint for progressive guidance
+        const newHints = new Map(socraticHints);
+        newHints.set(currentIndex, [...previousHints, guidance.guidingQuestion]);
+        setSocraticHints(newHints);
+
+        if (settings.audio.voiceMode) {
+          speakText(guidance.guidingQuestion, {
+            rate: settings.audio.voiceSpeed
+          });
+        }
+      } else {
+        // Regular mode: Direct feedback
+        const assessment = await assessAnswer({
+          question: question.question,
+          studentAnswer: answer,
+          correctAnswer: question.correct_answer,
+          concept: question.concept
+        });
+        const newFeedback = new Map(feedback);
+        newFeedback.set(currentIndex, assessment);
+        setFeedback(newFeedback);
+
+        if (settings.audio.voiceMode) {
+          speakText(assessment.feedback, {
+            rate: settings.audio.voiceSpeed
+          });
+        }
+
+        if (profile && topicId) {
+          const sessionId = await createOrGetSession();
+          await db.saveQuestionResponse({
+            sessionLogId: sessionId,
+            userId: profile.id,
+            questionText: question.question,
+            userAnswer: answer,
+            correctAnswer: question.correct_answer,
+            isCorrect: assessment.isCorrect,
+            concept: question.concept,
+            difficultyLevel: question.difficulty_level || 5,
+            hintsUsed: 0
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error assessing answer:', error);
+    } finally {
+      setAssessing(false);
+    }
+  };
+
+  const handleTryAgain = () => {
+    // Clear the current answer so they can try again
+    const newAnswers = new Map(answers);
+    newAnswers.delete(currentIndex);
+    setAnswers(newAnswers);
+
+    // Clear Socratic feedback for this question
+    const newSocraticFeedback = new Map(socraticFeedback);
+    newSocraticFeedback.delete(currentIndex);
+    setSocraticFeedback(newSocraticFeedback);
+  };
+
+  const handleRevealAnswer = async () => {
+    // Switch to regular assessment to reveal the answer
+    const question = questions[currentIndex];
+    const answer = answers.get(currentIndex);
+    if (!question || !answer) return;
+
+    setAssessing(true);
+    try {
       const assessment = await assessAnswer({
         question: question.question,
         studentAnswer: answer,
@@ -93,11 +226,10 @@ export default function PracticeQuiz() {
       newFeedback.set(currentIndex, assessment);
       setFeedback(newFeedback);
 
-      if (settings.audio.voiceMode) {
-        speakText(assessment.feedback, {
-          rate: settings.audio.voiceSpeed
-        });
-      }
+      // Clear Socratic feedback since we're showing regular feedback now
+      const newSocraticFeedback = new Map(socraticFeedback);
+      newSocraticFeedback.delete(currentIndex);
+      setSocraticFeedback(newSocraticFeedback);
 
       if (profile && topicId) {
         const sessionId = await createOrGetSession();
@@ -110,19 +242,18 @@ export default function PracticeQuiz() {
           isCorrect: assessment.isCorrect,
           concept: question.concept,
           difficultyLevel: question.difficulty_level || 5,
-          hintsUsed: 0
+          hintsUsed: socraticHints.get(currentIndex)?.length || 0
         });
       }
     } catch (error) {
-      console.error('Error assessing answer:', error);
+      console.error('Error revealing answer:', error);
     } finally {
       setAssessing(false);
     }
   };
 
   const createOrGetSession = async (): Promise<string> => {
-    if (!profile || !topicId) return '';
-    const topic = await db.getTopic(topicId);
+    if (!profile || !topicId || !topic) return '';
     const session = await db.createSession(profile.id, topicId, topic.subject_id);
     return session.id;
   };
@@ -143,6 +274,10 @@ export default function PracticeQuiz() {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
+      // Clear session cache since quiz is complete
+      if (topicId) {
+        sessionCache.clearQuiz(topicId);
+      }
       navigate(`/summary/${topicId}`);
     }
   };
@@ -174,104 +309,143 @@ export default function PracticeQuiz() {
   const question = questions[currentIndex];
   const currentAnswer = answers.get(currentIndex);
   const currentFeedback = feedback.get(currentIndex);
+  const currentSocraticFeedback = socraticFeedback.get(currentIndex);
   const correctCount = Array.from(feedback.values()).filter(f => f.isCorrect).length;
-  const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
-        <div className="container-app py-4">
-          <div className="flex items-center justify-between mb-2">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Practice Time!</h1>
-            <span className="text-sm text-gray-600 dark:text-gray-400">{currentIndex + 1} / {questions.length}</span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <Header
+        variant="dark"
+        sticky
+        showBackButton
+        backButtonLabel="Exit"
+        titleIcon={
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <Target className="w-5 h-5 text-white" />
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div className="bg-primary-600 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
-          </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">Score: {correctCount} / {feedback.size}</p>
-        </div>
-      </header>
-
-      <main className="container-app py-8 max-w-2xl">
-        {question && (
-          <Card className="mb-6">
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex-1">
-                <p className="text-xl font-medium text-gray-900 dark:text-white">{question.question}</p>
-              </div>
-              {settings.audio.voiceMode && (
-                <Button variant="ghost" size="sm" onClick={handleVoiceInput} disabled={listening || !!currentAnswer}>
-                  <Mic className={cn("w-5 h-5", listening && "text-red-600 animate-pulse")} />
-                </Button>
+        }
+        title="Practice Time!"
+        subtitle="Test your knowledge"
+        showDifficultySlider
+        rightContent={
+          <div className="flex items-center gap-4">
+            <StudyTimer compact />
+            {/* Socratic Mode Toggle */}
+            <button
+              onClick={() => setSocraticModeEnabled(!socraticModeEnabled)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-colors",
+                socraticModeEnabled
+                  ? "bg-purple-500/20 border-purple-500/50 text-purple-300"
+                  : "bg-slate-700/50 border-slate-600/50 text-slate-400 hover:text-slate-300"
               )}
+              title={socraticModeEnabled ? "Socratic Mode: On" : "Socratic Mode: Off"}
+            >
+              <Brain className="w-4 h-4" />
+              <span className="text-xs font-medium hidden sm:inline">
+                {socraticModeEnabled ? "Socratic" : "Direct"}
+              </span>
+            </button>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-700/50 border border-slate-600/50">
+              <Trophy className="w-4 h-4 text-amber-400" />
+              <span className="text-sm font-medium text-white">{correctCount}</span>
+              <span className="text-slate-400">/</span>
+              <span className="text-sm text-slate-400">{feedback.size}</span>
             </div>
-
-            <div className="space-y-3">
-              {question.options?.map((option, idx) => {
-                const isSelected = currentAnswer === option;
-                const isCorrect = option === question.correct_answer;
-                const showFeedback = !!currentFeedback;
-
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => !currentAnswer && handleAnswer(option)}
-                    disabled={!!currentAnswer || assessing}
-                    className={cn(
-                      'w-full p-4 rounded-xl border-2 text-left transition-all flex items-center justify-between',
-                      showFeedback
-                        ? isCorrect
-                          ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                          : isSelected
-                          ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
-                        : isSelected
-                        ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
-                    )}
-                  >
-                    <span className={cn(
-                      'text-gray-900 dark:text-white',
-                      showFeedback && isCorrect && 'font-semibold text-green-700 dark:text-green-300',
-                      showFeedback && isSelected && !isCorrect && 'text-red-700 dark:text-red-300'
-                    )}>{option}</span>
-                    {showFeedback && isCorrect && <CheckCircle2 className="w-6 h-6 text-green-600" />}
-                    {showFeedback && isSelected && !isCorrect && <XCircle className="w-6 h-6 text-red-600" />}
-                  </button>
-                );
-              })}
-            </div>
-
-            {assessing && (
-              <div className="mt-4 text-center"><Loading size="sm" message="Checking your answer..." /></div>
+            {settings.audio.voiceMode && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleVoiceInput}
+                disabled={listening || !!currentAnswer}
+                className="text-slate-300 hover:text-white hover:bg-slate-700"
+              >
+                <Mic className={cn("w-5 h-5", listening && "text-red-500 animate-pulse")} />
+              </Button>
             )}
+          </div>
+        }
+        progressBar={{
+          current: currentIndex + 1,
+          total: questions.length,
+          showLabels: true,
+          variant: 'gradient'
+        }}
+      />
 
-            {currentFeedback && (
-              <div className={cn('mt-6 p-4 rounded-lg animate-fade-in',
-                currentFeedback.isCorrect
-                  ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'
-                  : 'bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800'
-              )}>
-                <p className={cn('font-medium mb-2',
-                  currentFeedback.isCorrect ? 'text-green-800 dark:text-green-300' : 'text-orange-800 dark:text-orange-300'
-                )}>{currentFeedback.feedback}</p>
-                {!currentFeedback.isCorrect && currentFeedback.reteachingSuggestion && (
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mt-3 p-3 bg-white dark:bg-gray-800 rounded">{currentFeedback.reteachingSuggestion}</p>
-                )}
+      <main className="container-app py-8 max-w-3xl">
+        {question && (
+          <div className="animate-fade-in">
+            <QuestionCard
+              question={question}
+              questionNumber={currentIndex + 1}
+              totalQuestions={questions.length}
+              selectedAnswer={currentAnswer}
+              feedback={socraticModeEnabled ? undefined : currentFeedback}
+              onSelectAnswer={handleAnswer}
+              disabled={assessing || (socraticModeEnabled && !!currentSocraticFeedback && !currentSocraticFeedback.isCorrect)}
+              assessing={assessing}
+            />
+
+            {/* Socratic Feedback */}
+            {socraticModeEnabled && currentSocraticFeedback && !currentFeedback && (
+              <div className="mt-6">
+                <SocraticFeedback
+                  guidance={currentSocraticFeedback}
+                  onTryAgain={handleTryAgain}
+                  onRevealAnswer={handleRevealAnswer}
+                />
               </div>
             )}
 
-            {currentFeedback && (
-              <div className="mt-6">
-                <Button variant="primary" onClick={handleNext} fullWidth>
-                  {currentIndex < questions.length - 1 ? 'Next Question' : 'See Results'}
-                  <ArrowRight className="w-4 h-4 ml-2" />
+            {/* Next Button - Show after correct answer or regular feedback */}
+            {(currentFeedback || (currentSocraticFeedback?.isCorrect)) && (
+              <div className="mt-6 animate-fade-in">
+                <Button
+                  variant="primary"
+                  onClick={handleNext}
+                  fullWidth
+                  className="py-4 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-500/25"
+                >
+                  {currentIndex < questions.length - 1 ? (
+                    <>
+                      Next Question
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </>
+                  ) : (
+                    <>
+                      <Trophy className="w-5 h-5 mr-2" />
+                      See Your Results
+                    </>
+                  )}
                 </Button>
               </div>
             )}
-          </Card>
+          </div>
         )}
       </main>
+
+      {/* AI Chat Tutor */}
+      {topic && (
+        <ChatTutor
+          context={{
+            topicName: topic.name,
+            topicDescription: topic.description,
+            subjectName: topic.subject?.name || 'Learning',
+            gradeLevel: profile?.grade_level || 5,
+            difficultyLevel: getEffectiveDifficulty(
+              profile?.difficulty_level || 5,
+              settings.learning.subjectDifficulties,
+              settings.learning.topicDifficulties,
+              topic.subject_id,
+              topicId
+            ),
+            interestTheme: interests.find(i => i.is_primary)?.interest?.name || 'general learning',
+            currentQuestion: question
+          } as ChatContext}
+          currentQuestion={question}
+        />
+      )}
     </div>
   );
 }

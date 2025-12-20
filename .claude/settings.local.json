@@ -7,7 +7,14 @@
       "Bash(git -C /c/Users/stevenla/Documents/GitHub/Ai-Tutor log --oneline -20)",
       "Bash(npm run type-check:*)",
       "Bash(npm run dev:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(dir:*)",
+      "Bash(npx supabase:*)",
+      "Bash(ls:*)",
+      "Bash(node scripts/validate-curriculum.js:*)",
+      "Bash(done)",
+      "Bash(node scripts/check-units.js:*)",
+      "Bash(node scripts/find-topics.js:*)"
     ]
   }
 }

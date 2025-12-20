@@ -12,6 +12,7 @@ async function checkDatabase() {
   const checks = [
     { table: 'interests', description: 'Interests', expectedCount: 35 },
     { table: 'subjects', description: 'Subjects', expectedCount: 4 },
+    { table: 'units', description: 'Units', expectedCount: null },
     { table: 'users', description: 'Users', expectedCount: null },
     { table: 'topics', description: 'Topics', expectedCount: null },
     { table: 'user_progress', description: 'User Progress', expectedCount: null },

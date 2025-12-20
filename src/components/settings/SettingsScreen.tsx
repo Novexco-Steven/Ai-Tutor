@@ -1,46 +1,28 @@
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
 import { useSettings } from '@/contexts/SettingsContext';
-import Button from '../shared/Button';
 import Card from '../shared/Card';
-import { ArrowLeft, User, Palette, Volume2, BookOpen } from 'lucide-react';
+import Header from '../shared/Header';
+import ProfileEditor from './ProfileEditor';
+import { Palette, Volume2, BookOpen, Brain } from 'lucide-react';
 
 export default function SettingsScreen() {
-  const navigate = useNavigate();
-  const { profile, interests } = useUser();
+  const { interests } = useUser();
   const { settings, updateDisplaySettings, updateAudioSettings, updateLearningSettings } = useSettings();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="container-app py-6">
-          <Button variant="ghost" onClick={() => navigate(-1)}>
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mt-4">Settings</h1>
-        </div>
-      </header>
+      <Header
+        showBackButton
+        title="Settings"
+        showGradeBadge
+        showDifficultySlider
+        showThemeToggle
+        showVoiceToggle
+      />
 
       <main className="container-app py-8 max-w-2xl space-y-6">
-        <Card>
-          <h2 className="text-xl font-bold mb-4 flex items-center">
-            <User className="w-5 h-5 mr-2" />
-            Profile
-          </h2>
-          <div className="space-y-3">
-            <div>
-              <span className="text-sm text-gray-600 dark:text-gray-400">Name:</span>
-              <p className="font-medium text-gray-900 dark:text-white">{profile?.name || 'Guest'}</p>
-            </div>
-            {profile?.grade_level && (
-              <div>
-                <span className="text-sm text-gray-600 dark:text-gray-400">Grade Level:</span>
-                <p className="font-medium text-gray-900 dark:text-white">Grade {profile.grade_level}</p>
-              </div>
-            )}
-          </div>
-        </Card>
+        {/* Profile Editor - Expandable/Collapsible */}
+        <ProfileEditor />
 
         <Card>
           <h2 className="text-xl font-bold mb-4 flex items-center">
@@ -147,6 +129,30 @@ export default function SettingsScreen() {
               >
                 <div className={'absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ' + (settings.learning.showHints ? 'translate-x-6' : 'translate-x-1')} />
               </button>
+            </div>
+
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <div className="flex items-center justify-between py-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                    <Brain className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <span className="text-gray-900 dark:text-white font-medium">Socratic Mode</span>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {settings.learning.socraticMode
+                        ? "Guides you with questions to discover answers"
+                        : "Shows direct feedback on your answers"}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => updateLearningSettings({ socraticMode: !settings.learning.socraticMode })}
+                  className={'relative w-12 h-6 rounded-full transition ' + (settings.learning.socraticMode ? 'bg-purple-600' : 'bg-gray-300')}
+                >
+                  <div className={'absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ' + (settings.learning.socraticMode ? 'translate-x-6' : 'translate-x-1')} />
+                </button>
+              </div>
             </div>
           </div>
         </Card>

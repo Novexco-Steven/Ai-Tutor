@@ -1,21 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
+import { useSettings } from '@/contexts/SettingsContext';
+import { useGamification } from '@/contexts/GamificationContext';
 import { db } from '@/services/supabase';
 import { generateLesson, generateExample, simplifyExplanation, rethemeContent } from '@/services/ai';
-// Voice features disabled - import removed
-// import { speakText, stopSpeaking } from '@/services/voice';
+import { getEffectiveDifficulty } from '@/utils/helpers';
+import { sessionCache } from '@/utils/sessionCache';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
-import VoiceToggle from '../shared/VoiceToggle';
-import type { Topic, LessonContent } from '@/types';
+import Header from '../shared/Header';
+import StudyTimer from '../shared/StudyTimer';
+import type { Topic, LessonContent, ChatContext } from '@/types';
 import { ArrowLeft, ArrowRight, RefreshCw, Lightbulb, Palette, CheckCircle, AlertCircle } from 'lucide-react';
+import { ChatTutor } from '../chat';
+import DiveDeeper from './DiveDeeper';
 
 export default function LessonView() {
   const { topicId } = useParams<{ topicId: string }>();
   const navigate = useNavigate();
   const { profile, interests } = useUser();
+  const { settings } = useSettings();
+  const { recordLessonComplete } = useGamification();
 
   const [topic, setTopic] = useState<Topic | null>(null);
   const [lesson, setLesson] = useState<LessonContent | null>(null);
@@ -29,6 +36,13 @@ export default function LessonView() {
       loadLesson();
     }
   }, [topicId]);
+
+  // Save session cache whenever section changes
+  useEffect(() => {
+    if (topicId && lesson) {
+      sessionCache.saveLesson(topicId, lesson, currentSection);
+    }
+  }, [topicId, lesson, currentSection]);
 
   // Voice auto-play disabled for now
   // useEffect(() => {
@@ -46,21 +60,49 @@ export default function LessonView() {
     try {
       setLoading(true);
       setError(null);
+
+      // 1. Check session cache first for existing lesson
+      const cached = sessionCache.getLesson(topicId);
+      if (cached) {
+        console.log('Restored lesson from session cache');
+        const topicData = await db.getTopic(topicId);
+        setTopic(topicData);
+        setLesson(cached.lesson);
+        setCurrentSection(cached.currentSection);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Load topic data
       const topicData = await db.getTopic(topicId);
       if (!topicData) {
         setError('Topic not found. It may have been removed.');
         return;
       }
       setTopic(topicData);
+
+      // 3. Generate lesson (uses content library cache internally)
       const primaryInterest = interests.find(i => i.is_primary)?.interest?.name || 'general learning';
+      const effectiveDifficulty = getEffectiveDifficulty(
+        profile?.difficulty_level || 5,
+        settings.learning.subjectDifficulties,
+        settings.learning.topicDifficulties,
+        topicData.subject_id,
+        topicId
+      );
       const lessonContent = await generateLesson({
         userId: profile?.id || 'guest',
         topicId: topicId,
         interestTheme: primaryInterest,
-        difficultyLevel: profile?.difficulty_level || 5,
+        difficultyLevel: effectiveDifficulty,
         gradeLevel: profile?.grade_level || 5
       });
       setLesson(lessonContent);
+
+      // 4. Save to session cache
+      sessionCache.saveLesson(topicId, lessonContent, 0);
+
+      // 5. Update progress in database
       if (profile) {
         await db.upsertProgress(profile.id, topicId, topicData.subject_id, {
           status: 'in_progress',
@@ -76,15 +118,22 @@ export default function LessonView() {
   };
 
   const handleRequestExample = async () => {
-    if (!lesson) return;
+    if (!lesson || !topic) return;
     setActionLoading(true);
     try {
       const currentSectionData = lesson.sections[currentSection];
       const primaryInterest = interests.find(i => i.is_primary)?.interest?.name || 'general';
+      const effectiveDifficulty = getEffectiveDifficulty(
+        profile?.difficulty_level || 5,
+        settings.learning.subjectDifficulties,
+        settings.learning.topicDifficulties,
+        topic.subject_id,
+        topicId
+      );
       const newExample = await generateExample({
         concept: currentSectionData.title,
         interestTheme: primaryInterest,
-        difficultyLevel: profile?.difficulty_level || 5,
+        difficultyLevel: effectiveDifficulty,
         previousExamples: currentSectionData.examples
       });
       const updatedLesson = { ...lesson };
@@ -138,6 +187,12 @@ export default function LessonView() {
     if (lesson && currentSection < lesson.sections.length - 1) {
       setCurrentSection(prev => prev + 1);
     } else {
+      // Record lesson completion when finishing all sections
+      recordLessonComplete();
+      // Clear session cache since lesson is complete
+      if (topicId) {
+        sessionCache.clearLesson(topicId);
+      }
       navigate(`/practice/${topicId}`);
     }
   };
@@ -184,20 +239,24 @@ export default function LessonView() {
   }
 
   const section = lesson.sections[currentSection];
-  const progress = ((currentSection + 1) / lesson.sections.length) * 100;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-10">
-        <div className="container-app py-4">
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4 mr-2" />Back</Button>
-            <VoiceToggle />
-          </div>
-          <div><h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{topic.name}</h1><p className="text-sm text-gray-600 dark:text-gray-400">Section {currentSection + 1} of {lesson.sections.length}</p></div>
-          <div className="mt-4 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2"><div className="bg-primary-600 h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} /></div>
-        </div>
-      </header>
+      <Header
+        showBackButton
+        title={topic.name}
+        subtitle={`Section ${currentSection + 1} of ${lesson.sections.length}`}
+        showGradeBadge
+        showDifficultySlider
+        showThemeToggle
+        showVoiceToggle
+        rightContent={<StudyTimer compact />}
+        sticky
+        progressBar={{
+          current: currentSection + 1,
+          total: lesson.sections.length
+        }}
+      />
       <main className="container-app py-8 max-w-4xl">
         <Card className="mb-6">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{section.title}</h2>
@@ -209,6 +268,19 @@ export default function LessonView() {
             <Button variant="secondary" onClick={handleRequestExample} disabled={actionLoading} loading={actionLoading}><RefreshCw className="w-4 h-4 mr-2" />Show Another Example</Button>
             <Button variant="secondary" onClick={handleSimplify} disabled={actionLoading} loading={actionLoading}><Lightbulb className="w-4 h-4 mr-2" />Explain Like I'm 5</Button>
             <Button variant="secondary" onClick={handleChangeTheme} disabled={actionLoading} loading={actionLoading}><Palette className="w-4 h-4 mr-2" />Use Different Theme</Button>
+            <DiveDeeper
+              concept={section.title}
+              currentExplanation={section.explanation}
+              gradeLevel={profile?.grade_level || 5}
+              difficultyLevel={getEffectiveDifficulty(
+                profile?.difficulty_level || 5,
+                settings.learning.subjectDifficulties,
+                settings.learning.topicDifficulties,
+                topic.subject_id,
+                topicId
+              )}
+              interestTheme={interests.find(i => i.is_primary)?.interest?.name || 'general learning'}
+            />
           </div>
         </Card>
         {lesson.keyPoints.length > 0 && (<Card className="mb-6"><h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4"><CheckCircle className="w-5 h-5 inline mr-2 text-green-600" />Key Takeaways</h3><ul className="space-y-2">{lesson.keyPoints.map((point, idx) => (<li key={idx} className="flex items-start"><span className="text-primary-600 dark:text-primary-400 mr-2">•</span><span className="text-gray-700 dark:text-gray-300">{point}</span></li>))}</ul></Card>)}
@@ -219,6 +291,26 @@ export default function LessonView() {
           <Button variant="primary" onClick={handleNext}>{currentSection < lesson.sections.length - 1 ? (<>Next<ArrowRight className="w-4 h-4 ml-2" /></>) : (<>Practice Questions<ArrowRight className="w-4 h-4 ml-2" /></>)}</Button>
         </div>
       </main>
+
+      {/* AI Chat Tutor */}
+      <ChatTutor
+        context={{
+          topicName: topic.name,
+          topicDescription: topic.description,
+          subjectName: topic.subject?.name || 'Learning',
+          gradeLevel: profile?.grade_level || 5,
+          difficultyLevel: getEffectiveDifficulty(
+            profile?.difficulty_level || 5,
+            settings.learning.subjectDifficulties,
+            settings.learning.topicDifficulties,
+            topic.subject_id,
+            topicId
+          ),
+          interestTheme: interests.find(i => i.is_primary)?.interest?.name || 'general learning',
+          lessonContent: lesson
+        } as ChatContext}
+        lessonContent={lesson}
+      />
     </div>
   );
 }

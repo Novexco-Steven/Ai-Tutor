@@ -93,6 +93,93 @@ export function getPerformanceLevel(successRate: number): {
   return { level: 'needs-improvement', message: "Let's work on this together!", color: 'orange' };
 }
 
+export interface DifficultyAdjustmentResult {
+  newDifficulty: number;
+  adjustment: number; // positive = increased, negative = decreased, 0 = no change
+  reason: string;
+}
+
+/**
+ * Get effective difficulty using cascade: topic > subject > global
+ */
+export function getEffectiveDifficulty(
+  globalDifficulty: number,
+  subjectDifficulties?: Record<string, number>,
+  topicDifficulties?: Record<string, number>,
+  subjectId?: string,
+  topicId?: string
+): number {
+  // Topic-level override takes precedence
+  if (topicId && topicDifficulties?.[topicId]) {
+    return topicDifficulties[topicId];
+  }
+  // Subject-level override is next
+  if (subjectId && subjectDifficulties?.[subjectId]) {
+    return subjectDifficulties[subjectId];
+  }
+  // Fall back to global difficulty
+  return globalDifficulty;
+}
+
+export function calculateAdaptiveDifficulty(
+  currentDifficulty: number,
+  score: number,
+  difficultyMode: 'auto' | 'challenge' | 'easier'
+): DifficultyAdjustmentResult {
+  const MIN_DIFFICULTY = 1;
+  const MAX_DIFFICULTY = 10;
+
+  let newDifficulty = currentDifficulty;
+  let adjustment = 0;
+  let reason = '';
+
+  switch (difficultyMode) {
+    case 'auto':
+      if (score >= 85) {
+        // Excellent performance - increase difficulty
+        adjustment = 1;
+        reason = 'Great job! Increasing difficulty to challenge you more.';
+      } else if (score >= 60) {
+        // Good performance - maintain level
+        adjustment = 0;
+        reason = 'Good work! Staying at current difficulty level.';
+      } else {
+        // Struggling - decrease difficulty
+        adjustment = -1;
+        reason = 'Adjusting to an easier level to build confidence.';
+      }
+      break;
+
+    case 'challenge':
+      // Always try to increase
+      adjustment = 1;
+      reason = 'Challenge mode: Increasing difficulty!';
+      break;
+
+    case 'easier':
+      // Always try to decrease
+      adjustment = -1;
+      reason = 'Easier mode: Adjusting to a more comfortable level.';
+      break;
+  }
+
+  newDifficulty = Math.max(MIN_DIFFICULTY, Math.min(MAX_DIFFICULTY, currentDifficulty + adjustment));
+
+  // Adjust if we hit bounds
+  if (newDifficulty === currentDifficulty && adjustment !== 0) {
+    adjustment = 0;
+    reason = adjustment > 0
+      ? "You're already at maximum difficulty!"
+      : "You're already at the easiest level.";
+  }
+
+  return {
+    newDifficulty,
+    adjustment: newDifficulty - currentDifficulty,
+    reason
+  };
+}
+
 export const storage = {
   get<T>(key: string, defaultValue: T): T {
     try {

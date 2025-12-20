@@ -5,8 +5,10 @@ import { useUser } from '@/contexts/UserContext';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
-import type { Topic, Subject } from '@/types';
-import { ArrowLeft, Lock, CheckCircle } from 'lucide-react';
+import Header from '../shared/Header';
+import { CustomTopicInput, TopicPreviewCard } from '../custom-topics';
+import type { Topic, Subject, AIGenerateTopicOutlineResponse } from '@/types';
+import { Lock, CheckCircle } from 'lucide-react';
 
 export default function TopicSelection() {
   const { subjectId } = useParams<{ subjectId: string }>();
@@ -15,6 +17,7 @@ export default function TopicSelection() {
   const [subject, setSubject] = useState<Subject | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
+  const [topicPreview, setTopicPreview] = useState<{ outline: AIGenerateTopicOutlineResponse; prompt: string } | null>(null);
 
   useEffect(() => {
     loadTopics();
@@ -59,17 +62,16 @@ export default function TopicSelection() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="container-app py-6">
-          <Button
-            variant="ghost"
-            onClick={() => navigate('/')}
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
-          </Button>
-          <div className="flex items-center gap-4">
+      <Header
+        showBackButton
+        backButtonLabel="Back to Dashboard"
+        onBackClick={() => navigate('/')}
+        showGradeBadge
+        showDifficultySlider
+        showThemeToggle
+        showVoiceToggle
+        bottomContent={
+          <div className="flex items-center gap-4 mt-2">
             <div
               className="text-5xl p-4 rounded-xl"
               style={{ backgroundColor: `${subject.color}20` }}
@@ -85,8 +87,8 @@ export default function TopicSelection() {
               </p>
             </div>
           </div>
-        </div>
-      </header>
+        }
+      />
 
       <main className="container-app py-8">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
@@ -154,6 +156,30 @@ export default function TopicSelection() {
             </p>
           </Card>
         )}
+
+        {/* Custom Topic Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Can't find what you're looking for?
+          </h2>
+          {topicPreview ? (
+            <TopicPreviewCard
+              outline={topicPreview.outline}
+              originalPrompt={topicPreview.prompt}
+              onSave={(topicId) => {
+                setTopicPreview(null);
+                navigate(`/custom-lesson/${topicId}`);
+              }}
+              onCancel={() => setTopicPreview(null)}
+            />
+          ) : (
+            <CustomTopicInput
+              variant="expanded"
+              onOutlineGenerated={(outline, prompt) => setTopicPreview({ outline, prompt })}
+              placeholder="Enter any topic you'd like to learn about..."
+            />
+          )}
+        </div>
       </main>
     </div>
   );
