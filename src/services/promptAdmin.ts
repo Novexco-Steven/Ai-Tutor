@@ -27,30 +27,43 @@ import type {
 
 /**
  * Check if a user is an admin
+ * Returns false if table doesn't exist or user is not an admin
  */
 export async function isUserAdmin(userId: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from('admin_users')
-    .select('id, role')
-    .eq('user_id', userId)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('id, role')
+      .eq('user_id', userId)
+      .maybeSingle(); // Use maybeSingle to avoid error when no row found
 
-  if (error || !data) return false;
-  return true;
+    // Return false for any error (including 406 for missing table, RLS denial, etc.)
+    if (error) return false;
+    return !!data;
+  } catch {
+    // Gracefully handle network/unexpected errors
+    return false;
+  }
 }
 
 /**
  * Get admin user record
+ * Returns null if table doesn't exist or user is not an admin
  */
 export async function getAdminUser(userId: string): Promise<AdminUser | null> {
-  const { data, error } = await supabase
-    .from('admin_users')
-    .select('*')
-    .eq('user_id', userId)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle(); // Use maybeSingle to avoid error when no row found
 
-  if (error) return null;
-  return data;
+    if (error) return null;
+    return data;
+  } catch {
+    // Gracefully handle network/unexpected errors
+    return null;
+  }
 }
 
 // ============================================================================
@@ -59,57 +72,77 @@ export async function getAdminUser(userId: string): Promise<AdminUser | null> {
 
 /**
  * Get all prompt templates with optional filtering
+ * Handles pagination to fetch more than Supabase's default 1000 row limit
  */
 export async function getPromptTemplates(
   filters: PromptTemplateFilters = {}
 ): Promise<PromptTemplate[]> {
-  let query = supabase.from('prompt_templates').select('*');
+  const PAGE_SIZE = 1000;
+  let allData: PromptTemplate[] = [];
+  let page = 0;
+  let hasMore = true;
 
-  // Apply filters
-  if (filters.prompt_type) {
-    if (Array.isArray(filters.prompt_type)) {
-      query = query.in('prompt_type', filters.prompt_type);
+  while (hasMore) {
+    let query = supabase.from('prompt_templates').select('*');
+
+    // Apply filters
+    if (filters.prompt_type) {
+      if (Array.isArray(filters.prompt_type)) {
+        query = query.in('prompt_type', filters.prompt_type);
+      } else {
+        query = query.eq('prompt_type', filters.prompt_type);
+      }
+    }
+
+    if (filters.subject_id) {
+      query = query.eq('subject_id', filters.subject_id);
+    }
+
+    if (filters.unit_id) {
+      query = query.eq('unit_id', filters.unit_id);
+    }
+
+    if (filters.topic_id) {
+      query = query.eq('topic_id', filters.topic_id);
+    }
+
+    if (filters.country_code) {
+      query = query.eq('country_code', filters.country_code);
+    }
+
+    if (filters.province_state) {
+      query = query.eq('province_state', filters.province_state);
+    }
+
+    if (filters.is_active !== undefined) {
+      query = query.eq('is_active', filters.is_active);
+    }
+
+    if (filters.search) {
+      query = query.or(
+        `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,prompt_content.ilike.%${filters.search}%`
+      );
+    }
+
+    query = query
+      .order('prompt_type')
+      .order('priority', { ascending: false })
+      .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      allData = allData.concat(data);
+      hasMore = data.length === PAGE_SIZE;
+      page++;
     } else {
-      query = query.eq('prompt_type', filters.prompt_type);
+      hasMore = false;
     }
   }
 
-  if (filters.subject_id) {
-    query = query.eq('subject_id', filters.subject_id);
-  }
-
-  if (filters.unit_id) {
-    query = query.eq('unit_id', filters.unit_id);
-  }
-
-  if (filters.topic_id) {
-    query = query.eq('topic_id', filters.topic_id);
-  }
-
-  if (filters.country_code) {
-    query = query.eq('country_code', filters.country_code);
-  }
-
-  if (filters.province_state) {
-    query = query.eq('province_state', filters.province_state);
-  }
-
-  if (filters.is_active !== undefined) {
-    query = query.eq('is_active', filters.is_active);
-  }
-
-  if (filters.search) {
-    query = query.or(
-      `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%,prompt_content.ilike.%${filters.search}%`
-    );
-  }
-
-  query = query.order('prompt_type').order('priority', { ascending: false });
-
-  const { data, error } = await query;
-
-  if (error) throw error;
-  return data || [];
+  return allData;
 }
 
 /**

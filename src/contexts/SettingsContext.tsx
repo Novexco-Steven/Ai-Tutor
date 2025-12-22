@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useUser } from './UserContext';
-import type { UserSettings, DisplaySettings, AudioSettings, LearningSettings } from '@/types';
+import type { UserSettings, DisplaySettings, AudioSettings, LearningSettings, NotificationSettings } from '@/types';
 import { storage } from '@/utils/helpers';
 
 interface SettingsContextType {
@@ -8,6 +8,7 @@ interface SettingsContextType {
   updateDisplaySettings: (settings: Partial<DisplaySettings>) => void;
   updateAudioSettings: (settings: Partial<AudioSettings>) => void;
   updateLearningSettings: (settings: Partial<LearningSettings>) => void;
+  updateNotificationSettings: (settings: Partial<NotificationSettings>) => void;
   setSubjectDifficulty: (subjectId: string, difficulty: number) => void;
   setTopicDifficulty: (topicId: string, difficulty: number) => void;
   getSubjectDifficulty: (subjectId: string) => number | undefined;
@@ -34,6 +35,15 @@ const defaultSettings: UserSettings = {
     difficultyMode: 'auto',
     socraticMode: false,
   },
+  notifications: {
+    enabled: false,
+    streakReminders: true,
+    reviewReminders: true,
+    achievements: true,
+    dailyGoals: true,
+    streakReminderHour: 18, // 6 PM
+    reviewReminderHour: 10, // 10 AM
+  },
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -45,7 +55,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   // Apply localStorage settings immediately on mount to prevent flash
   useEffect(() => {
-    const savedSettings = storage.get<UserSettings>('learnlit_settings', defaultSettings);
+    const savedSettings = storage.get<UserSettings>('tulomi_settings', defaultSettings);
     applySettingsToDOM(savedSettings);
   }, []);
 
@@ -60,7 +70,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       setHasInitialized(true);
     } else if (profile === null) {
       // Profile loaded but no settings - use localStorage for guest
-      const savedSettings = storage.get<UserSettings>('learnlit_settings', defaultSettings);
+      const savedSettings = storage.get<UserSettings>('tulomi_settings', defaultSettings);
       setSettings(savedSettings);
       applySettingsToDOM(savedSettings);
       setHasInitialized(true);
@@ -95,7 +105,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     applySettingsToDOM(newSettings);
 
     // Save to localStorage
-    storage.set('learnlit_settings', newSettings);
+    storage.set('tulomi_settings', newSettings);
 
     // Save to profile if logged in
     if (profile) {
@@ -127,6 +137,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const newSettings = {
       ...settings,
       learning: { ...settings.learning, ...updates },
+    };
+    saveSettings(newSettings);
+  };
+
+  const updateNotificationSettings = (updates: Partial<NotificationSettings>) => {
+    const currentNotifications = settings.notifications || defaultSettings.notifications!;
+    const newSettings = {
+      ...settings,
+      notifications: { ...currentNotifications, ...updates },
     };
     saveSettings(newSettings);
   };
@@ -176,6 +195,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     updateDisplaySettings,
     updateAudioSettings,
     updateLearningSettings,
+    updateNotificationSettings,
     setSubjectDifficulty,
     setTopicDifficulty,
     getSubjectDifficulty,

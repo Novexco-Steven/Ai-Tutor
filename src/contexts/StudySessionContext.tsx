@@ -133,7 +133,7 @@ export function StudySessionProvider({ children }: { children: ReactNode }) {
 
   // Load session data
   useEffect(() => {
-    const storageKey = profile?.id ? `learnlit_session_${profile.id}` : 'learnlit_session_guest';
+    const storageKey = profile?.id ? `tulomi_session_${profile.id}` : 'tulomi_session_guest';
     const saved = storage.get<StudySessionData>(storageKey, defaultSessionData);
 
     // Check if it's a new day
@@ -153,7 +153,7 @@ export function StudySessionProvider({ children }: { children: ReactNode }) {
 
   // Save session data
   const saveData = useCallback((newData: StudySessionData) => {
-    const storageKey = profile?.id ? `learnlit_session_${profile.id}` : 'learnlit_session_guest';
+    const storageKey = profile?.id ? `tulomi_session_${profile.id}` : 'tulomi_session_guest';
     const today = new Date().toISOString().split('T')[0];
     const dataToSave = { ...newData, lastActivityDate: today };
     storage.set(storageKey, dataToSave);

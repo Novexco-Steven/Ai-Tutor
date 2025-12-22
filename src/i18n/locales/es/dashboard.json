@@ -1,0 +1,36 @@
+{
+  "greeting": {
+    "morning": "Buenos días",
+    "afternoon": "Buenas tardes",
+    "evening": "Buenas noches"
+  },
+  "subtitle": "¿Listo para aprender algo increíble hoy?",
+  "stats": {
+    "completed": "Completados",
+    "inProgress": "En Progreso",
+    "totalTopics": "Total de Temas"
+  },
+  "sections": {
+    "continueLearning": "Continuar Aprendiendo",
+    "exploreSubjects": "Explorar Materias",
+    "recentBadges": "Insignias Recientes"
+  },
+  "emptyState": {
+    "title": "¡Empecemos!",
+    "message": "Elige una materia arriba para comenzar tu viaje de aprendizaje"
+  },
+  "progress": {
+    "started": "Iniciado",
+    "topicsCompleted": "{{count}} / {{total}} temas completados",
+    "gradeCurriculum": "Currículo Grado {{grade}}"
+  },
+  "gamification": {
+    "xp": "XP",
+    "level": "Nivel",
+    "streak": "Racha",
+    "days": "días",
+    "badges": "Insignias",
+    "dailyGoal": "Meta Diaria",
+    "weeklyGoal": "Meta Semanal"
+  }
+}

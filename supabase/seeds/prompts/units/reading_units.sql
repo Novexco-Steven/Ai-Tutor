@@ -10,15 +10,15 @@
 -- KINDERGARTEN READING UNITS
 -- ============================================================================
 
--- Alphabet and Phonics (K)
+-- Phonics Foundations (K)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'Reading'),
-  (SELECT id FROM units WHERE name = 'Alphabet and Phonics' AND grade_level = 0),
-  'Alphabet and Phonics Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Phonics Foundations' AND grade_level = 0),
+  'Phonics Foundations Teaching Guide',
   'Comprehensive pedagogical approach for teaching alphabet and phonics in Kindergarten',
   'ALPHABET AND PHONICS - KINDERGARTEN UNIT GUIDE
 
@@ -82,7 +82,7 @@ For struggling learners: more repetition, smaller groups, additional multi-senso
 For advanced learners: consonant blends, digraphs, longer words earlier',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Alphabet and Phonics' AND grade_level = 0)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Phonics Foundations' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
 -- Listening and Understanding (K)
@@ -156,15 +156,15 @@ FROM dual
 WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Listening and Understanding' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
--- Print Concepts and Writing (K)
+-- Writing Basics (K)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'Reading'),
-  (SELECT id FROM units WHERE name = 'Print Concepts and Writing' AND grade_level = 0),
-  'Print Concepts and Writing Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Writing Basics' AND grade_level = 0),
+  'Writing Basics Teaching Guide',
   'Comprehensive pedagogical approach for teaching print concepts and writing in Kindergarten',
   'PRINT CONCEPTS AND WRITING - KINDERGARTEN UNIT GUIDE
 
@@ -224,7 +224,7 @@ VOCABULARY TO DEVELOP:
 letter, word, sentence, space, uppercase, lowercase, write, draw, author, illustrator, title, page',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Print Concepts and Writing' AND grade_level = 0)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Writing Basics' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================

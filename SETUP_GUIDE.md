@@ -1,4 +1,4 @@
-# LearnLit Setup Guide
+# Tulomi Setup Guide
 
 ## ✅ Environment Variables Configured
 

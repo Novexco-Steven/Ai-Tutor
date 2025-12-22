@@ -7,13 +7,14 @@ import { db } from '@/services/supabase';
 import { generateLesson, generateExample, simplifyExplanation, rethemeContent } from '@/services/ai';
 import { getEffectiveDifficulty } from '@/utils/helpers';
 import { sessionCache } from '@/utils/sessionCache';
+import { useVoiceSession } from '@/hooks/useVoiceSession';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
 import Header from '../shared/Header';
 import StudyTimer from '../shared/StudyTimer';
 import type { Topic, LessonContent, ChatContext } from '@/types';
-import { ArrowLeft, ArrowRight, RefreshCw, Lightbulb, Palette, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, RefreshCw, Lightbulb, Palette, CheckCircle, AlertCircle, Volume2, VolumeX } from 'lucide-react';
 import { ChatTutor } from '../chat';
 import DiveDeeper from './DiveDeeper';
 
@@ -23,6 +24,7 @@ export default function LessonView() {
   const { profile, interests } = useUser();
   const { settings } = useSettings();
   const { recordLessonComplete } = useGamification();
+  const { voiceState, isVoiceEnabled, speak, stopSpeaking } = useVoiceSession();
 
   const [topic, setTopic] = useState<Topic | null>(null);
   const [lesson, setLesson] = useState<LessonContent | null>(null);
@@ -203,6 +205,19 @@ export default function LessonView() {
     }
   };
 
+  const handleReadAloud = () => {
+    if (!lesson) return;
+
+    if (voiceState === 'speaking') {
+      stopSpeaking();
+      return;
+    }
+
+    const section = lesson.sections[currentSection];
+    const textToRead = `${section.title}. ${section.explanation}`;
+    speak(textToRead);
+  };
+
   if (loading) {
     return <Loading fullScreen message="Generating your personalized lesson..." />;
   }
@@ -259,7 +274,23 @@ export default function LessonView() {
       />
       <main className="container-app py-8 max-w-4xl">
         <Card className="mb-6">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">{section.title}</h2>
+          <div className="flex items-start justify-between gap-4 mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{section.title}</h2>
+            {isVoiceEnabled && (
+              <Button
+                variant={voiceState === 'speaking' ? 'primary' : 'secondary'}
+                size="sm"
+                onClick={handleReadAloud}
+                className="shrink-0"
+              >
+                {voiceState === 'speaking' ? (
+                  <><VolumeX className="w-4 h-4 mr-2" />Stop</>
+                ) : (
+                  <><Volume2 className="w-4 h-4 mr-2" />Read Aloud</>
+                )}
+              </Button>
+            )}
+          </div>
           <div className="prose dark:prose-invert max-w-none mb-6"><p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">{section.explanation}</p></div>
           {section.examples.length > 0 && (
             <div className="mb-6"><h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">Examples</h3><div className="space-y-3">{section.examples.map((example, idx) => (<div key={idx} className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-l-4 border-blue-600"><p className="text-gray-700 dark:text-gray-300">{example}</p></div>))}</div></div>

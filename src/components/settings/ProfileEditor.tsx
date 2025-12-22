@@ -111,7 +111,7 @@ export default function ProfileEditor({ onClose: _onClose }: ProfileEditorProps)
       });
 
       // Load avatar
-      const savedAvatar = storage.get<AvatarConfig | null>(`learnlit_avatar_${profile.id}`, null);
+      const savedAvatar = storage.get<AvatarConfig | null>(`tulomi_avatar_${profile.id}`, null);
       setAvatar(savedAvatar);
     }
   }, [profile]);

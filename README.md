@@ -1,6 +1,6 @@
-# LearnLit - AI-Powered Learning Platform for Kids
+# Tulomi - AI-Powered Learning Platform for Kids
 
-LearnLit is a personalized, AI-powered learning platform designed for K-8 students. It adapts educational content to each student's interests, making learning engaging and effective.
+Tulomi is a personalized, AI-powered learning platform designed for K-8 students. It adapts educational content to each student's interests, making learning engaging and effective.
 
 ## Features
 

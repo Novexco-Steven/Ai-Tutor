@@ -1,0 +1,22 @@
+<svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tulomi Favicon: Simplified for small sizes -->
+
+  <defs>
+    <linearGradient id="favGradient" x1="50" y1="180" x2="150" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Simplified curves for small size -->
+  <path
+    d="M55 165 Q35 115 55 70 Q75 40 100 35 Q125 40 145 70 Q165 115 145 165"
+    stroke="url(#favGradient)"
+    stroke-width="22"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Spark -->
+  <circle cx="100" cy="35" r="16" fill="#38bdf8"/>
+</svg>

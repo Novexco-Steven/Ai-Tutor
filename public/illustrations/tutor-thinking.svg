@@ -1,0 +1,65 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tulomi Tutor: Thinking Pose - Hand on chin, contemplating -->
+
+  <defs>
+    <linearGradient id="thinkSkinGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8c9a0"/>
+      <stop offset="100%" stop-color="#e8b892"/>
+    </linearGradient>
+    <linearGradient id="thinkShirtGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="thinkHairGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4a3728"/>
+      <stop offset="100%" stop-color="#3a2a1c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="200" cy="200" r="180" fill="#f0f9ff" opacity="0.3"/>
+
+  <!-- Thought bubbles -->
+  <circle cx="320" cy="100" r="40" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="280" cy="150" r="15" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <circle cx="255" cy="180" r="8" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  <!-- Question mark in thought -->
+  <text x="305" y="115" font-family="Inter, sans-serif" font-size="36" font-weight="700" fill="#0ea5e9">?</text>
+
+  <!-- Body (slightly turned) -->
+  <ellipse cx="190" cy="360" rx="80" ry="50" fill="url(#thinkShirtGradient)"/>
+
+  <!-- Neck -->
+  <rect x="175" y="255" width="36" height="38" rx="10" fill="url(#thinkSkinGradient)"/>
+
+  <!-- Head (tilted slightly) -->
+  <ellipse cx="195" cy="185" rx="68" ry="78" fill="url(#thinkSkinGradient)" transform="rotate(-5 195 185)"/>
+
+  <!-- Hair -->
+  <ellipse cx="195" cy="132" rx="73" ry="48" fill="url(#thinkHairGradient)" transform="rotate(-5 195 132)"/>
+  <ellipse cx="137" cy="162" rx="18" ry="38" fill="url(#thinkHairGradient)"/>
+  <ellipse cx="253" cy="162" rx="18" ry="38" fill="url(#thinkHairGradient)"/>
+
+  <!-- Thoughtful eyes (looking up) -->
+  <ellipse cx="165" cy="175" rx="14" ry="16" fill="white"/>
+  <ellipse cx="225" cy="175" rx="14" ry="16" fill="white"/>
+  <circle cx="167" cy="172" r="7" fill="#1e293b"/>
+  <circle cx="227" cy="172" r="7" fill="#1e293b"/>
+  <circle cx="168" cy="170" r="2" fill="white"/>
+  <circle cx="228" cy="170" r="2" fill="white"/>
+
+  <!-- Raised eyebrows (curious) -->
+  <path d="M148 152 Q165 142 182 150" stroke="#3a2a1c" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M212 150 Q229 142 246 152" stroke="#3a2a1c" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- Hmm expression -->
+  <path d="M175 220 L215 218" stroke="#c4856c" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+  <!-- Arm up to chin (thinking) -->
+  <path d="M270 320 Q290 280 265 230" stroke="url(#thinkShirtGradient)" stroke-width="36" stroke-linecap="round" fill="none"/>
+  <ellipse cx="255" cy="215" rx="22" ry="18" fill="url(#thinkSkinGradient)"/>
+
+  <!-- Other arm relaxed -->
+  <path d="M110 320 Q80 330 70 360" stroke="url(#thinkShirtGradient)" stroke-width="36" stroke-linecap="round" fill="none"/>
+  <ellipse cx="65" cy="365" rx="18" ry="14" fill="url(#thinkSkinGradient)"/>
+</svg>

@@ -95,6 +95,17 @@ export interface UserSettings {
   display: DisplaySettings;
   audio: AudioSettings;
   learning: LearningSettings;
+  notifications?: NotificationSettings;
+}
+
+export interface NotificationSettings {
+  enabled: boolean;
+  streakReminders: boolean;
+  reviewReminders: boolean;
+  achievements: boolean;
+  dailyGoals: boolean;
+  streakReminderHour: number; // 0-23
+  reviewReminderHour: number; // 0-23
 }
 
 export interface DisplaySettings {
@@ -109,6 +120,7 @@ export interface AudioSettings {
   autoReadQuestions: boolean;
   voiceSpeed: number; // 0.5 - 2.0
   voiceType?: string;
+  defaultVoiceTeacherId?: string; // Voice teacher for read-aloud feature
 }
 
 export interface LearningSettings {
@@ -581,6 +593,42 @@ export interface AIChatResponse {
   suggestedFollowUp?: string;
 }
 
+// ============================================================================
+// Curriculum Chat Types
+// ============================================================================
+
+export interface CurriculumChatContext {
+  subjectId: string;
+  subjectName: string;
+  subjectColor: string;
+  gradeLevel: number;
+  units: {
+    id: string;
+    name: string;
+    description: string;
+    topics: { id: string; name: string; description: string }[];
+  }[];
+  allSubjects: { id: string; name: string }[];
+}
+
+export interface CurriculumChatRequest {
+  message: string;
+  context: CurriculumChatContext;
+  conversationHistory: ChatMessage[];
+}
+
+export interface CurriculumChatResponse {
+  response: string;
+  matchedUnits?: string[];
+  matchedTopics?: string[];
+  redirectSubject?: {
+    id: string;
+    name: string;
+    prefillQuestion: string;
+  };
+  suggestedFollowUp?: string;
+}
+
 // Socratic Mode Types
 export interface AISocraticGuidanceRequest {
   question: string;
@@ -736,3 +784,65 @@ export interface ParentSettings {
   progressAlerts: boolean;
   contentRestrictions: 'none' | 'moderate' | 'strict';
 }
+
+// ============================================================================
+// Voice Teacher Types (Text-to-Speech)
+// ============================================================================
+
+export interface VoiceTeacher {
+  id: string;
+  name: string;
+  description?: string;
+  // Google Cloud TTS parameters
+  voice_name: string;           // e.g., 'en-US-Neural2-D'
+  language_code: string;        // e.g., 'en-US'
+  speaking_rate: number;        // 0.25 to 4.0
+  pitch: number;                // -20.0 to 20.0
+  volume_gain_db: number;       // -96.0 to 16.0
+  // Persona metadata
+  personality_prompt?: string;  // How AI should adapt content for this voice
+  target_audience?: string;     // e.g., 'K-2', 'struggling learners'
+  teaching_style?: string;      // e.g., 'patient', 'energetic', 'detailed'
+  icon?: string;                // Emoji or icon
+  color?: string;               // Theme color hex
+  // Admin
+  is_active: boolean;
+  is_default: boolean;
+  display_order: number;
+  created_by?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface VoiceTeacherInput {
+  name: string;
+  description?: string;
+  voice_name: string;
+  language_code?: string;
+  speaking_rate?: number;
+  pitch?: number;
+  volume_gain_db?: number;
+  personality_prompt?: string;
+  target_audience?: string;
+  teaching_style?: string;
+  icon?: string;
+  color?: string;
+  is_active?: boolean;
+  is_default?: boolean;
+  display_order?: number;
+}
+
+// Google Cloud TTS Voice options
+export const GOOGLE_TTS_VOICES = [
+  { name: 'en-US-Neural2-A', gender: 'male', description: 'Calm, professional' },
+  { name: 'en-US-Neural2-C', gender: 'female', description: 'Bright, efficient' },
+  { name: 'en-US-Neural2-D', gender: 'male', description: 'Warm, friendly' },
+  { name: 'en-US-Neural2-E', gender: 'female', description: 'Thoughtful, measured' },
+  { name: 'en-US-Neural2-F', gender: 'female', description: 'Cheerful, energetic' },
+  { name: 'en-US-Neural2-G', gender: 'female', description: 'Soothing, gentle' },
+  { name: 'en-US-Neural2-H', gender: 'female', description: 'Calm, reassuring' },
+  { name: 'en-US-Neural2-I', gender: 'male', description: 'Authoritative, clear' },
+  { name: 'en-US-Neural2-J', gender: 'male', description: 'Casual, approachable' },
+  { name: 'en-GB-Neural2-A', gender: 'female', description: 'British, refined' },
+  { name: 'en-GB-Neural2-B', gender: 'male', description: 'British, professional' },
+] as const;

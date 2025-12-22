@@ -1,0 +1,58 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Interest-Based Learning: Personalized with interests -->
+  <defs>
+    <linearGradient id="interestBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="interestPink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Central heart/like icon -->
+  <circle cx="100" cy="80" r="30" fill="#1e293b"/>
+  <path d="M100 95 C85 82 75 72 75 65 C75 58 80 53 88 53 C93 53 97 56 100 60 C103 56 107 53 112 53 C120 53 125 58 125 65 C125 72 115 82 100 95Z" fill="url(#interestPink)"/>
+
+  <!-- Interest bubbles around -->
+  <!-- Sports -->
+  <circle cx="45" cy="45" r="22" fill="#1e293b"/>
+  <circle cx="45" cy="42" r="8" fill="#22c55e"/>
+  <ellipse cx="45" cy="42" rx="10" ry="5" fill="none" stroke="white" stroke-width="2" transform="rotate(-30 45 42)"/>
+  <text x="45" y="62" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Sports</text>
+
+  <!-- Space -->
+  <circle cx="155" cy="45" r="22" fill="#1e293b"/>
+  <circle cx="155" cy="40" r="6" fill="#8b5cf6"/>
+  <circle cx="155" cy="40" r="10" fill="none" stroke="#a78bfa" stroke-width="1.5"/>
+  <circle cx="165" cy="35" r="2" fill="#facc15"/>
+  <text x="155" y="62" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Space</text>
+
+  <!-- Animals -->
+  <circle cx="45" cy="115" r="22" fill="#1e293b"/>
+  <ellipse cx="45" cy="110" rx="8" ry="6" fill="#f97316"/>
+  <circle cx="41" cy="108" r="2" fill="#1e293b"/>
+  <circle cx="49" cy="108" r="2" fill="#1e293b"/>
+  <ellipse cx="45" cy="112" rx="3" ry="2" fill="#1e293b"/>
+  <text x="45" y="132" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Animals</text>
+
+  <!-- Games -->
+  <circle cx="155" cy="115" r="22" fill="#1e293b"/>
+  <rect x="145" y="105" width="20" height="14" rx="3" fill="#0ea5e9"/>
+  <circle cx="150" cy="112" r="2" fill="#1e293b"/>
+  <circle cx="160" cy="112" r="2" fill="#1e293b"/>
+  <rect x="152" y="108" width="6" height="2" rx="1" fill="#1e293b"/>
+  <text x="155" y="132" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Games</text>
+
+  <!-- Connection lines -->
+  <line x1="65" y1="55" x2="80" y2="65" stroke="#334155" stroke-width="2"/>
+  <line x1="135" y1="55" x2="120" y2="65" stroke="#334155" stroke-width="2"/>
+  <line x1="65" y1="105" x2="80" y2="95" stroke="#334155" stroke-width="2"/>
+  <line x1="135" y1="105" x2="120" y2="95" stroke="#334155" stroke-width="2"/>
+
+  <!-- Sparkles -->
+  <circle cx="100" cy="25" r="3" fill="#facc15" opacity="0.7"/>
+  <circle cx="85" cy="145" r="2" fill="#facc15" opacity="0.5"/>
+  <circle cx="115" cy="145" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

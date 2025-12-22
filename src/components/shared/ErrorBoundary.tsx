@@ -109,7 +109,7 @@ export default class ErrorBoundary extends Component<Props, State> {
             <p className="mt-6 text-slate-500 text-sm">
               If this keeps happening, please{' '}
               <a
-                href="mailto:support@learnlit.com"
+                href="mailto:support@tulomi.com"
                 className="text-primary-400 hover:text-primary-300 underline"
               >
                 contact support

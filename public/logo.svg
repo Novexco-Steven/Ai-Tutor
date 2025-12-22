@@ -1,0 +1,61 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Tulomi Logo: The Spark of Learning -->
+  <!-- Abstract upward-flowing curves representing growth, with a spark at the top -->
+
+  <!-- Background circle (optional, can be removed for transparent) -->
+  <circle cx="100" cy="100" r="95" fill="white"/>
+
+  <!-- Main upward growth curves - interconnected learning paths -->
+  <defs>
+    <linearGradient id="primaryGradient" x1="50" y1="180" x2="150" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="sparkGradient" x1="100" y1="60" x2="100" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#7dd3fc"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left flowing curve -->
+  <path
+    d="M60 160 Q40 120 50 80 Q60 50 85 40"
+    stroke="url(#primaryGradient)"
+    stroke-width="16"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Right flowing curve -->
+  <path
+    d="M140 160 Q160 120 150 80 Q140 50 115 40"
+    stroke="url(#primaryGradient)"
+    stroke-width="16"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Center connecting curve (the spark/convergence point) -->
+  <path
+    d="M75 120 Q100 90 100 55"
+    stroke="url(#primaryGradient)"
+    stroke-width="12"
+    stroke-linecap="round"
+    fill="none"
+  />
+  <path
+    d="M125 120 Q100 90 100 55"
+    stroke="url(#primaryGradient)"
+    stroke-width="12"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Spark/light burst at the top -->
+  <circle cx="100" cy="35" r="12" fill="url(#sparkGradient)"/>
+
+  <!-- Small spark rays -->
+  <circle cx="100" cy="20" r="4" fill="#7dd3fc" opacity="0.8"/>
+  <circle cx="85" cy="25" r="3" fill="#7dd3fc" opacity="0.6"/>
+  <circle cx="115" cy="25" r="3" fill="#7dd3fc" opacity="0.6"/>
+</svg>

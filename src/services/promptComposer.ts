@@ -579,8 +579,12 @@ class PromptComposerService {
         .eq('user_id', userId)
         .single();
 
+      // PGRST116 = no rows returned, 406/42P01 = table doesn't exist
       if (error && error.code !== 'PGRST116') {
-        // PGRST116 = no rows returned
+        // Table may not exist yet - don't throw, just return null
+        if (error.code === '42P01' || error.message?.includes('406')) {
+          return null;
+        }
         throw error;
       }
 
@@ -591,6 +595,7 @@ class PromptComposerService {
 
       return data || null;
     } catch (error) {
+      // Silently handle table-not-found errors
       console.warn('Error fetching learning preferences:', error);
       return null;
     }

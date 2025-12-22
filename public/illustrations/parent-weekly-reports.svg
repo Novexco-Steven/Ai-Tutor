@@ -1,0 +1,56 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Weekly Progress Reports: Email with chart -->
+  <defs>
+    <linearGradient id="reportBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Email envelope -->
+  <rect x="35" y="30" width="130" height="100" rx="8" fill="#1e293b"/>
+  <path d="M35 45 L100 85 L165 45" stroke="#334155" stroke-width="2" fill="none"/>
+
+  <!-- Report card inside -->
+  <rect x="50" y="55" width="100" height="65" rx="6" fill="#0f172a"/>
+
+  <!-- Report header -->
+  <rect x="50" y="55" width="100" height="18" rx="6" fill="url(#reportBlue)"/>
+  <rect x="50" y="65" width="100" height="8" fill="url(#reportBlue)"/>
+  <text x="100" y="67" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">Weekly Report</text>
+
+  <!-- Mini bar chart -->
+  <rect x="58" y="95" width="8" height="18" rx="2" fill="#334155"/>
+  <rect x="58" y="100" width="8" height="13" rx="2" fill="url(#reportBlue)"/>
+
+  <rect x="70" y="95" width="8" height="18" rx="2" fill="#334155"/>
+  <rect x="70" y="97" width="8" height="16" rx="2" fill="url(#reportBlue)"/>
+
+  <rect x="82" y="95" width="8" height="18" rx="2" fill="#334155"/>
+  <rect x="82" y="92" width="8" height="21" rx="2" fill="#22c55e"/>
+
+  <rect x="94" y="95" width="8" height="18" rx="2" fill="#334155"/>
+  <rect x="94" y="90" width="8" height="23" rx="2" fill="#22c55e"/>
+
+  <!-- Stats text -->
+  <text x="120" y="95" font-family="Inter, sans-serif" font-size="7" fill="#64748b">Progress</text>
+  <text x="120" y="106" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#22c55e">+18%</text>
+
+  <!-- Subjects list -->
+  <rect x="58" y="78" width="35" height="8" rx="2" fill="#334155"/>
+  <rect x="96" y="78" width="45" height="8" rx="2" fill="#334155"/>
+
+  <!-- Notification bell -->
+  <circle cx="160" cy="40" r="15" fill="url(#reportBlue)"/>
+  <path d="M155 40 L160 35 L165 40 L165 44 L155 44 Z" fill="white"/>
+  <circle cx="160" cy="46" r="2" fill="white"/>
+
+  <!-- Weekly badge -->
+  <rect x="20" y="100" width="25" height="25" rx="5" fill="#1e293b"/>
+  <text x="32" y="113" font-family="Inter, sans-serif" font-size="8" font-weight="700" fill="#0ea5e9" text-anchor="middle">W</text>
+  <text x="32" y="121" font-family="Inter, sans-serif" font-size="5" fill="#64748b" text-anchor="middle">Weekly</text>
+
+  <!-- Decorative -->
+  <circle cx="175" cy="130" r="3" fill="#facc15" opacity="0.6"/>
+  <circle cx="30" cy="45" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

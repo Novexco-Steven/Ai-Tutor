@@ -1,4 +1,4 @@
--- LearnLit Database Schema
+-- Tulomi Database Schema
 -- Run this in your Supabase SQL Editor to set up the database
 
 -- Enable UUID extension

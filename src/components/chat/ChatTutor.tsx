@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { chatWithTutor } from '@/services/ai';
 import { cn } from '@/utils/helpers';
 import { MessageCircle, Send, X, Sparkles, Loader2, ChevronDown } from 'lucide-react';
+import { useVoiceSession } from '@/hooks/useVoiceSession';
+import VoiceControls, { VoiceStateIndicator } from '@/components/shared/VoiceControls';
 import type { ChatMessage, ChatContext, Question, LessonContent } from '@/types';
 
 interface ChatTutorProps {
@@ -19,6 +21,27 @@ export default function ChatTutor({ context, currentQuestion, lessonContent, cla
   const [suggestedFollowUp, setSuggestedFollowUp] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Voice session
+  const {
+    voiceState,
+    isVoiceEnabled,
+    isRecognitionAvailable,
+    error: voiceError,
+    startListening,
+    stopListening,
+    speak,
+    stopSpeaking,
+    toggleVoiceMode,
+  } = useVoiceSession({
+    onTranscript: (text) => {
+      setInputValue(text);
+      // Auto-send voice input after a short delay
+      setTimeout(() => {
+        sendMessage(text);
+      }, 300);
+    },
+  });
 
   // Scroll to bottom when new messages arrive
   const scrollToBottom = useCallback(() => {
@@ -85,6 +108,11 @@ export default function ChatTutor({ context, currentQuestion, lessonContent, cla
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+
+      // Auto-speak response when voice mode is enabled
+      if (isVoiceEnabled) {
+        speak(response.response);
+      }
 
       if (response.suggestedFollowUp) {
         setSuggestedFollowUp(response.suggestedFollowUp);
@@ -209,6 +237,17 @@ export default function ChatTutor({ context, currentQuestion, lessonContent, cla
             </div>
           )}
 
+          {/* Voice State Indicator */}
+          {(voiceState !== 'idle' || voiceError) && (
+            <div className="px-4 py-2 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
+              {voiceError ? (
+                <p className="text-xs text-amber-600 dark:text-amber-400">{voiceError}</p>
+              ) : (
+                <VoiceStateIndicator voiceState={voiceState} />
+              )}
+            </div>
+          )}
+
           {/* Input */}
           <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
             <div className="flex items-center gap-2">
@@ -218,16 +257,26 @@ export default function ChatTutor({ context, currentQuestion, lessonContent, cla
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask a question..."
-                disabled={isLoading}
+                placeholder={voiceState === 'listening' ? 'Listening...' : 'Ask a question...'}
+                disabled={isLoading || voiceState === 'listening'}
                 className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-full text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <VoiceControls
+                voiceState={voiceState}
+                isVoiceEnabled={isVoiceEnabled}
+                isRecognitionAvailable={isRecognitionAvailable}
+                onMicClick={voiceState === 'listening' ? stopListening : startListening}
+                onStopSpeaking={stopSpeaking}
+                onToggleVoice={toggleVoiceMode}
+                showVoiceToggle
+                compact
               />
               <button
                 onClick={() => sendMessage()}
-                disabled={!inputValue.trim() || isLoading}
+                disabled={!inputValue.trim() || isLoading || voiceState === 'listening'}
                 className={cn(
                   "p-2 rounded-full transition-colors",
-                  inputValue.trim() && !isLoading
+                  inputValue.trim() && !isLoading && voiceState !== 'listening'
                     ? "bg-blue-500 hover:bg-blue-600 text-white"
                     : "bg-gray-200 dark:bg-gray-600 text-gray-400"
                 )}

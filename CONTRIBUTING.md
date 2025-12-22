@@ -1,6 +1,6 @@
-# Contributing to LearnLit
+# Contributing to Tulomi
 
-Thank you for your interest in contributing to LearnLit! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Tulomi! This document provides guidelines and instructions for contributing.
 
 ## Development Setup
 

@@ -152,15 +152,15 @@ FROM dual
 WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Plants and Animals' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
--- Push and Pull (K)
+-- Pushes and Pulls (K)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'Science'),
-  (SELECT id FROM units WHERE name = 'Push and Pull' AND grade_level = 0),
-  'Push and Pull Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Pushes and Pulls' AND grade_level = 0),
+  'Pushes and Pulls Teaching Guide',
   'Comprehensive pedagogical approach for teaching forces in Kindergarten',
   'PUSH AND PULL - KINDERGARTEN UNIT GUIDE
 
@@ -215,18 +215,18 @@ VOCABULARY TO DEVELOP:
 push, pull, force, motion, move, stop, fast, slow, direction, strength, change, ramp, roll',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Push and Pull' AND grade_level = 0)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Pushes and Pulls' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
--- Our Senses (K)
+-- Our Five Senses (K)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'Science'),
-  (SELECT id FROM units WHERE name = 'Our Senses' AND grade_level = 0),
-  'Our Senses Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Our Five Senses' AND grade_level = 0),
+  'Our Five Senses Teaching Guide',
   'Comprehensive pedagogical approach for teaching about senses in Kindergarten',
   'OUR SENSES - KINDERGARTEN UNIT GUIDE
 
@@ -289,7 +289,7 @@ SAFETY CONSIDERATIONS:
 - Handle sharp or dangerous objects appropriately',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Our Senses' AND grade_level = 0)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Our Five Senses' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================
@@ -430,15 +430,15 @@ FROM dual
 WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Animal Survival' AND grade_level = 1)
 ON CONFLICT DO NOTHING;
 
--- Space and Sky (Grade 1)
+-- Sky Patterns (Grade 1)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'Science'),
-  (SELECT id FROM units WHERE name = 'Space and Sky' AND grade_level = 1),
-  'Space and Sky Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Sky Patterns' AND grade_level = 1),
+  'Sky Patterns Teaching Guide',
   'Comprehensive pedagogical approach for teaching space and sky in Grade 1',
   'SPACE AND SKY - GRADE 1 UNIT GUIDE
 
@@ -499,7 +499,7 @@ SAFETY:
 - Use indirect methods for sun observation',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Space and Sky' AND grade_level = 1)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Sky Patterns' AND grade_level = 1)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================

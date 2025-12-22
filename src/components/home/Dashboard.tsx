@@ -9,7 +9,9 @@ import Loading from '../shared/Loading';
 import Header from '../shared/Header';
 import { XPDisplay, StreakDisplay, BadgeGrid, StreakCelebration } from '../gamification';
 import DailyGoalCard from '../shared/DailyGoalCard';
+import { ReviewReminderCard } from '../review';
 import { CustomTopicInput, TopicPreviewCard } from '../custom-topics';
+import Illustration from '../shared/Illustration';
 import { BookOpen, TrendingUp, Clock } from 'lucide-react';
 import type { Subject, AIGenerateTopicOutlineResponse } from '@/types';
 
@@ -60,6 +62,9 @@ export default function Dashboard() {
         showThemeToggle
         showVoiceToggle
         showSettingsButton
+        showLogoutButton
+        showAdminIcon
+        showParentIcon
       />
 
       {/* Main Content */}
@@ -224,7 +229,7 @@ export default function Dashboard() {
             {/* Empty State */}
             {totalTopics === 0 && (
               <Card className="text-center py-12 mt-8">
-                <div className="text-6xl mb-4">🚀</div>
+                <Illustration type="tutor-teaching" size="lg" className="mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                   Let's Get Started!
                 </h3>
@@ -237,6 +242,7 @@ export default function Dashboard() {
 
           {/* Right Column - Goal & Gamification */}
           <div className="lg:w-80 flex-shrink-0 space-y-4">
+            <ReviewReminderCard />
             <DailyGoalCard />
             <XPDisplay />
             <StreakDisplay />

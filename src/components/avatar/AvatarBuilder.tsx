@@ -45,7 +45,7 @@ export default function AvatarBuilder() {
 
   // Load saved avatar on mount
   useEffect(() => {
-    const savedAvatar = storage.get<AvatarConfig | null>(`learnlit_avatar_${profile?.id || 'guest'}`, null);
+    const savedAvatar = storage.get<AvatarConfig | null>(`tulomi_avatar_${profile?.id || 'guest'}`, null);
     if (savedAvatar) {
       setAvatar(savedAvatar);
     }
@@ -57,7 +57,7 @@ export default function AvatarBuilder() {
   };
 
   const saveAvatar = () => {
-    storage.set(`learnlit_avatar_${profile?.id || 'guest'}`, avatar);
+    storage.set(`tulomi_avatar_${profile?.id || 'guest'}`, avatar);
     setSaved(true);
     setTimeout(() => navigate('/'), 1500);
   };

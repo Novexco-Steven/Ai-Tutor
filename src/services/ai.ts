@@ -19,6 +19,8 @@ import type {
   AIDiveDeeperResponse,
   AIScanSolveRequest,
   AIScanSolveResponse,
+  CurriculumChatRequest,
+  CurriculumChatResponse,
   LessonContent,
   Question,
   LessonSection,
@@ -328,6 +330,12 @@ Return ONLY the simplified text, no extra formatting.`;
   return response.text().trim();
 }
 
+// Helper to check if a string is a valid UUID
+function isValidUUID(str: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+}
+
 /**
  * Generate practice questions for a topic
  * Uses cache-first strategy: checks library, re-themes if needed, or generates new
@@ -336,44 +344,49 @@ export async function generateQuestions(
   request: AIGenerateQuestionsRequest
 ): Promise<Question[]> {
   const normalizedDifficulty = Math.round(request.difficultyLevel);
+  const canCache = isValidUUID(request.topicId);
 
-  // 1. Check content library for cached questions
-  try {
-    const cached = await db.getLibraryContent(
-      request.topicId,
-      request.gradeLevel,
-      normalizedDifficulty,
-      'questions'
-    );
-
-    if (cached?.content && Array.isArray(cached.content)) {
-      console.log('Found cached questions, re-theming for:', request.interestTheme);
-      // Re-theme the cached questions for the user's interest
-      const themedQuestions = await rethemeQuestions(
-        cached.content as Question[],
-        request.interestTheme
+  // 1. Check content library for cached questions (only for valid UUID topic IDs)
+  if (canCache) {
+    try {
+      const cached = await db.getLibraryContent(
+        request.topicId,
+        request.gradeLevel,
+        normalizedDifficulty,
+        'questions'
       );
-      // Track usage
-      await db.incrementLibraryUsage(cached.id);
-      // Return the requested count (shuffle and slice if needed)
-      return shuffleArray(themedQuestions).slice(0, request.count);
+
+      if (cached?.content && Array.isArray(cached.content)) {
+        console.log('Found cached questions, re-theming for:', request.interestTheme);
+        // Re-theme the cached questions for the user's interest
+        const themedQuestions = await rethemeQuestions(
+          cached.content as Question[],
+          request.interestTheme
+        );
+        // Track usage
+        await db.incrementLibraryUsage(cached.id);
+        // Return the requested count (shuffle and slice if needed)
+        return shuffleArray(themedQuestions).slice(0, request.count);
+      }
+    } catch (error) {
+      console.warn('Cache lookup failed, generating fresh:', error);
     }
-  } catch (error) {
-    console.warn('Cache lookup failed, generating fresh:', error);
   }
 
   // 2. Generate new questions from AI
   console.log('Generating new questions for:', request.topicId);
   const questions = await generateQuestionsFromAI(request);
 
-  // 3. Save to library (fire and forget - don't block on this)
-  db.saveLibraryContent(
-    request.topicId,
-    request.gradeLevel,
-    normalizedDifficulty,
-    'questions',
-    questions
-  ).catch(err => console.warn('Failed to cache questions:', err));
+  // 3. Save to library (fire and forget - don't block on this, only for valid UUIDs)
+  if (canCache) {
+    db.saveLibraryContent(
+      request.topicId,
+      request.gradeLevel,
+      normalizedDifficulty,
+      'questions',
+      questions
+    ).catch(err => console.warn('Failed to cache questions:', err));
+  }
 
   return questions;
 }
@@ -1068,5 +1081,98 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting.`;
   } catch (error) {
     console.error('Scan-to-solve error:', error);
     throw new Error('I had trouble reading that image. Please try again with a clearer photo.');
+  }
+}
+
+/**
+ * Curriculum Chat Assistant - Helps students navigate and find content
+ * Identifies relevant units/topics or redirects to other subjects
+ */
+export async function chatWithCurriculumAssistant(
+  request: CurriculumChatRequest
+): Promise<CurriculumChatResponse> {
+  const { message, context, conversationHistory } = request;
+
+  // Build curriculum structure for the AI
+  const curriculumStructure = context.units.map(unit => ({
+    unitId: unit.id,
+    unitName: unit.name,
+    unitDescription: unit.description,
+    topics: unit.topics.map(t => ({
+      topicId: t.id,
+      topicName: t.name,
+      topicDescription: t.description
+    }))
+  }));
+
+  // Build conversation history
+  const historyText = conversationHistory.length > 0
+    ? conversationHistory.slice(-4).map(msg => `${msg.role === 'user' ? 'Student' : 'Assistant'}: ${msg.content}`).join('\n')
+    : '';
+
+  const prompt = `You are a helpful curriculum navigation assistant for a grade ${context.gradeLevel} student studying ${context.subjectName}.
+
+CURRENT SUBJECT: ${context.subjectName} (ID: ${context.subjectId})
+
+AVAILABLE UNITS AND TOPICS IN THIS SUBJECT:
+${JSON.stringify(curriculumStructure, null, 2)}
+
+OTHER AVAILABLE SUBJECTS:
+${context.allSubjects.filter(s => s.id !== context.subjectId).map(s => `- ${s.name} (ID: ${s.id})`).join('\n')}
+
+${historyText ? `CONVERSATION HISTORY:\n${historyText}\n` : ''}
+STUDENT'S QUESTION: "${message}"
+
+YOUR TASK:
+1. If the student is asking about content within ${context.subjectName}, help them find the relevant unit(s) or topic(s)
+2. If the student is asking about content that belongs to a DIFFERENT subject (like asking about biology while in Math), identify the correct subject and suggest redirecting
+3. If the student asks general questions like "what should I learn first?" or "where do I start?", recommend based on the curriculum order
+
+IMPORTANT RULES:
+- Only match units/topics that are actually relevant to the student's question
+- If the question is about a different subject, you MUST set redirectSubject
+- Keep responses friendly and helpful, appropriate for grade ${context.gradeLevel}
+- Be concise - this is a navigation helper, not a full tutor
+
+Respond with valid JSON in this exact format:
+{
+  "response": "Your helpful message to the student",
+  "matchedUnits": ["unit-id-1", "unit-id-2"],
+  "matchedTopics": ["topic-id-1", "topic-id-2"],
+  "redirectSubject": null,
+  "suggestedFollowUp": "Optional follow-up question"
+}
+
+If redirecting to another subject, use this format for redirectSubject:
+{
+  "id": "subject-id",
+  "name": "Subject Name",
+  "prefillQuestion": "The student's original question to pre-fill"
+}
+
+IMPORTANT: Return ONLY valid JSON, no markdown formatting or code blocks.`;
+
+  try {
+    const result = await textModel.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    const parsed = JSON.parse(cleanedText);
+
+    return {
+      response: parsed.response || "I can help you find what you're looking for!",
+      matchedUnits: parsed.matchedUnits?.filter((id: string) => id) || [],
+      matchedTopics: parsed.matchedTopics?.filter((id: string) => id) || [],
+      redirectSubject: parsed.redirectSubject || undefined,
+      suggestedFollowUp: parsed.suggestedFollowUp || undefined
+    };
+  } catch (error) {
+    console.error('Curriculum chat error:', error);
+    return {
+      response: "I'm having trouble understanding that. Could you try asking in a different way?",
+      matchedUnits: [],
+      matchedTopics: []
+    };
   }
 }

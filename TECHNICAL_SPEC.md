@@ -1,7 +1,7 @@
-# LearnLit MVP - Technical Specification
+# Tulomi MVP - Technical Specification
 
 ## Project Overview
-LearnLit is a personalized AI-powered learning platform for K-8 students that adapts lessons to their interests using Google Gemini AI and Supabase.
+Tulomi is a personalized AI-powered learning platform for K-8 students that adapts lessons to their interests using Google Gemini AI and Supabase.
 
 ## Tech Stack
 

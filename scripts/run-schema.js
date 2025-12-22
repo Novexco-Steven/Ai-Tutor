@@ -9,7 +9,7 @@ const SUPABASE_URL = 'https://yrobckylfnvmkkpbygge.supabase.co';
 const SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlyb2Jja3lsZm52bWtrcGJ5Z2dlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NjA5MjY5MCwiZXhwIjoyMDgxNjY4NjkwfQ.PUnwkbcJ4onLJAHXuknywg_mtEM8Pri';
 
 async function runSchema() {
-  console.log('\n🚀 Running LearnLit Database Schema...\n');
+  console.log('\n🚀 Running Tulomi Database Schema...\n');
 
   try {
     // Read the schema file

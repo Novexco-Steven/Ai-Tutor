@@ -1,0 +1,52 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Learn What You Love: Fun topics -->
+  <defs>
+    <linearGradient id="stuOrange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Central star burst -->
+  <circle cx="100" cy="80" r="35" fill="#1e293b"/>
+  <circle cx="100" cy="80" r="28" fill="url(#stuOrange)" opacity="0.2"/>
+
+  <!-- Sparkle star in center -->
+  <path d="M100 55 L103 72 L120 75 L105 82 L110 100 L100 88 L90 100 L95 82 L80 75 L97 72 Z" fill="url(#stuOrange)"/>
+
+  <!-- Topic bubbles -->
+  <!-- Dinosaurs -->
+  <circle cx="40" cy="50" r="20" fill="#1e293b"/>
+  <text x="40" y="48" font-family="Inter, sans-serif" font-size="16" text-anchor="middle">🦖</text>
+  <text x="40" y="62" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Dinos</text>
+
+  <!-- Soccer -->
+  <circle cx="160" cy="50" r="20" fill="#1e293b"/>
+  <text x="160" y="48" font-family="Inter, sans-serif" font-size="16" text-anchor="middle">⚽</text>
+  <text x="160" y="62" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Soccer</text>
+
+  <!-- Space -->
+  <circle cx="40" cy="110" r="20" fill="#1e293b"/>
+  <text x="40" y="108" font-family="Inter, sans-serif" font-size="16" text-anchor="middle">🚀</text>
+  <text x="40" y="122" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Space</text>
+
+  <!-- Music -->
+  <circle cx="160" cy="110" r="20" fill="#1e293b"/>
+  <text x="160" y="108" font-family="Inter, sans-serif" font-size="16" text-anchor="middle">🎵</text>
+  <text x="160" y="122" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Music</text>
+
+  <!-- Connection lines -->
+  <line x1="58" y1="58" x2="72" y2="68" stroke="url(#stuOrange)" stroke-width="2" opacity="0.5"/>
+  <line x1="142" y1="58" x2="128" y2="68" stroke="url(#stuOrange)" stroke-width="2" opacity="0.5"/>
+  <line x1="58" y1="102" x2="72" y2="92" stroke="url(#stuOrange)" stroke-width="2" opacity="0.5"/>
+  <line x1="142" y1="102" x2="128" y2="92" stroke="url(#stuOrange)" stroke-width="2" opacity="0.5"/>
+
+  <!-- Fun badge -->
+  <rect x="70" y="125" width="60" height="22" rx="11" fill="url(#stuOrange)"/>
+  <text x="100" y="139" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="white" text-anchor="middle">FUN!</text>
+
+  <!-- Decorative -->
+  <circle cx="100" cy="20" r="4" fill="#facc15"/>
+  <circle cx="85" cy="28" r="2" fill="#facc15" opacity="0.6"/>
+  <circle cx="115" cy="28" r="2" fill="#facc15" opacity="0.6"/>
+</svg>

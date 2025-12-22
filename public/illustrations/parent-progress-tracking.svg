@@ -1,0 +1,51 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Real-Time Progress Tracking: Live dashboard with charts -->
+  <defs>
+    <linearGradient id="trackBlue1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="trackGreen1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dashboard card -->
+  <rect x="30" y="25" width="140" height="110" rx="10" fill="#1e293b"/>
+
+  <!-- Live indicator -->
+  <circle cx="155" cy="38" r="5" fill="#22c55e"/>
+  <circle cx="155" cy="38" r="8" fill="#22c55e" opacity="0.3">
+    <animate attributeName="r" values="5;10;5" dur="1.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0;0.3" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  <text x="145" y="41" font-family="Inter, sans-serif" font-size="7" fill="#22c55e" text-anchor="end">LIVE</text>
+
+  <!-- Child avatar -->
+  <circle cx="55" cy="50" r="12" fill="url(#trackBlue1)"/>
+  <circle cx="55" cy="47" r="5" fill="white"/>
+  <ellipse cx="55" cy="56" rx="6" ry="3" fill="white"/>
+  <text x="72" y="48" font-family="Inter, sans-serif" font-size="9" font-weight="600" fill="white">Emma</text>
+  <text x="72" y="58" font-family="Inter, sans-serif" font-size="7" fill="#64748b">Learning Math</text>
+
+  <!-- Progress ring -->
+  <circle cx="55" cy="100" r="22" fill="#0f172a"/>
+  <circle cx="55" cy="100" r="18" fill="none" stroke="#334155" stroke-width="4"/>
+  <circle cx="55" cy="100" r="18" fill="none" stroke="url(#trackGreen1)" stroke-width="4"
+          stroke-dasharray="85 113" stroke-linecap="round" transform="rotate(-90 55 100)"/>
+  <text x="55" y="103" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="white" text-anchor="middle">75%</text>
+
+  <!-- Mini line chart -->
+  <rect x="90" y="70" width="70" height="55" rx="6" fill="#0f172a"/>
+  <path d="M100 110 L110 100 L120 105 L130 90 L140 85 L150 78" stroke="url(#trackBlue1)" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <circle cx="150" cy="78" r="3" fill="#0ea5e9"/>
+
+  <!-- Stats -->
+  <text x="100" y="82" font-family="Inter, sans-serif" font-size="7" fill="#64748b">Today</text>
+  <text x="140" y="82" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="#22c55e">+12%</text>
+
+  <!-- Decorative -->
+  <circle cx="175" cy="45" r="3" fill="#facc15" opacity="0.6"/>
+  <circle cx="25" cy="120" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

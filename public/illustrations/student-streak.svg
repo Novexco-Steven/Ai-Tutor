@@ -1,0 +1,52 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Keep Your Streak: Fire and calendar -->
+  <defs>
+    <linearGradient id="streakOrange" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Large flame -->
+  <ellipse cx="100" cy="85" rx="30" ry="40" fill="url(#streakOrange)" opacity="0.2"/>
+  <path d="M100 35 Q115 55 110 70 Q120 60 115 85 Q115 105 100 115 Q85 105 85 85 Q80 60 90 70 Q85 55 100 35Z"
+        fill="url(#streakOrange)"/>
+  <path d="M100 55 Q108 65 105 80 Q105 95 100 100 Q95 95 95 80 Q92 65 100 55Z"
+        fill="#fef3c7"/>
+
+  <!-- Streak number -->
+  <circle cx="100" cy="82" r="15" fill="#1e293b"/>
+  <text x="100" y="88" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="white" text-anchor="middle">7</text>
+
+  <!-- Calendar week -->
+  <rect x="30" y="120" width="140" height="30" rx="6" fill="#1e293b"/>
+
+  <!-- Days -->
+  <circle cx="45" cy="135" r="10" fill="#22c55e"/>
+  <text x="45" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">M</text>
+
+  <circle cx="65" cy="135" r="10" fill="#22c55e"/>
+  <text x="65" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">T</text>
+
+  <circle cx="85" cy="135" r="10" fill="#22c55e"/>
+  <text x="85" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">W</text>
+
+  <circle cx="105" cy="135" r="10" fill="#22c55e"/>
+  <text x="105" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">T</text>
+
+  <circle cx="125" cy="135" r="10" fill="#22c55e"/>
+  <text x="125" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">F</text>
+
+  <circle cx="145" cy="135" r="10" fill="#22c55e"/>
+  <text x="145" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">S</text>
+
+  <circle cx="165" cy="135" r="10" fill="url(#streakOrange)"/>
+  <text x="165" y="139" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">S</text>
+
+  <!-- Sparkles around flame -->
+  <circle cx="65" cy="45" r="4" fill="#facc15"/>
+  <circle cx="135" cy="45" r="4" fill="#facc15"/>
+  <circle cx="55" cy="75" r="3" fill="#facc15" opacity="0.7"/>
+  <circle cx="145" cy="75" r="3" fill="#facc15" opacity="0.7"/>
+</svg>

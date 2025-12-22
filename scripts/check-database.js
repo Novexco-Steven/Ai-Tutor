@@ -6,7 +6,7 @@ const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsI
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function checkDatabase() {
-  console.log('\n🔍 LearnLit Database Status Check\n');
+  console.log('\n🔍 Tulomi Database Status Check\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   const checks = [

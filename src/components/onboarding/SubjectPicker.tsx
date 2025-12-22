@@ -40,8 +40,8 @@ export default function SubjectPicker() {
     setSaving(true);
 
     try {
-      const onboardingData = storage.get('learnlit_onboarding', {});
-      storage.set('learnlit_onboarding', {
+      const onboardingData = storage.get('tulomi_onboarding', {});
+      storage.set('tulomi_onboarding', {
         ...onboardingData,
         subject: selectedSubject,
       });

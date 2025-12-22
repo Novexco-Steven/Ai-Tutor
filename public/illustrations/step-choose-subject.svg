@@ -1,0 +1,70 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Step 1: Choose Your Subject - Subject selection with floating icons -->
+
+  <defs>
+    <linearGradient id="chooseBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="choosePurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="chooseGreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="chooseOrange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Central selection circle -->
+  <circle cx="100" cy="80" r="35" fill="#1e293b" stroke="url(#chooseBlue)" stroke-width="3"/>
+  <circle cx="100" cy="80" r="28" fill="url(#chooseBlue)" opacity="0.2"/>
+
+  <!-- Hand/cursor pointing -->
+  <path d="M95 75 L105 75 L105 95 L100 100 L95 95 Z" fill="white" opacity="0.9"/>
+  <circle cx="100" cy="70" r="8" fill="white" opacity="0.9"/>
+
+  <!-- Math subject card (top left) -->
+  <rect x="20" y="25" width="45" height="40" rx="8" fill="#1e293b"/>
+  <rect x="20" y="25" width="45" height="40" rx="8" fill="url(#chooseBlue)" opacity="0.3"/>
+  <text x="42" y="42" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#38bdf8" text-anchor="middle">π</text>
+  <text x="42" y="58" font-family="Inter, sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Math</text>
+
+  <!-- Science subject card (top right) -->
+  <rect x="135" y="25" width="45" height="40" rx="8" fill="#1e293b"/>
+  <rect x="135" y="25" width="45" height="40" rx="8" fill="url(#chooseGreen)" opacity="0.3"/>
+  <circle cx="157" cy="40" r="8" fill="none" stroke="#34d399" stroke-width="2"/>
+  <circle cx="157" cy="40" r="3" fill="#34d399"/>
+  <ellipse cx="157" cy="40" rx="12" ry="5" fill="none" stroke="#34d399" stroke-width="1.5" transform="rotate(60 157 40)"/>
+  <text x="157" y="58" font-family="Inter, sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Science</text>
+
+  <!-- Reading subject card (bottom left) -->
+  <rect x="20" y="95" width="45" height="40" rx="8" fill="#1e293b"/>
+  <rect x="20" y="95" width="45" height="40" rx="8" fill="url(#choosePurple)" opacity="0.3"/>
+  <rect x="34" y="105" width="16" height="12" rx="2" fill="none" stroke="#a78bfa" stroke-width="2"/>
+  <line x1="37" y1="109" x2="47" y2="109" stroke="#a78bfa" stroke-width="1.5"/>
+  <line x1="37" y1="113" x2="44" y2="113" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="42" y="128" font-family="Inter, sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Reading</text>
+
+  <!-- History subject card (bottom right) -->
+  <rect x="135" y="95" width="45" height="40" rx="8" fill="#1e293b"/>
+  <rect x="135" y="95" width="45" height="40" rx="8" fill="url(#chooseOrange)" opacity="0.3"/>
+  <circle cx="157" cy="110" r="8" fill="none" stroke="#fb923c" stroke-width="2"/>
+  <line x1="157" y1="104" x2="157" y2="110" stroke="#fb923c" stroke-width="2"/>
+  <line x1="157" y1="110" x2="161" y2="112" stroke="#fb923c" stroke-width="2"/>
+  <text x="157" y="128" font-family="Inter, sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">History</text>
+
+  <!-- Connection lines -->
+  <line x1="65" y1="45" x2="75" y2="65" stroke="#38bdf8" stroke-width="2" opacity="0.4"/>
+  <line x1="135" y1="45" x2="125" y2="65" stroke="#10b981" stroke-width="2" opacity="0.4"/>
+  <line x1="65" y1="115" x2="75" y2="95" stroke="#8b5cf6" stroke-width="2" opacity="0.4"/>
+  <line x1="135" y1="115" x2="125" y2="95" stroke="#f97316" stroke-width="2" opacity="0.4"/>
+
+  <!-- Sparkle accents -->
+  <circle cx="85" cy="30" r="3" fill="#facc15" opacity="0.7"/>
+  <circle cx="115" cy="130" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

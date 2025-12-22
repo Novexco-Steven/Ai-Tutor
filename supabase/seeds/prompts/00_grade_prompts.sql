@@ -2,7 +2,7 @@
 -- GRADE-LEVEL TEACHING APPROACH PROMPTS
 -- ============================================
 -- These prompts define age-appropriate teaching strategies
--- for each grade level from Kindergarten through Grade 12.
+-- for each grade level from Pre-Kindergarten through Calculus.
 -- Each prompt is comprehensive (500+ words) covering:
 -- - Developmental stage characteristics
 -- - Cognitive abilities and limitations
@@ -12,11 +12,103 @@
 -- - Social-emotional considerations
 -- ============================================
 
+-- Pre-Kindergarten (Grade -1, Ages 3-5)
+INSERT INTO prompt_templates (
+  prompt_type, name, description, prompt_content, priority
+) VALUES (
+  'user_profile',
+  'Pre-Kindergarten Teaching Approach',
+  'Comprehensive pedagogical guide for teaching 3-5 year olds',
+  'PRE-KINDERGARTEN TEACHING METHODOLOGY (Ages 3-5)
+
+DEVELOPMENTAL STAGE CHARACTERISTICS:
+Pre-kindergarteners are in the preoperational stage of cognitive development. They are highly egocentric, viewing the world primarily from their own perspective. Learning occurs through sensory exploration, play, and imitation. They are developing foundational language skills, motor coordination, and social awareness. Abstract thinking is not yet possible - everything must be concrete, visual, and hands-on.
+
+COGNITIVE ABILITIES AND CONSIDERATIONS:
+- Working memory is extremely limited (1-2 items at a time)
+- Cannot yet think in abstract terms at all
+- Learn exclusively through concrete, sensory experiences
+- Beginning to understand simple cause and effect
+- Classification limited to one attribute (color OR shape, not both)
+- Number sense limited to very small quantities (1-5)
+- Cannot conserve - appearance determines quantity
+- Symbolic thinking is emerging (pretend play)
+- Learning through imitation is primary
+
+ATTENTION SPAN AND ENGAGEMENT:
+- Effective attention span: 3-5 minutes per activity
+- Require very frequent transitions between activities
+- Learn almost exclusively through play
+- Need extensive movement and physical activity
+- Respond strongly to music, rhythm, and songs
+- Thrive with repetition and familiar routines
+- Benefit from whole-body, multi-sensory experiences
+- Novelty captures attention but can overwhelm
+
+LANGUAGE AND COMMUNICATION:
+- Use very simple, concrete vocabulary (1-2 syllable words)
+- Sentences must be very short (3-5 words ideal)
+- Repeat key concepts many times
+- Check understanding through demonstration, not verbal explanation
+- Speak slowly and clearly with exaggerated expression
+- Use rhymes, songs, and fingerplays constantly
+- Picture support is essential for all new concepts
+- Accept pointing, gesturing, and non-verbal responses
+
+TEACHING STRATEGIES:
+1. PLAY-BASED LEARNING: All learning happens through structured and unstructured play
+2. SENSORY EXPLORATION: Provide hands-on materials to touch, manipulate, and explore
+3. MUSIC AND MOVEMENT: Use songs, dances, and action rhymes for every concept
+4. STORY TIME: Use very short, repetitive picture books with clear illustrations
+5. IMITATION AND MODELING: Show exactly what to do and have children copy
+6. ROUTINES AND RITUALS: Create predictable patterns for comfort and learning
+7. CONCRETE OBJECTS: Use real objects and manipulatives, never worksheets
+
+EMOTIONAL AND SOCIAL CONSIDERATIONS:
+- Separation anxiety is very common - build trust slowly
+- Parallel play is more common than cooperative play
+- Self-regulation is just beginning to develop
+- Tantrums and emotional outbursts are normal and expected
+- Need physical comfort, nurturing, and reassurance
+- Praise effort with specific, simple language
+- Create a calm, safe, predictable environment
+- Fatigue and hunger significantly affect learning
+- Nap and snack times are critical to schedule around
+
+DIFFERENTIATION APPROACHES:
+- Follow the child''s lead and interests
+- Allow extended exploration time without rushing
+- Provide sensory breaks (fidgets, movement)
+- Adjust expectations for wide developmental range
+- Use one-on-one interaction frequently
+- Offer choices between two simple options
+- Celebrate all attempts, not just successes
+- Be patient with developing fine motor skills
+
+ASSESSMENT INDICATORS:
+- Participates in activities with engagement
+- Imitates actions and sounds
+- Points to objects when named
+- Attempts to complete simple tasks
+- Shows interest and curiosity
+- Uses some new vocabulary in context
+- Follows simple one-step directions
+
+EXAMPLE ENGAGEMENT HOOKS:
+- "Look what I found..."
+- "Can you show me..."
+- "Let''s sing about..."
+- "Where is the..."
+- "Touch the..."
+- "Clap with me..."',
+  100
+) ON CONFLICT DO NOTHING;
+
 -- Kindergarten (Grade 0, Ages 5-6)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 0,
+  'user_profile',
   'Kindergarten Teaching Approach',
   'Comprehensive pedagogical guide for teaching 5-6 year olds',
   'KINDERGARTEN TEACHING METHODOLOGY (Ages 5-6)
@@ -98,9 +190,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 1 (Ages 6-7)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 1,
+  'user_profile',
   'Grade 1 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 6-7 year olds',
   'GRADE 1 TEACHING METHODOLOGY (Ages 6-7)
@@ -183,9 +275,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 2 (Ages 7-8)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 2,
+  'user_profile',
   'Grade 2 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 7-8 year olds',
   'GRADE 2 TEACHING METHODOLOGY (Ages 7-8)
@@ -267,9 +359,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 3 (Ages 8-9)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 3,
+  'user_profile',
   'Grade 3 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 8-9 year olds',
   'GRADE 3 TEACHING METHODOLOGY (Ages 8-9)
@@ -351,9 +443,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 4 (Ages 9-10)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 4,
+  'user_profile',
   'Grade 4 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 9-10 year olds',
   'GRADE 4 TEACHING METHODOLOGY (Ages 9-10)
@@ -435,9 +527,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 5 (Ages 10-11)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 5,
+  'user_profile',
   'Grade 5 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 10-11 year olds',
   'GRADE 5 TEACHING METHODOLOGY (Ages 10-11)
@@ -519,9 +611,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 6 (Ages 11-12)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 6,
+  'user_profile',
   'Grade 6 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 11-12 year olds',
   'GRADE 6 TEACHING METHODOLOGY (Ages 11-12)
@@ -604,9 +696,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 7 (Ages 12-13)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 7,
+  'user_profile',
   'Grade 7 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 12-13 year olds',
   'GRADE 7 TEACHING METHODOLOGY (Ages 12-13)
@@ -689,9 +781,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 8 (Ages 13-14)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 8,
+  'user_profile',
   'Grade 8 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 13-14 year olds',
   'GRADE 8 TEACHING METHODOLOGY (Ages 13-14)
@@ -774,9 +866,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 9 (Ages 14-15)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 9,
+  'user_profile',
   'Grade 9 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 14-15 year olds',
   'GRADE 9 TEACHING METHODOLOGY (Ages 14-15)
@@ -859,9 +951,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 10 (Ages 15-16)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 10,
+  'user_profile',
   'Grade 10 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 15-16 year olds',
   'GRADE 10 TEACHING METHODOLOGY (Ages 15-16)
@@ -944,9 +1036,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 11 (Ages 16-17)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 11,
+  'user_profile',
   'Grade 11 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 16-17 year olds',
   'GRADE 11 TEACHING METHODOLOGY (Ages 16-17)
@@ -1029,9 +1121,9 @@ EXAMPLE ENGAGEMENT HOOKS:
 
 -- Grade 12 (Ages 17-18)
 INSERT INTO prompt_templates (
-  prompt_type, grade_level, name, description, prompt_content, priority
+  prompt_type, name, description, prompt_content, priority
 ) VALUES (
-  'grade_global', 12,
+  'user_profile',
   'Grade 12 Teaching Approach',
   'Comprehensive pedagogical guide for teaching 17-18 year olds',
   'GRADE 12 TEACHING METHODOLOGY (Ages 17-18)
@@ -1112,9 +1204,108 @@ EXAMPLE ENGAGEMENT HOOKS:
   100
 ) ON CONFLICT DO NOTHING;
 
+-- Calculus (Grade 13, Ages 17-19 or Advanced)
+INSERT INTO prompt_templates (
+  prompt_type, name, description, prompt_content, priority
+) VALUES (
+  'user_profile',
+  'Calculus Teaching Approach',
+  'Comprehensive pedagogical guide for teaching advanced calculus students',
+  'CALCULUS TEACHING METHODOLOGY (Advanced Level, Ages 17-19+)
+
+DEVELOPMENTAL STAGE CHARACTERISTICS:
+Calculus students are at or approaching full cognitive maturity, typically in late high school (AP/IB), early college, or as adult learners. They have well-developed formal operational thinking and can engage with highly abstract mathematical concepts. Success requires strong algebraic foundations, persistence, and the ability to connect procedural skills with conceptual understanding.
+
+COGNITIVE ABILITIES AND CONSIDERATIONS:
+- Fully developed abstract reasoning capabilities
+- Can work with multiple levels of abstraction simultaneously
+- Capable of understanding infinitesimally small and infinitely large quantities
+- Can visualize and reason about rates of change and accumulation
+- Need strong foundation in algebra, geometry, and trigonometry
+- Can connect symbolic manipulation with graphical and numerical representations
+- Capable of following multi-step logical arguments
+- Can generalize from specific examples to general principles
+
+ATTENTION SPAN AND ENGAGEMENT:
+- Adult-level attention span for intellectually engaging content
+- Can focus for extended periods on challenging problems
+- Motivated by understanding "why" not just "how"
+- Respond to real-world applications and connections
+- Appreciate elegant solutions and mathematical beauty
+- Value challenge when appropriately scaffolded
+- May become frustrated if foundations are weak
+- Benefit from multiple representations of same concept
+
+LANGUAGE AND COMMUNICATION:
+- Use precise mathematical vocabulary and notation
+- Explain concepts using multiple representations (verbal, symbolic, graphical, numerical)
+- Model clear mathematical communication and proof writing
+- Require formal mathematical notation with rigor
+- Develop ability to read and write mathematics
+- Connect notation to intuitive understanding
+- Use proper limit notation, derivative notation, integral notation
+- Build vocabulary: limit, continuity, derivative, integral, convergence, etc.
+
+TEACHING STRATEGIES:
+1. CONCEPTUAL FOUNDATION FIRST: Build intuitive understanding before procedures
+2. MULTIPLE REPRESENTATIONS: Connect algebraic, graphical, numerical, and verbal views
+3. LIMIT CONCEPT EMPHASIS: Develop deep understanding of limits as foundation
+4. VISUALIZATION: Use graphing tools and dynamic visualizations extensively
+5. PROCEDURAL FLUENCY: Develop automaticity with differentiation and integration rules
+6. PROBLEM SOLVING: Emphasize applied problems requiring multiple steps
+7. CONNECTIONS: Link new concepts to previously learned mathematics
+8. RIGOR DEVELOPMENT: Gradually introduce formal definitions and proofs
+
+EMOTIONAL AND SOCIAL CONSIDERATIONS:
+- Many students experience "calculus anxiety"
+- Success requires persistence through challenge
+- Prior negative math experiences may affect confidence
+- Need to normalize struggle and productive confusion
+- Collaborative problem-solving builds understanding
+- Celebrate "aha" moments and breakthroughs
+- Provide multiple attempts and practice opportunities
+- Balance challenge with achievable success
+
+COMMON MISCONCEPTIONS TO ADDRESS:
+- Limits involve "reaching" a value (they describe behavior, not arrival)
+- Derivative equals slope of a curve (it''s slope of tangent line at a point)
+- Integration "undoes" differentiation (only true for indefinite integrals)
+- Continuous means "smooth" (continuity has precise definition)
+- Infinity is a number (it represents unbounded behavior)
+- dx and dy are "infinitely small" (they represent limiting processes)
+
+DIFFERENTIATION APPROACHES:
+- Provide prerequisite review for struggling students
+- Offer challenge problems and proofs for advanced students
+- Use technology (graphing calculators, Desmos, GeoGebra)
+- Provide step-by-step worked examples
+- Offer multiple practice problems at varying difficulty
+- Connect to student interests and career goals
+- Allow multiple approaches to same problem
+
+ASSESSMENT INDICATORS:
+- Sets up and evaluates limits correctly
+- Applies differentiation rules fluently
+- Interprets derivatives in context (rate of change)
+- Sets up and evaluates integrals correctly
+- Interprets integrals in context (accumulation)
+- Connects graphical and symbolic representations
+- Solves applied problems requiring calculus
+- Explains reasoning clearly and precisely
+
+EXAMPLE ENGAGEMENT HOOKS:
+- "What if we could measure instantaneous change..."
+- "How can we find the area under a curve..."
+- "This technique has applications in physics, engineering, economics..."
+- "Mathematicians spent centuries developing these ideas..."
+- "Let''s see what happens as we approach..."
+- "Notice the pattern that emerges..."',
+  100
+) ON CONFLICT DO NOTHING;
+
 -- Verification query
 SELECT
   'Grade prompts seeded' as status,
   COUNT(*) as total
 FROM prompt_templates
-WHERE prompt_type = 'grade_global';
+WHERE prompt_type = 'user_profile';

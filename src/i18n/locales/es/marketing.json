@@ -1,0 +1,157 @@
+{
+  "home": {
+    "hero": {
+      "headline": "Aprendizaje Impulsado por IA para Cada Estudiante",
+      "subheadline": "Tutoría personalizada que se adapta al estilo de aprendizaje único de tu hijo. Desde K-12, hacemos el aprendizaje atractivo, efectivo y divertido.",
+      "primaryCTA": "Comenzar Gratis",
+      "secondaryCTA": "Ver Demo"
+    },
+    "features": {
+      "title": "Por Qué los Padres y Maestros Aman Tulomi",
+      "subtitle": "Descubre características que hacen el aprendizaje más efectivo y agradable",
+      "personalized": {
+        "title": "Aprendizaje Personalizado",
+        "description": "La IA se adapta al ritmo y estilo de aprendizaje de cada estudiante."
+      },
+      "curriculum": {
+        "title": "Currículo Alineado",
+        "description": "Contenido alineado con Common Core y estándares estatales para K-12."
+      },
+      "progress": {
+        "title": "Progreso en Tiempo Real",
+        "description": "Padres y maestros pueden seguir el progreso de aprendizaje en tiempo real."
+      },
+      "safe": {
+        "title": "Seguro y Privado",
+        "description": "Cumple con COPPA con cifrado de extremo a extremo. Los datos de tu hijo están protegidos."
+      },
+      "engaging": {
+        "title": "Experiencia Atractiva",
+        "description": "La gamificación mantiene a los estudiantes motivados con insignias, rachas y recompensas."
+      },
+      "support": {
+        "title": "Soporte IA 24/7",
+        "description": "Obtén ayuda en cualquier momento con nuestro tutor IA. Ninguna pregunta es demasiado pequeña."
+      }
+    },
+    "stats": {
+      "students": "Estudiantes Ayudados",
+      "lessons": "Lecciones Completadas",
+      "rating": "Calificación de Padres",
+      "schools": "Escuelas Usando Tulomi"
+    },
+    "cta": {
+      "headline": "¿Listo para Transformar el Aprendizaje?",
+      "subheadline": "Únete a miles de familias y escuelas. Comienza tu prueba gratis hoy—no se requiere tarjeta de crédito."
+    }
+  },
+  "parents": {
+    "hero": {
+      "headline": "Dale a Tu Hijo la Ventaja de Aprendizaje",
+      "subheadline": "Tutoría IA personalizada que encuentra a tu hijo exactamente donde está. Míralo crecer con confianza en matemáticas, ciencias, lectura y más.",
+      "primaryCTA": "Iniciar Prueba Gratis",
+      "secondaryCTA": "Ver Cómo Funciona"
+    },
+    "features": {
+      "title": "Diseñado para Padres Ocupados",
+      "subtitle": "Herramientas que te ayudan a apoyar la educación de tu hijo—sin el estrés"
+    },
+    "cta": {
+      "headline": "Tu Hijo Merece lo Mejor",
+      "subheadline": "Únete a miles de padres que confían en Tulomi para la educación de sus hijos."
+    }
+  },
+  "teachers": {
+    "hero": {
+      "headline": "Tu Asistente de Enseñanza IA",
+      "subheadline": "Ahorra tiempo, diferencia la instrucción y ayuda a cada estudiante a tener éxito con poderosas herramientas de aula.",
+      "primaryCTA": "Solicitar Demo",
+      "secondaryCTA": "Iniciar Prueba Gratis"
+    },
+    "features": {
+      "title": "Construido para Educadores",
+      "subtitle": "Todo lo que necesitas para mejorar tu aula y apoyar a cada estudiante"
+    },
+    "cta": {
+      "headline": "¿Listo para Transformar Tu Aula?",
+      "subheadline": "Únete a miles de maestros usando Tulomi para ayudar a sus estudiantes a tener éxito."
+    }
+  },
+  "students": {
+    "hero": {
+      "headline": "¡Aprende Cualquier Cosa, Diviértete Haciéndolo!",
+      "subheadline": "¡Gana insignias, mantén rachas y sube de nivel mientras aprendes matemáticas, ciencias, lectura y más!",
+      "primaryCTA": "Empezar a Aprender Ahora"
+    },
+    "features": {
+      "title": "Por Qué los Estudiantes Aman Tulomi",
+      "subtitle": "¡No es solo aprendizaje—es una aventura!"
+    },
+    "cta": {
+      "headline": "¿Listo para Comenzar Tu Aventura de Aprendizaje?",
+      "subheadline": "¡Únete a millones de estudiantes y comienza a ganar insignias hoy!"
+    }
+  },
+  "pricing": {
+    "hero": {
+      "headline": "Precios Simples y Transparentes",
+      "subheadline": "Comienza gratis, actualiza cuando estés listo. Sin cargos ocultos, sin sorpresas.",
+      "primaryCTA": "Comenzar Gratis"
+    },
+    "tiers": {
+      "free": {
+        "name": "Gratis",
+        "description": "Perfecto para probar Tulomi",
+        "features": [
+          "3 lecciones por semana",
+          "Seguimiento básico de progreso",
+          "Soporte por correo",
+          "Acceso a todas las materias"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "Para estudiantes serios y familias",
+        "badge": "Más Popular",
+        "features": [
+          "Lecciones ilimitadas",
+          "Análisis avanzados",
+          "Soporte prioritario",
+          "Modo sin conexión",
+          "Múltiples estudiantes",
+          "Experiencia sin anuncios"
+        ]
+      },
+      "team": {
+        "name": "Equipo",
+        "description": "Para escuelas y organizaciones",
+        "features": [
+          "Todo en Pro",
+          "Panel de administración",
+          "Integración LMS",
+          "Gerente de cuenta dedicado",
+          "Incorporación personalizada",
+          "Descuentos por volumen"
+        ]
+      }
+    },
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "yearlyDiscount": "Ahorra {{percent}}%",
+    "perMonth": "/mes",
+    "billedYearly": "facturado anualmente",
+    "getStarted": "Comenzar",
+    "contactSales": "Contactar Ventas",
+    "currentPlan": "Plan Actual"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Todo lo que necesitas saber sobre Tulomi"
+  },
+  "trust": {
+    "schools": "10,000+ Escuelas",
+    "coppa": "Cumple COPPA",
+    "ferpa": "Certificado FERPA",
+    "reviews": "4.9/5 Reseñas"
+  }
+}

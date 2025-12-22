@@ -3,6 +3,7 @@ import { useGamification } from '@/contexts/GamificationContext';
 import { storage } from '@/utils/helpers';
 import { X, Flame, Sparkles, Trophy, Crown, Star } from 'lucide-react';
 import { cn } from '@/utils/helpers';
+import Illustration from '../shared/Illustration';
 
 interface StreakMilestone {
   days: number;
@@ -83,7 +84,7 @@ export default function StreakCelebration() {
     if (!milestone) return;
 
     // Check if we've already celebrated this milestone
-    const celebratedKey = `learnlit_streak_celebrated_${milestone.days}`;
+    const celebratedKey = `tulomi_streak_celebrated_${milestone.days}`;
     const lastCelebratedStreak = storage.get<number>(celebratedKey, 0);
 
     // Only show if this is a new achievement of this milestone
@@ -163,11 +164,16 @@ export default function StreakCelebration() {
           <X className="w-5 h-5 text-white" />
         </button>
 
+        {/* Tutor celebration */}
+        <div className="mb-4">
+          <Illustration type="tutor-celebrate" size="md" className="mx-auto drop-shadow-lg" />
+        </div>
+
         {/* Icon with glow */}
-        <div className="relative inline-block mb-6">
+        <div className="relative inline-block mb-4">
           <div className="absolute inset-0 blur-xl opacity-50 bg-white rounded-full scale-150" />
-          <div className="relative w-24 h-24 mx-auto rounded-full bg-white/20 flex items-center justify-center animate-pulse-glow">
-            <Icon className="w-12 h-12 text-white" />
+          <div className="relative w-16 h-16 mx-auto rounded-full bg-white/20 flex items-center justify-center animate-pulse-glow">
+            <Icon className="w-8 h-8 text-white" />
           </div>
         </div>
 

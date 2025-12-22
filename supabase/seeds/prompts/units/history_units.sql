@@ -10,15 +10,15 @@
 -- KINDERGARTEN HISTORY UNITS
 -- ============================================================================
 
--- Me and My Community (K)
+-- My School and Community (K)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'History'),
-  (SELECT id FROM units WHERE name = 'Me and My Community' AND grade_level = 0),
-  'Me and My Community Teaching Guide',
+  (SELECT id FROM units WHERE name = 'My School and Community' AND grade_level = 0),
+  'My School and Community Teaching Guide',
   'Comprehensive pedagogical approach for teaching community in Kindergarten',
   'ME AND MY COMMUNITY - KINDERGARTEN UNIT GUIDE
 
@@ -78,18 +78,18 @@ VOCABULARY TO DEVELOP:
 family, community, neighborhood, helper, rule, responsibility, safe, need, want, map, location',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Me and My Community' AND grade_level = 0)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'My School and Community' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
--- American Symbols and Holidays (K)
+-- American Symbols (K)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'History'),
-  (SELECT id FROM units WHERE name = 'American Symbols and Holidays' AND grade_level = 0),
-  'American Symbols and Holidays Teaching Guide',
+  (SELECT id FROM units WHERE name = 'American Symbols' AND grade_level = 0),
+  'American Symbols Teaching Guide',
   'Comprehensive pedagogical approach for teaching American symbols and holidays in Kindergarten',
   'AMERICAN SYMBOLS AND HOLIDAYS - KINDERGARTEN UNIT GUIDE
 
@@ -149,22 +149,22 @@ VOCABULARY TO DEVELOP:
 flag, symbol, country, America, United States, freedom, monument, holiday, celebrate, president, respect',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'American Symbols and Holidays' AND grade_level = 0)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'American Symbols' AND grade_level = 0)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================
 -- GRADE 1 HISTORY UNITS
 -- ============================================================================
 
--- Families and Traditions (Grade 1)
+-- Families Then and Now (Grade 1)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'History'),
-  (SELECT id FROM units WHERE name = 'Families and Traditions' AND grade_level = 1),
-  'Families and Traditions Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Families Then and Now' AND grade_level = 1),
+  'Families Then and Now Teaching Guide',
   'Comprehensive pedagogical approach for teaching families and traditions in Grade 1',
   'FAMILIES AND TRADITIONS - GRADE 1 UNIT GUIDE
 
@@ -224,7 +224,7 @@ VOCABULARY TO DEVELOP:
 family, tradition, custom, celebration, heritage, ancestor, culture, diverse, timeline, generation',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Families and Traditions' AND grade_level = 1)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Families Then and Now' AND grade_level = 1)
 ON CONFLICT DO NOTHING;
 
 -- Past and Present (Grade 1)
@@ -373,15 +373,15 @@ FROM dual
 WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Our Nation''s History' AND grade_level = 2)
 ON CONFLICT DO NOTHING;
 
--- Maps and Geography (Grade 2)
+-- Geography Skills (Grade 2)
 INSERT INTO prompt_templates (
   prompt_type, subject_id, unit_id, name, description, prompt_content, priority
 )
 SELECT
   'unit_global',
   (SELECT id FROM subjects WHERE name = 'History'),
-  (SELECT id FROM units WHERE name = 'Maps and Geography' AND grade_level = 2),
-  'Maps and Geography Teaching Guide',
+  (SELECT id FROM units WHERE name = 'Geography Skills' AND grade_level = 2),
+  'Geography Skills Teaching Guide',
   'Comprehensive pedagogical approach for teaching maps and geography in Grade 2',
   'MAPS AND GEOGRAPHY - GRADE 2 UNIT GUIDE
 
@@ -441,7 +441,7 @@ VOCABULARY TO DEVELOP:
 map, key, legend, symbol, north, south, east, west, continent, ocean, landform, mountain, river, valley, plain, coast, island',
   80
 FROM dual
-WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Maps and Geography' AND grade_level = 2)
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Geography Skills' AND grade_level = 2)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================

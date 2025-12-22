@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '@/contexts/UserContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useGamification, XP_VALUES } from '@/contexts/GamificationContext';
+import { useSpacedRepetition } from '@/contexts/SpacedRepetitionContext';
 import { db, supabase } from '@/services/supabase';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
@@ -19,6 +20,7 @@ export default function LessonSummary() {
   const { profile, updateProfile } = useUser();
   const { settings } = useSettings();
   const { recordQuizComplete } = useGamification();
+  const { initializeTopicForReview } = useSpacedRepetition();
   const [topic, setTopic] = useState<Topic | null>(null);
   const [stats, setStats] = useState({ correct: 0, total: 0 });
   const [loading, setLoading] = useState(true);
@@ -69,6 +71,11 @@ export default function LessonSummary() {
           assessment_score: score,
           completed_at: new Date().toISOString()
         });
+
+        // Initialize topic for spaced repetition review
+        // This schedules the topic to be reviewed based on performance
+        const hintsUsed = sessions.data.hints_used || 0;
+        await initializeTopicForReview(topicId, score, total, hintsUsed);
 
         // Apply adaptive difficulty
         const currentDifficulty = profile.difficulty_level || 5;

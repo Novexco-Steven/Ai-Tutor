@@ -1,0 +1,49 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fun Practice Games: Game controller -->
+  <defs>
+    <linearGradient id="gameOrange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="gameBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Game controller body -->
+  <rect x="40" y="50" width="120" height="70" rx="20" fill="#1e293b"/>
+
+  <!-- D-pad -->
+  <rect x="55" y="75" width="30" height="10" rx="2" fill="#334155"/>
+  <rect x="65" y="65" width="10" height="30" rx="2" fill="#334155"/>
+  <circle cx="70" cy="80" r="4" fill="#64748b"/>
+
+  <!-- Action buttons -->
+  <circle cx="130" cy="70" r="10" fill="url(#gameBlue)"/>
+  <text x="130" y="74" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="white" text-anchor="middle">A</text>
+
+  <circle cx="150" cy="85" r="10" fill="url(#gameOrange)"/>
+  <text x="150" y="89" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="white" text-anchor="middle">B</text>
+
+  <circle cx="130" cy="100" r="8" fill="#22c55e"/>
+  <circle cx="110" cy="85" r="8" fill="#8b5cf6"/>
+
+  <!-- Screen/display -->
+  <rect x="80" y="58" width="40" height="25" rx="4" fill="#0f172a"/>
+  <rect x="84" y="62" width="32" height="17" rx="2" fill="#0c4a6e"/>
+  <text x="100" y="73" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="#22c55e" text-anchor="middle">PLAY!</text>
+
+  <!-- Fun elements around -->
+  <text x="30" y="40" font-family="Inter, sans-serif" font-size="16">✨</text>
+  <text x="165" y="40" font-family="Inter, sans-serif" font-size="16">🎮</text>
+
+  <!-- Score display -->
+  <rect x="60" y="125" width="80" height="25" rx="6" fill="url(#gameOrange)"/>
+  <text x="100" y="141" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="white" text-anchor="middle">HIGH SCORE!</text>
+
+  <!-- Decorative stars -->
+  <circle cx="45" cy="135" r="4" fill="#facc15"/>
+  <circle cx="155" cy="135" r="4" fill="#facc15"/>
+  <circle cx="100" cy="30" r="5" fill="#facc15"/>
+</svg>

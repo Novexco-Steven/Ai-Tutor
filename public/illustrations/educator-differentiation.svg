@@ -1,0 +1,65 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Auto-Differentiation: AI adjusting difficulty -->
+  <defs>
+    <linearGradient id="diffPurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="diffBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- AI brain center -->
+  <circle cx="100" cy="70" r="30" fill="#1e293b"/>
+  <circle cx="100" cy="70" r="25" fill="url(#diffPurple)" opacity="0.3"/>
+
+  <!-- Brain icon -->
+  <path d="M90 60 Q85 55 90 50 Q95 45 100 50 Q105 45 110 50 Q115 55 110 60"
+        stroke="url(#diffPurple)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M90 70 Q85 75 90 80 Q95 85 100 80 Q105 85 110 80 Q115 75 110 70"
+        stroke="url(#diffPurple)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <line x1="90" y1="60" x2="90" y2="70" stroke="url(#diffPurple)" stroke-width="3"/>
+  <line x1="110" y1="60" x2="110" y2="70" stroke="url(#diffPurple)" stroke-width="3"/>
+  <circle cx="100" cy="65" r="3" fill="#a78bfa"/>
+
+  <!-- Difficulty levels -->
+  <!-- Easy -->
+  <rect x="25" y="45" width="35" height="50" rx="6" fill="#1e293b"/>
+  <rect x="30" y="65" width="25" height="6" rx="3" fill="#22c55e"/>
+  <text x="42" y="58" font-family="Inter, sans-serif" font-size="7" fill="white" text-anchor="middle">Easy</text>
+  <text x="42" y="86" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Lv 1</text>
+
+  <!-- Medium -->
+  <rect x="140" y="30" width="35" height="50" rx="6" fill="#1e293b"/>
+  <rect x="145" y="50" width="25" height="6" rx="3" fill="#f97316"/>
+  <rect x="145" y="58" width="25" height="6" rx="3" fill="#f97316"/>
+  <text x="157" y="43" font-family="Inter, sans-serif" font-size="7" fill="white" text-anchor="middle">Medium</text>
+  <text x="157" y="73" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Lv 2</text>
+
+  <!-- Hard -->
+  <rect x="140" y="90" width="35" height="50" rx="6" fill="#1e293b"/>
+  <rect x="145" y="110" width="25" height="6" rx="3" fill="#ef4444"/>
+  <rect x="145" y="118" width="25" height="6" rx="3" fill="#ef4444"/>
+  <rect x="145" y="126" width="25" height="6" rx="3" fill="#ef4444"/>
+  <text x="157" y="103" font-family="Inter, sans-serif" font-size="7" fill="white" text-anchor="middle">Hard</text>
+
+  <!-- Students with arrows -->
+  <circle cx="42" cy="120" r="12" fill="url(#diffBlue)"/>
+  <circle cx="42" cy="117" r="5" fill="white"/>
+  <ellipse cx="42" cy="125" rx="6" ry="3" fill="white"/>
+
+  <!-- Arrows showing auto-adjustment -->
+  <path d="M60 70 L75 70" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M125 55 L140 50" stroke="#64748b" stroke-width="2"/>
+  <path d="M125 85 L140 100" stroke="#64748b" stroke-width="2"/>
+
+  <!-- Auto badge -->
+  <rect x="75" y="115" width="50" height="20" rx="5" fill="url(#diffPurple)"/>
+  <text x="100" y="128" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">AUTO</text>
+
+  <!-- Decorative -->
+  <circle cx="20" cy="25" r="3" fill="#facc15" opacity="0.6"/>
+  <circle cx="180" cy="140" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

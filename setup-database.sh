@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# LearnLit Database Setup Script
+# Tulomi Database Setup Script
 # Run this on your LOCAL machine to automatically set up the database
 
 echo ""
-echo "🚀 LearnLit Database Setup"
+echo "🚀 Tulomi Database Setup"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 

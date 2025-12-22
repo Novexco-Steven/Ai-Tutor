@@ -1,4 +1,4 @@
--- LearnLit Seed Data
+-- Tulomi Seed Data
 -- Run this in Supabase SQL Editor to populate reference tables
 
 -- Insert default interests
@@ -59,11 +59,11 @@ ON CONFLICT (name) DO NOTHING;
 INSERT INTO subjects (name, description, icon, color) VALUES
   ('Math', 'Numbers, calculations, and problem solving', '🔢', '#3b82f6'),
   ('Science', 'Exploring how the world works', '🔬', '#10b981'),
-  ('Reading', 'Stories, comprehension, and vocabulary', '📚', '#f59e0b'),
+  ('Language Arts', 'Reading, writing, grammar, and communication', '📚', '#f59e0b'),
   ('History', 'Learning about the past', '🏛️', '#8b5cf6'),
   ('Arts', 'Creative expression through visual arts, music, drama, and dance', '🎨', '#ec4899'),
-  ('French', 'French language learning and francophone culture', '🇫🇷', '#ef4444'),
-  ('Social Studies', 'Citizenship, geography, economics, and civic responsibility', '🌎', '#06b6d4')
+  ('Social Studies', 'Citizenship, geography, economics, and civic responsibility', '🌎', '#06b6d4'),
+  ('Computer Science', 'Digital literacy, coding, and computational thinking', '💻', '#6366f1')
 ON CONFLICT (name) DO NOTHING;
 
 -- Insert Math topics (K-12 comprehensive)
@@ -112,24 +112,24 @@ INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_
   ((SELECT id FROM subjects WHERE name = 'Science'), 'Environmental Science', 'Study ecosystems, climate, and conservation', 10, 12, 9, 18, 40)
 ON CONFLICT DO NOTHING;
 
--- Insert Reading topics (K-12 comprehensive)
+-- Insert Language Arts topics (K-12 comprehensive)
 INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_max, difficulty_level, order_index, estimated_time) VALUES
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Letter Recognition', 'Identify uppercase and lowercase letters', 0, 1, 1, 1, 15),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Phonics & Sounds', 'Learn letter sounds and blending', 0, 2, 2, 2, 20),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Sight Words', 'Recognize common high-frequency words', 0, 2, 2, 3, 15),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Basic Vocabulary', 'Build foundational word knowledge', 1, 3, 3, 4, 20),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Reading Comprehension', 'Understand and recall story details', 2, 4, 4, 5, 25),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Story Elements', 'Identify characters, setting, and plot', 2, 4, 4, 6, 25),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Main Idea & Details', 'Find central ideas and supporting details', 3, 5, 5, 7, 25),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Making Inferences', 'Draw conclusions from text evidence', 4, 6, 5, 8, 30),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Figurative Language', 'Understand similes, metaphors, and idioms', 5, 7, 6, 9, 30),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Text Structure', 'Recognize how texts are organized', 5, 7, 6, 10, 25),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Literary Analysis', 'Analyze themes and author techniques', 6, 8, 7, 11, 35),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Critical Reading', 'Evaluate arguments and identify bias', 7, 9, 7, 12, 35),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Authors Purpose', 'Understand why authors write', 8, 10, 8, 13, 30),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Argumentative Text', 'Analyze persuasive writing and rhetoric', 9, 11, 8, 14, 35),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Advanced Vocabulary', 'Master academic and domain-specific words', 10, 12, 9, 15, 30),
-  ((SELECT id FROM subjects WHERE name = 'Reading'), 'Literary Criticism', 'Apply critical lenses to literature', 11, 12, 10, 16, 40)
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Letter Recognition', 'Identify uppercase and lowercase letters', 0, 1, 1, 1, 15),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Phonics & Sounds', 'Learn letter sounds and blending', 0, 2, 2, 2, 20),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Sight Words', 'Recognize common high-frequency words', 0, 2, 2, 3, 15),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Basic Vocabulary', 'Build foundational word knowledge', 1, 3, 3, 4, 20),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Reading Comprehension', 'Understand and recall story details', 2, 4, 4, 5, 25),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Story Elements', 'Identify characters, setting, and plot', 2, 4, 4, 6, 25),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Main Idea & Details', 'Find central ideas and supporting details', 3, 5, 5, 7, 25),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Making Inferences', 'Draw conclusions from text evidence', 4, 6, 5, 8, 30),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Figurative Language', 'Understand similes, metaphors, and idioms', 5, 7, 6, 9, 30),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Text Structure', 'Recognize how texts are organized', 5, 7, 6, 10, 25),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Literary Analysis', 'Analyze themes and author techniques', 6, 8, 7, 11, 35),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Critical Reading', 'Evaluate arguments and identify bias', 7, 9, 7, 12, 35),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Authors Purpose', 'Understand why authors write', 8, 10, 8, 13, 30),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Argumentative Text', 'Analyze persuasive writing and rhetoric', 9, 11, 8, 14, 35),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Advanced Vocabulary', 'Master academic and domain-specific words', 10, 12, 9, 15, 30),
+  ((SELECT id FROM subjects WHERE name = 'Language Arts'), 'Literary Criticism', 'Apply critical lenses to literature', 11, 12, 10, 16, 40)
 ON CONFLICT DO NOTHING;
 
 -- Insert History topics (K-12 comprehensive)
@@ -192,24 +192,6 @@ INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_
   ((SELECT id FROM subjects WHERE name = 'Arts'), 'Music Composition', 'Compose original music and understand arrangement', 10, 12, 9, 16, 40)
 ON CONFLICT DO NOTHING;
 
--- Insert French topics (K-12 comprehensive - aligned with Canadian bilingual education)
-INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_max, difficulty_level, order_index, estimated_time) VALUES
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Greetings & Basics', 'Learn bonjour, merci, and basic French phrases', 0, 2, 1, 1, 15),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Numbers & Colors', 'Count in French and learn color words', 0, 2, 1, 2, 15),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Vocabulary Building', 'Learn everyday French words for family, food, and animals', 1, 3, 2, 3, 20),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'Basic French Sentences', 'Form simple sentences and ask questions in French', 2, 4, 3, 4, 25),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Reading Basics', 'Read simple French texts and stories', 3, 5, 4, 5, 25),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Conversation', 'Practice speaking French in everyday situations', 3, 5, 4, 6, 25),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Grammar Foundations', 'Learn verb conjugations, articles, and adjectives', 4, 6, 5, 7, 30),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Writing Skills', 'Write paragraphs and short compositions in French', 5, 7, 6, 8, 30),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Comprehension', 'Understand spoken and written French texts', 6, 8, 6, 9, 30),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'Intermediate French Grammar', 'Master complex tenses and sentence structures', 7, 9, 7, 10, 35),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Literature', 'Read and analyze French literature and poetry', 8, 10, 8, 11, 35),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'Advanced French Writing', 'Write essays and formal texts in French', 9, 11, 8, 12, 35),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'French Culture & Society', 'Explore francophone culture in Canada and worldwide', 10, 12, 9, 13, 40),
-  ((SELECT id FROM subjects WHERE name = 'French'), 'Business & Academic French', 'Use French in professional and academic contexts', 11, 12, 10, 14, 40)
-ON CONFLICT DO NOTHING;
-
 -- Insert Social Studies topics (K-12 comprehensive - aligned with Canadian citizenship education)
 INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_max, difficulty_level, order_index, estimated_time) VALUES
   ((SELECT id FROM subjects WHERE name = 'Social Studies'), 'My Family & Community', 'Learn about families, homes, and local community', 0, 2, 1, 1, 15),
@@ -236,4 +218,52 @@ INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_
   ((SELECT id FROM subjects WHERE name = 'Science'), 'Climate & Weather in Canada', 'Study Canadian climate zones and weather patterns', 3, 5, 4, 20, 25),
   ((SELECT id FROM subjects WHERE name = 'Science'), 'Applied Science & Technology', 'Learn practical applications of science and engineering', 7, 9, 7, 21, 35),
   ((SELECT id FROM subjects WHERE name = 'Science'), 'Science & the Environment', 'Study environmental issues and sustainability', 8, 10, 8, 22, 35)
+ON CONFLICT DO NOTHING;
+
+-- Insert Computer Science topics (K-12 comprehensive - balanced approach: digital literacy to programming)
+INSERT INTO topics (subject_id, name, description, grade_level_min, grade_level_max, difficulty_level, order_index, estimated_time) VALUES
+  -- K-2: Digital Literacy Foundation
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Using Devices', 'Learn to use tablets, computers, and basic input devices', 0, 2, 1, 1, 15),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Digital Citizenship Basics', 'Understand online safety and being kind online', 0, 2, 1, 2, 15),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Following Instructions', 'Learn to follow step-by-step instructions like a computer', 0, 2, 1, 3, 15),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Keyboard & Mouse Skills', 'Practice typing and mouse navigation', 1, 3, 2, 4, 20),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Internet Basics', 'Navigate websites and understand the internet', 1, 3, 2, 5, 20),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Digital Safety', 'Learn about passwords, privacy, and staying safe online', 1, 3, 2, 6, 20),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'File Management', 'Save, organize, and find files on a computer', 2, 4, 3, 7, 20),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Creative Digital Tools', 'Use apps for drawing, music, and creating', 2, 4, 3, 8, 25),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Online Communication', 'Learn appropriate email and messaging skills', 2, 4, 3, 9, 20),
+  -- 3-5: Introduction to Computer Science
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Typing Skills', 'Develop keyboarding fluency and accuracy', 3, 5, 4, 10, 25),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Sequences & Patterns', 'Understand ordered steps and pattern recognition', 3, 5, 4, 11, 25),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Block-Based Coding Intro', 'Create programs using visual block coding (Scratch)', 3, 5, 4, 12, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Internet Research', 'Evaluate online sources and search effectively', 4, 6, 5, 13, 25),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Algorithms & Logic', 'Design step-by-step solutions to problems', 4, 6, 5, 14, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Block-Based Projects', 'Build games and animations with visual coding', 4, 6, 5, 15, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Data & Information', 'Collect, organize, and represent data', 5, 7, 5, 16, 25),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Debugging', 'Find and fix errors in programs', 5, 7, 5, 17, 25),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Collaborative Coding', 'Work together on coding projects', 5, 7, 5, 18, 30),
+  -- 6-8: Computer Science Foundations
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Web Basics', 'Introduction to HTML and web page structure', 6, 8, 6, 19, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Variables & Data Types', 'Understand how computers store information', 6, 8, 6, 20, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Cybersecurity Awareness', 'Learn about online threats and protection', 6, 8, 6, 21, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Conditionals & Loops', 'Use if-statements and loops in programs', 7, 9, 7, 22, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Problem Decomposition', 'Break complex problems into smaller parts', 7, 9, 7, 23, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Data Representation', 'Understand binary, encoding, and compression', 7, 9, 7, 24, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Functions & Procedures', 'Write reusable code blocks', 8, 10, 7, 25, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'User Input & Output', 'Create interactive programs', 8, 10, 7, 26, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Introduction to Databases', 'Understand how data is stored and retrieved', 8, 10, 8, 27, 35),
+  -- 9-10: Programming Fundamentals
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Programming Fundamentals', 'Learn a text-based programming language (Python)', 9, 11, 8, 28, 40),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Software Development', 'Understand the software development lifecycle', 9, 11, 8, 29, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Version Control', 'Use Git for code management and collaboration', 9, 11, 8, 30, 30),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Object-Oriented Concepts', 'Understand classes, objects, and inheritance', 10, 12, 9, 31, 40),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'APIs & Web Services', 'Connect to and use web APIs', 10, 12, 9, 32, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Networks & Internet', 'Understand how networks and the internet work', 10, 12, 9, 33, 35),
+  -- 11-12: Advanced Computer Science
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Data Structures', 'Work with arrays, lists, stacks, and queues', 11, 12, 9, 34, 45),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Algorithms', 'Study sorting, searching, and algorithm efficiency', 11, 12, 10, 35, 45),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'AI & Machine Learning Concepts', 'Introduction to artificial intelligence', 11, 12, 10, 36, 40),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Software Projects', 'Design and build complete applications', 11, 12, 10, 37, 60),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Computer Ethics', 'Explore ethical issues in technology', 11, 12, 9, 38, 35),
+  ((SELECT id FROM subjects WHERE name = 'Computer Science'), 'Career Pathways', 'Explore careers in technology and computer science', 11, 12, 9, 39, 30)
 ON CONFLICT DO NOTHING;

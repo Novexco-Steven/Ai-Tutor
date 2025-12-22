@@ -264,6 +264,8 @@ export const db = {
         subject_id: subjectId,
         ...updates,
         updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id,topic_id'
       })
       .select()
       .single();
@@ -406,17 +408,34 @@ export const db = {
     difficultyLevel: number,
     contentType: 'lesson' | 'questions'
   ) {
-    const { data, error } = await supabase
-      .from('content_library')
-      .select('*')
-      .eq('topic_id', topicId)
-      .eq('grade_level', gradeLevel)
-      .eq('difficulty_level', Math.round(difficultyLevel))
-      .eq('content_type', contentType)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('content_library')
+        .select('*')
+        .eq('topic_id', topicId)
+        .eq('grade_level', gradeLevel)
+        .eq('difficulty_level', Math.round(difficultyLevel))
+        .eq('content_type', contentType)
+        .single();
 
-    if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
-    return data;
+      // PGRST116 = no rows, 406 = table doesn't exist (migration not applied)
+      if (error && error.code !== 'PGRST116') {
+        // Log 406 errors but don't throw - table may not exist yet
+        if (error.code === '42P01' || error.message?.includes('406')) {
+          console.warn('content_library table may not exist yet');
+          return null;
+        }
+        throw error;
+      }
+      return data;
+    } catch (err: unknown) {
+      // Handle network/fetch errors that result in 406
+      if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === '406') {
+        console.warn('content_library table may not exist yet');
+        return null;
+      }
+      throw err;
+    }
   },
 
   /**
@@ -614,30 +633,41 @@ export const db = {
 
   /**
    * Check if a user is an admin
+   * Returns false if table doesn't exist or user is not an admin
    */
   async isAdmin(userId: string): Promise<boolean> {
-    const { data, error } = await supabase
-      .from('admin_users')
-      .select('id')
-      .eq('user_id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('user_id', userId)
+        .maybeSingle(); // Use maybeSingle to avoid error when no row found
 
-    if (error && error.code !== 'PGRST116') return false;
-    return !!data;
+      // Return false for any error (including 406 for missing table)
+      if (error) return false;
+      return !!data;
+    } catch {
+      return false;
+    }
   },
 
   /**
    * Get the admin role for a user
+   * Returns null if table doesn't exist or user is not an admin
    */
   async getAdminRole(userId: string): Promise<string | null> {
-    const { data, error } = await supabase
-      .from('admin_users')
-      .select('role')
-      .eq('user_id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('role')
+        .eq('user_id', userId)
+        .maybeSingle(); // Use maybeSingle to avoid error when no row found
 
-    if (error) return null;
-    return data?.role || null;
+      if (error) return null;
+      return data?.role || null;
+    } catch {
+      return null;
+    }
   },
 
   /**
@@ -885,5 +915,431 @@ export const db = {
 
     if (error) throw error;
     return data || [];
+  },
+
+  // ============================================================================
+  // SPACED REPETITION
+  // ============================================================================
+
+  /**
+   * Get or create a review item for a user-topic pair
+   */
+  async getOrCreateReviewItem(userId: string, topicId: string) {
+    // Try to get existing
+    const { data: existing } = await supabase
+      .from('review_items')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('topic_id', topicId)
+      .single();
+
+    if (existing) return existing;
+
+    // Create new with tomorrow as first review date
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(9, 0, 0, 0);
+
+    const { data, error } = await supabase
+      .from('review_items')
+      .insert({
+        user_id: userId,
+        topic_id: topicId,
+        next_review_date: tomorrow.toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Get all due review items for a user
+   */
+  async getDueReviews(userId: string, limit: number = 10) {
+    const now = new Date().toISOString();
+
+    const { data, error } = await supabase
+      .from('review_items')
+      .select(`
+        *,
+        topic:topics(id, name, description, subject:subjects(id, name, icon, color))
+      `)
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .lte('next_review_date', now)
+      .order('memory_strength', { ascending: true }) // Prioritize weakest memories
+      .order('next_review_date', { ascending: true })
+      .limit(limit);
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Get upcoming reviews for the week
+   */
+  async getUpcomingReviews(userId: string, days: number = 7) {
+    const now = new Date();
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + days);
+
+    const { data, error } = await supabase
+      .from('review_items')
+      .select(`
+        *,
+        topic:topics(id, name, subject:subjects(name, icon, color))
+      `)
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .gte('next_review_date', now.toISOString())
+      .lte('next_review_date', endDate.toISOString())
+      .order('next_review_date', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Update review item after a review session
+   */
+  async updateReviewItem(
+    reviewItemId: string,
+    updates: {
+      easeFactor: number;
+      intervalDays: number;
+      repetitionCount: number;
+      memoryStrength: number;
+      nextReviewDate: Date;
+      totalReviews: number;
+      correctReviews: number;
+      consecutiveCorrect: number;
+      consecutiveIncorrect: number;
+      status?: 'active' | 'paused' | 'mastered';
+    }
+  ) {
+    const { data, error } = await supabase
+      .from('review_items')
+      .update({
+        ease_factor: updates.easeFactor,
+        interval_days: updates.intervalDays,
+        repetition_count: updates.repetitionCount,
+        memory_strength: updates.memoryStrength,
+        next_review_date: updates.nextReviewDate.toISOString(),
+        total_reviews: updates.totalReviews,
+        correct_reviews: updates.correctReviews,
+        consecutive_correct: updates.consecutiveCorrect,
+        consecutive_incorrect: updates.consecutiveIncorrect,
+        status: updates.status,
+        last_reviewed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', reviewItemId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Record a review session
+   */
+  async createReviewSession(session: {
+    userId: string;
+    reviewItemId: string;
+    topicId: string;
+    qualityRating: number;
+    questionsAttempted: number;
+    questionsCorrect: number;
+    timeSpentSeconds?: number;
+    previousInterval: number;
+    newInterval: number;
+    previousEaseFactor: number;
+    newEaseFactor: number;
+    sessionType: 'scheduled' | 'manual' | 'forgotten';
+    hintsUsed?: number;
+  }) {
+    const { data, error } = await supabase
+      .from('review_sessions')
+      .insert({
+        user_id: session.userId,
+        review_item_id: session.reviewItemId,
+        topic_id: session.topicId,
+        quality_rating: session.qualityRating,
+        questions_attempted: session.questionsAttempted,
+        questions_correct: session.questionsCorrect,
+        time_spent_seconds: session.timeSpentSeconds,
+        previous_interval: session.previousInterval,
+        new_interval: session.newInterval,
+        previous_ease_factor: session.previousEaseFactor,
+        new_ease_factor: session.newEaseFactor,
+        session_type: session.sessionType,
+        hints_used: session.hintsUsed || 0,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Get review statistics for a user
+   */
+  async getReviewStats(userId: string) {
+    const now = new Date().toISOString();
+    const weekFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    const [dueCount, upcomingWeek, totalItems, masteredCount] = await Promise.all([
+      // Due reviews count
+      supabase
+        .from('review_items')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .lte('next_review_date', now),
+
+      // Upcoming this week
+      supabase
+        .from('review_items')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('status', 'active')
+        .gte('next_review_date', now)
+        .lte('next_review_date', weekFromNow),
+
+      // Total active items
+      supabase
+        .from('review_items')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('status', 'active'),
+
+      // Mastered count
+      supabase
+        .from('review_items')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('status', 'mastered'),
+    ]);
+
+    return {
+      dueNow: dueCount.count || 0,
+      dueThisWeek: upcomingWeek.count || 0,
+      totalActive: totalItems.count || 0,
+      mastered: masteredCount.count || 0,
+    };
+  },
+
+  /**
+   * Update concept strength after practice
+   */
+  async updateConceptStrength(
+    userId: string,
+    topicId: string,
+    conceptName: string,
+    isCorrect: boolean
+  ) {
+    // Try to get existing
+    const { data: existing } = await supabase
+      .from('concept_strength')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('topic_id', topicId)
+      .eq('concept_name', conceptName)
+      .single();
+
+    if (existing) {
+      const newPracticeCount = existing.practice_count + 1;
+      const newCorrectCount = existing.correct_count + (isCorrect ? 1 : 0);
+      const newStrength = Math.min(
+        1.0,
+        (newCorrectCount / newPracticeCount) * 0.7 + existing.strength * 0.3
+      );
+      const isWeak = newStrength < 0.6;
+
+      return await supabase
+        .from('concept_strength')
+        .update({
+          strength: newStrength,
+          practice_count: newPracticeCount,
+          correct_count: newCorrectCount,
+          is_weak: isWeak,
+          last_practiced_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id);
+    } else {
+      const initialStrength = isCorrect ? 0.8 : 0.4;
+      return await supabase.from('concept_strength').insert({
+        user_id: userId,
+        topic_id: topicId,
+        concept_name: conceptName,
+        strength: initialStrength,
+        practice_count: 1,
+        correct_count: isCorrect ? 1 : 0,
+        is_weak: initialStrength < 0.6,
+        last_practiced_at: new Date().toISOString(),
+      });
+    }
+  },
+
+  /**
+   * Get weak concepts for a user (for focused review)
+   */
+  async getWeakConcepts(userId: string, limit: number = 10) {
+    const { data, error } = await supabase
+      .from('concept_strength')
+      .select(`
+        *,
+        topic:topics(id, name, subject:subjects(name, icon))
+      `)
+      .eq('user_id', userId)
+      .eq('is_weak', true)
+      .order('strength', { ascending: true })
+      .limit(limit);
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  // ============================================================================
+  // ANALYTICS
+  // ============================================================================
+
+  /**
+   * Get daily stats for a user
+   */
+  async getDailyStats(userId: string, days: number = 30) {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const { data, error } = await supabase
+      .from('analytics_daily_stats')
+      .select('*')
+      .eq('user_id', userId)
+      .gte('date', startDate.toISOString().split('T')[0])
+      .order('date', { ascending: true });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Upsert daily stats
+   */
+  async upsertDailyStats(
+    userId: string,
+    date: string,
+    updates: Partial<{
+      totalTimeSeconds: number;
+      topicsAttempted: number;
+      topicsCompleted: number;
+      questionsAttempted: number;
+      questionsCorrect: number;
+      xpEarned: number;
+      streakMaintained: boolean;
+      reviewsCompleted: number;
+    }>
+  ) {
+    const { data, error } = await supabase
+      .from('analytics_daily_stats')
+      .upsert(
+        {
+          user_id: userId,
+          date,
+          total_time_seconds: updates.totalTimeSeconds,
+          topics_attempted: updates.topicsAttempted,
+          topics_completed: updates.topicsCompleted,
+          questions_attempted: updates.questionsAttempted,
+          questions_correct: updates.questionsCorrect,
+          xp_earned: updates.xpEarned,
+          streak_maintained: updates.streakMaintained,
+          reviews_completed: updates.reviewsCompleted,
+        },
+        { onConflict: 'user_id,date' }
+      )
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * Get alerts for a user
+   */
+  async getAlerts(userId: string, unreadOnly: boolean = false) {
+    let query = supabase
+      .from('analytics_alerts')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('is_dismissed', false)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (unreadOnly) {
+      query = query.eq('is_read', false);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  },
+
+  /**
+   * Mark alert as read
+   */
+  async markAlertRead(alertId: string) {
+    const { error } = await supabase
+      .from('analytics_alerts')
+      .update({ is_read: true, read_at: new Date().toISOString() })
+      .eq('id', alertId);
+
+    if (error) throw error;
+  },
+
+  /**
+   * Dismiss alert
+   */
+  async dismissAlert(alertId: string) {
+    const { error } = await supabase
+      .from('analytics_alerts')
+      .update({ is_dismissed: true })
+      .eq('id', alertId);
+
+    if (error) throw error;
+  },
+
+  /**
+   * Create an alert
+   */
+  async createAlert(alert: {
+    userId: string;
+    alertType: 'struggling' | 'inactive' | 'goal_missed' | 'achievement' | 'ready_to_advance';
+    severity: 'info' | 'warning' | 'critical';
+    message: string;
+    topicId?: string;
+    subjectId?: string;
+    actionUrl?: string;
+  }) {
+    const { data, error } = await supabase
+      .from('analytics_alerts')
+      .insert({
+        user_id: alert.userId,
+        alert_type: alert.alertType,
+        severity: alert.severity,
+        message: alert.message,
+        topic_id: alert.topicId,
+        subject_id: alert.subjectId,
+        action_url: alert.actionUrl,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   }
 };

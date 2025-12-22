@@ -1,14 +1,36 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Eye, EyeOff } from 'lucide-react';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
+import Input from '../shared/Input';
 import { useAuth } from '@/contexts/AuthContext';
+
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const navigate = useNavigate();
-  const { user, signInWithGoogle } = useAuth();
+  const { user, signInWithEmail, signInWithGoogle } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
   // If already logged in, redirect
   if (user) {
@@ -16,8 +38,23 @@ export default function Login() {
     return null;
   }
 
-  const handleGoogleSignIn = async () => {
+  const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
+    setError(null);
+
+    const result = await signInWithEmail(data.email, data.password);
+
+    if (result.error) {
+      setError(result.error);
+      setLoading(false);
+      return;
+    }
+
+    navigate('/auth/callback');
+  };
+
+  const handleGoogleSignIn = async () => {
+    setGoogleLoading(true);
     setError(null);
 
     try {
@@ -25,19 +62,19 @@ export default function Login() {
     } catch (err) {
       setError('Failed to sign in with Google. Please try again.');
       console.error('Google sign-in error:', err);
-      setLoading(false);
+      setGoogleLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
       <Card className="w-full max-w-md animate-fade-in">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Welcome to LearnLit!
+            Welcome to Tulomi!
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            Sign in to start your learning adventure
+            Sign in to continue your learning adventure
           </p>
         </div>
 
@@ -49,12 +86,58 @@ export default function Login() {
           </div>
         )}
 
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Input
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            error={errors.email?.message}
+            {...register('email')}
+          />
+
+          <div className="relative">
+            <Input
+              label="Password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
+              error={errors.password?.message}
+              {...register('password')}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-8 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+          </div>
+
+          <div className="flex justify-end">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          <Button type="submit" fullWidth loading={loading} size="lg">
+            Sign In
+          </Button>
+        </form>
+
+        <div className="my-6 flex items-center">
+          <div className="flex-1 border-t border-gray-200 dark:border-gray-700" />
+          <span className="px-4 text-sm text-gray-500 dark:text-gray-400">OR</span>
+          <div className="flex-1 border-t border-gray-200 dark:border-gray-700" />
+        </div>
+
         <Button
           onClick={handleGoogleSignIn}
           variant="secondary"
           size="lg"
           fullWidth
-          loading={loading}
+          loading={googleLoading}
           className="flex items-center justify-center gap-3 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -78,8 +161,17 @@ export default function Login() {
           Sign in with Google
         </Button>
 
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-primary-600 hover:text-primary-700 font-medium">
+              Sign up
+            </Link>
+          </p>
+        </div>
+
+        <div className="mt-4 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             By signing in, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>

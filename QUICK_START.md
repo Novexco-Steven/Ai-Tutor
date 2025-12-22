@@ -1,4 +1,4 @@
-# LearnLit - Quick Start
+# Tulomi - Quick Start
 
 ## ✅ Setup Complete!
 
@@ -51,7 +51,7 @@ Open: http://localhost:3000
 - ✅ Google Gemini API key
 - ✅ All dependencies installed
 - ✅ TypeScript compilation working
-- ✅ Code committed to `claude/learnlit-mvp-core-sKAnR`
+- ✅ Code committed to `claude/tulomi-mvp-core`
 
 ## 📚 Documentation
 

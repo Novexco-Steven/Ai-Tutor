@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { useUser } from './UserContext';
 import { storage } from '@/utils/helpers';
+import { sendAchievementNotification, updateNotificationSchedules } from '@/services/pushNotifications';
 import type { GamificationData, Badge, UserBadge, XPEvent } from '@/types';
 
 // Badge definitions
@@ -90,10 +91,18 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<GamificationData>(defaultGamificationData);
   const [recentXPEvents, setRecentXPEvents] = useState<XPEvent[]>([]);
   const [perfectQuizCount, setPerfectQuizCount] = useState(0);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  // Check if notifications are enabled from localStorage settings
+  useEffect(() => {
+    const settingsKey = 'tulomi_settings';
+    const settings = storage.get<{ notifications?: { enabled?: boolean } }>(settingsKey, {});
+    setNotificationsEnabled(settings.notifications?.enabled ?? false);
+  }, []);
 
   // Load gamification data
   useEffect(() => {
-    const storageKey = profile?.id ? `learnlit_gamification_${profile.id}` : 'learnlit_gamification_guest';
+    const storageKey = profile?.id ? `tulomi_gamification_${profile.id}` : 'tulomi_gamification_guest';
     const saved = storage.get<GamificationData & { perfectQuizCount?: number }>(storageKey, defaultGamificationData);
     setData(saved);
     setPerfectQuizCount(saved.perfectQuizCount || 0);
@@ -101,7 +110,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
 
   // Save gamification data
   const saveData = useCallback((newData: GamificationData) => {
-    const storageKey = profile?.id ? `learnlit_gamification_${profile.id}` : 'learnlit_gamification_guest';
+    const storageKey = profile?.id ? `tulomi_gamification_${profile.id}` : 'tulomi_gamification_guest';
     storage.set(storageKey, { ...newData, perfectQuizCount });
     setData(newData);
   }, [profile, perfectQuizCount]);
@@ -188,6 +197,19 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
           updatedData.xp += badgeXP;
           updatedData.level = calculateLevel(updatedData.xp);
         }
+
+        // Send achievement notifications for earned badges
+        if (notificationsEnabled) {
+          newBadges.forEach(userBadge => {
+            const badge = BADGES.find(b => b.id === userBadge.badgeId);
+            if (badge) {
+              sendAchievementNotification(
+                `${badge.icon} ${badge.name}`,
+                badge.description
+              );
+            }
+          });
+        }
       }
 
       saveData(updatedData);
@@ -273,7 +295,7 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
       const newPerfectCount = perfectQuizCount + 1;
       setPerfectQuizCount(newPerfectCount);
       // Update storage with new perfect count
-      const storageKey = profile?.id ? `learnlit_gamification_${profile.id}` : 'learnlit_gamification_guest';
+      const storageKey = profile?.id ? `tulomi_gamification_${profile.id}` : 'tulomi_gamification_guest';
       const current = storage.get<GamificationData & { perfectQuizCount?: number }>(storageKey, defaultGamificationData);
       storage.set(storageKey, { ...current, perfectQuizCount: newPerfectCount });
 
@@ -329,6 +351,12 @@ export function GamificationProvider({ children }: { children: ReactNode }) {
     const neededXP = nextLevelXP - currentLevelXP;
     return neededXP > 0 ? (progressXP / neededXP) * 100 : 100;
   };
+
+  // Update notification schedules when streak data changes
+  useEffect(() => {
+    // Schedule streak reminder based on current streak
+    updateNotificationSchedules(data.currentStreak, 0, notificationsEnabled);
+  }, [data.currentStreak, notificationsEnabled]);
 
   const value = {
     data,

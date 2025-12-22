@@ -45,7 +45,7 @@ async function runSQL(sql) {
 }
 
 async function setupDatabase() {
-  console.log('\n🚀 LearnLit Database Setup\n');
+  console.log('\n🚀 Tulomi Database Setup\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   try {

@@ -10,15 +10,15 @@
 -- ADDITION AND SUBTRACTION TOPICS
 -- ============================================================================
 
--- Counting On
+-- Counting to 120
 INSERT INTO prompt_templates (
   prompt_type, subject_id, topic_id, name, description, prompt_content, priority
 )
 SELECT
   'topic_global',
   (SELECT id FROM subjects WHERE name = 'Math'),
-  (SELECT id FROM topics WHERE name = 'Counting On' AND grade_level_min = 1),
-  'Counting On Topic Guide',
+  (SELECT id FROM topics WHERE name = 'Counting to 120' AND grade_level_min = 1),
+  'Counting to 120 Topic Guide',
   'Comprehensive teaching approach for counting on strategy',
   'COUNTING ON - TOPIC TEACHING GUIDE
 
@@ -124,18 +124,18 @@ CONNECTION TO FUTURE LEARNING:
 Counting on develops into adding larger numbers mentally, using number lines for computation, and understanding the add-on meaning of subtraction. This efficiency strategy supports fact fluency and mental math.',
   90
 FROM dual
-WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Counting On' AND grade_level_min = 1)
+WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Counting to 120' AND grade_level_min = 1)
 ON CONFLICT DO NOTHING;
 
--- Making Ten
+-- Making Connections
 INSERT INTO prompt_templates (
   prompt_type, subject_id, topic_id, name, description, prompt_content, priority
 )
 SELECT
   'topic_global',
   (SELECT id FROM subjects WHERE name = 'Math'),
-  (SELECT id FROM topics WHERE name = 'Making Ten' AND grade_level_min = 1),
-  'Making Ten Topic Guide',
+  (SELECT id FROM topics WHERE name = 'Making Connections' AND grade_level_min = 1),
+  'Making Connections Topic Guide',
   'Comprehensive teaching approach for making ten strategy',
   'MAKING TEN - TOPIC TEACHING GUIDE
 
@@ -241,18 +241,18 @@ CONNECTION TO FUTURE LEARNING:
 Making 10 develops into mental math strategies for larger numbers, understanding place value, and working with addition within 100. The decomposition thinking supports algebraic reasoning and flexible computation.',
   90
 FROM dual
-WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Making Ten' AND grade_level_min = 1)
+WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Making Connections' AND grade_level_min = 1)
 ON CONFLICT DO NOTHING;
 
--- Doubles Facts
+-- Fact Families
 INSERT INTO prompt_templates (
   prompt_type, subject_id, topic_id, name, description, prompt_content, priority
 )
 SELECT
   'topic_global',
   (SELECT id FROM subjects WHERE name = 'Math'),
-  (SELECT id FROM topics WHERE name = 'Doubles Facts' AND grade_level_min = 1),
-  'Doubles Facts Topic Guide',
+  (SELECT id FROM topics WHERE name = 'Fact Families' AND grade_level_min = 1),
+  'Fact Families Topic Guide',
   'Comprehensive teaching approach for doubles facts',
   'DOUBLES FACTS - TOPIC TEACHING GUIDE
 
@@ -358,7 +358,7 @@ CONNECTION TO FUTURE LEARNING:
 Doubles support near-doubles strategy, mental math, and eventually multiplication by 2. The pattern recognition (all doubles sums are even) develops algebraic thinking. Doubles become benchmark facts for larger addition.',
   90
 FROM dual
-WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Doubles Facts' AND grade_level_min = 1)
+WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Fact Families' AND grade_level_min = 1)
 ON CONFLICT DO NOTHING;
 
 -- Fact Families
@@ -716,15 +716,15 @@ FROM dual
 WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Tens and Ones' AND grade_level_min = 1)
 ON CONFLICT DO NOTHING;
 
--- Comparing Numbers to 100
+-- Comparing Numbers
 INSERT INTO prompt_templates (
   prompt_type, subject_id, topic_id, name, description, prompt_content, priority
 )
 SELECT
   'topic_global',
   (SELECT id FROM subjects WHERE name = 'Math'),
-  (SELECT id FROM topics WHERE name = 'Comparing Numbers to 100' AND grade_level_min = 1),
-  'Comparing Numbers to 100 Topic Guide',
+  (SELECT id FROM topics WHERE name = 'Comparing Numbers' AND grade_level_min = 1),
+  'Comparing Numbers Topic Guide',
   'Comprehensive teaching approach for comparing numbers to 100',
   'COMPARING NUMBERS TO 100 - TOPIC TEACHING GUIDE
 
@@ -830,7 +830,7 @@ CONNECTION TO FUTURE LEARNING:
 Comparison using place value extends to larger numbers and eventually decimals. Understanding magnitude supports number line work, estimation, and operation sense. Comparison is foundational to measurement and data analysis.',
   90
 FROM dual
-WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Comparing Numbers to 100' AND grade_level_min = 1)
+WHERE EXISTS (SELECT 1 FROM topics WHERE name = 'Comparing Numbers' AND grade_level_min = 1)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================

@@ -1,0 +1,46 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Safe Learning Environment: Shield protecting child -->
+  <defs>
+    <linearGradient id="safeGreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shield background glow -->
+  <ellipse cx="100" cy="85" rx="55" ry="60" fill="#10b981" opacity="0.1"/>
+
+  <!-- Main shield -->
+  <path d="M100 20 L145 38 L145 78 C145 108 122 130 100 140 C78 130 55 108 55 78 L55 38 Z" fill="url(#safeGreen)"/>
+  <path d="M100 30 L135 45 L135 75 C135 100 117 118 100 127 C83 118 65 100 65 75 L65 45 Z" fill="#10b981"/>
+
+  <!-- Child icon in shield -->
+  <circle cx="100" cy="65" r="15" fill="white" opacity="0.9"/>
+  <circle cx="100" cy="61" r="6" fill="#10b981"/>
+  <ellipse cx="100" cy="73" rx="8" ry="5" fill="#10b981"/>
+
+  <!-- Checkmark -->
+  <circle cx="100" cy="105" r="12" fill="white" opacity="0.3"/>
+  <path d="M92 105 L98 111 L110 99" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- COPPA badge -->
+  <rect x="20" y="55" width="28" height="35" rx="4" fill="#1e293b"/>
+  <text x="34" y="70" font-family="Inter, sans-serif" font-size="6" font-weight="700" fill="#10b981" text-anchor="middle">COPPA</text>
+  <path d="M28 80 L32 84 L40 76" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- No ads icon -->
+  <rect x="152" y="55" width="28" height="35" rx="4" fill="#1e293b"/>
+  <circle cx="166" cy="68" r="8" fill="none" stroke="#ef4444" stroke-width="2"/>
+  <text x="166" y="71" font-family="Inter, sans-serif" font-size="6" fill="#ef4444" text-anchor="middle">AD</text>
+  <line x1="160" y1="74" x2="172" y2="62" stroke="#ef4444" stroke-width="2"/>
+  <text x="166" y="85" font-family="Inter, sans-serif" font-size="5" fill="#64748b" text-anchor="middle">No Ads</text>
+
+  <!-- Moderated badge -->
+  <rect x="75" y="140" width="50" height="15" rx="4" fill="#1e293b"/>
+  <circle cx="85" cy="147" r="4" fill="#22c55e"/>
+  <text x="110" y="150" font-family="Inter, sans-serif" font-size="6" fill="#94a3b8" text-anchor="middle">Moderated</text>
+
+  <!-- Decorative -->
+  <circle cx="25" cy="120" r="3" fill="#facc15" opacity="0.5"/>
+  <circle cx="175" cy="30" r="4" fill="#facc15" opacity="0.6"/>
+</svg>

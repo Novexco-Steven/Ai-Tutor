@@ -1,6 +1,6 @@
 # 🚀 START HERE
 
-## LearnLit is 99% Ready!
+## Tulomi is 99% Ready!
 
 Everything is configured except the database. Here's what to do:
 

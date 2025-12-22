@@ -1,10 +1,848 @@
 -- ============================================================================
--- MATH UNIT PROMPTS (ALL GRADES K-12)
+-- MATH UNIT PROMPTS (ALL GRADES Pre-K THROUGH CALCULUS)
 -- ============================================================================
 -- Comprehensive pedagogical prompts for each Math unit
 -- Each prompt provides teaching methodology, learning progressions,
 -- common misconceptions, and instructional strategies
 -- ============================================================================
+
+-- ============================================================================
+-- PRE-KINDERGARTEN MATH UNITS (Grade -1, Ages 3-5)
+-- ============================================================================
+
+-- Count to 3 (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Count to 3' AND grade_level = -1),
+  'Count to 3 Teaching Guide',
+  'Comprehensive pedagogical approach for teaching counting to 3 in Pre-K',
+  'COUNT TO 3 - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This is the foundational counting unit for our youngest learners. Children begin their mathematical journey by developing number sense with very small quantities (1, 2, and 3). At this stage, counting is learned through play, songs, movement, and hands-on exploration with real objects. The goal is joyful engagement with numbers, not rote memorization.
+
+LEARNING PROGRESSION:
+1. Verbal counting: Saying "1, 2, 3" in sequence
+2. Recognizing numerals 1, 2, and 3
+3. One-to-one correspondence with very small sets
+4. Understanding cardinality: The last number tells "how many"
+5. Representing quantities with objects and fingers
+6. Beginning ten-frame use (with just 1-3)
+
+DEVELOPMENTAL CONSIDERATIONS:
+Pre-kindergarteners are in the sensorimotor-preoperational transition. They learn through all senses - touching, moving, seeing, hearing. Attention spans are 3-5 minutes maximum. They need physical objects they can manipulate. Abstract symbols (numerals) come AFTER concrete understanding.
+
+COMMON DEVELOPMENTAL PATTERNS:
+- May say numbers without understanding quantity
+- May count the same object multiple times
+- May skip objects when counting
+- May not understand that "3" means the total, not just the last object touched
+- May recognize numerals as shapes without connecting to quantity
+
+INSTRUCTIONAL STRATEGIES:
+
+One Object at a Time:
+Place one object. "One." Add another. "Two." Add another. "Three." Touch each object as you count. Have children imitate.
+
+Finger Counting:
+Show one finger. "One." Show two. "Two." Show three. "Three." Children love using their own fingers.
+
+Songs and Rhymes:
+"One, Two, Buckle My Shoe," "One Potato, Two Potato," "This Old Man" - use songs constantly. Music activates memory.
+
+Simple Ten Frames:
+Use the first row of a ten-frame. Place 1, 2, or 3 objects. This builds early visual number sense.
+
+Everyday Counting:
+"How many crackers? One, two. Two crackers!" Count everything: toys, snacks, books, steps.
+
+Body Movement:
+"Clap three times!" "Jump one time!" "Touch your nose two times!" Connect numbers to physical actions.
+
+EMOTIONAL AND SOCIAL CONSIDERATIONS:
+- Celebrate all attempts enthusiastically
+- Never pressure or correct harshly
+- Allow children to watch and imitate before participating
+- Use calm, clear, slow speech
+- Repeat activities many times - repetition builds comfort
+- Follow the child''s pace and interest
+
+ASSESSMENT INDICATORS (Observation-Based):
+- Attempts to count along with songs
+- Points to objects when counting
+- Holds up fingers to show a quantity
+- Says numbers in order (1, 2, 3)
+- Shows beginning understanding that numbers mean "how many"
+
+VOCABULARY TO DEVELOP:
+one, two, three, count, how many, more
+
+MATERIALS:
+Blocks, buttons, counting bears, finger plays, simple picture books with counting, ten-frame mats',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Count to 3' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Count to 5 (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Count to 5' AND grade_level = -1),
+  'Count to 5 Teaching Guide',
+  'Comprehensive pedagogical approach for teaching counting to 5 in Pre-K',
+  'COUNT TO 5 - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit extends counting from 3 to 5, a significant expansion for young learners. Five is special because it maps to one hand - children can "see" and "feel" five through their fingers. This unit develops stronger one-to-one correspondence and cardinality understanding with slightly larger sets.
+
+LEARNING PROGRESSION:
+1. Verbal counting 1-5 with rhythm and songs
+2. Recognizing numerals 4 and 5
+3. One-to-one correspondence with sets of 4-5
+4. Cardinality with 4 and 5 objects
+5. "One more" and "one less" with small quantities
+6. Patterns: What comes after 4?
+
+DEVELOPMENTAL CONSIDERATIONS:
+Sets of 4 and 5 are harder to subitize (instantly recognize) than 1-3. Children may need to count to verify. The five-frame provides visual support. Continue using concrete objects and physical movement.
+
+COMMON CHALLENGES:
+- May say 4 and 5 but lose track when counting objects
+- May confuse 4 and 5 when recognizing numerals
+- May not yet understand "one more" or "one less"
+- Teen numbers may be confused with single digits (5 and 15)
+
+INSTRUCTIONAL STRATEGIES:
+
+Hand Connection:
+"Your hand has FIVE fingers! Let''s count them: 1, 2, 3, 4, 5!" This physical connection is powerful for young children.
+
+Five-Frame Introduction:
+Use a five-frame (a row of 5 squares). Fill in squares one by one. When full, it shows 5. This visual supports subitizing.
+
+Counting Games:
+"I Spy 5 blocks!" Count together to verify. Hide and find activities engage children.
+
+Comparison:
+"Do we have 4 or 5?" Build both quantities and compare. Use language: "4 is one less than 5."
+
+Number Songs to 5:
+"Five Little Ducks," "Five Little Monkeys," "This Little Piggy" - songs reinforce the counting sequence.
+
+Everyday Five:
+Point out "fives" in the environment: a hand, a star, five petals on some flowers.
+
+ASSESSMENT INDICATORS:
+- Counts objects to 5 accurately
+- Recognizes numerals 1-5
+- Shows 1-5 on fingers
+- Says what comes after 4
+- Beginning to understand "one more"
+
+VOCABULARY TO DEVELOP:
+four, five, after, next, one more, count, how many
+
+MATERIALS:
+Five-frames, counting bears, dice (1-5), finger rhymes, counting books',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Count to 5' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Count to 10 (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Count to 10' AND grade_level = -1),
+  'Count to 10 Teaching Guide',
+  'Comprehensive pedagogical approach for teaching counting to 10 in Pre-K',
+  'COUNT TO 10 - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit extends counting to 10, completing the first decade of our number system. Ten is foundational - it''s the basis of our place value system. Children learn that two hands make 10, and ten is a special, important number. Ten-frame work becomes central.
+
+LEARNING PROGRESSION:
+1. Verbal counting 1-10 fluently
+2. Recognizing numerals 6, 7, 8, 9, 10
+3. One-to-one correspondence with sets to 10
+4. Ten-frame as a visual model for 10
+5. "5 and some more" concept (6 = 5+1)
+6. Beginning to count backward from 10
+
+DEVELOPMENTAL CONSIDERATIONS:
+Sets of 6-10 are too large to subitize; children must count or use benchmarks (5 and some more). The ten-frame becomes essential. Numbers 6-10 may be confused with each other or with teen numbers.
+
+COMMON CHALLENGES:
+- Mixing up 6 and 9 (look similar)
+- Losing count when counting larger sets
+- Difficulty writing larger numerals
+- May rush and skip numbers
+- Not yet understanding 10 as a unit
+
+INSTRUCTIONAL STRATEGIES:
+
+Two-Hand Connection:
+Both hands together make 10. "5 on this hand, 5 on that hand, 10 fingers all together!"
+
+Ten-Frame Mastery:
+Use ten-frames extensively. Fill the frame and see a complete 10. Notice patterns: 6 is "5 and 1 more," 9 is "10 with 1 missing."
+
+Counting Collections:
+Provide small collections (buttons, beads) to count and organize. Counting the same set multiple times builds accuracy.
+
+Number Neighborhood:
+Explore each number 6-10. "Today is number 7 day!" Count 7 things, find 7s, build 7.
+
+Songs and Games:
+"Ten in the Bed," counting down games, number path games. Make counting to 10 a daily joy.
+
+Counting Back:
+"10, 9, 8, 7, 6, 5, 4, 3, 2, 1... BLASTOFF!" Rocket ship countdown makes backward counting fun.
+
+ASSESSMENT INDICATORS:
+- Counts objects to 10 accurately
+- Recognizes numerals 0-10
+- Uses ten-frame to show numbers
+- Counts backward from 10
+- Shows understanding of 10 as both hands
+
+VOCABULARY TO DEVELOP:
+six, seven, eight, nine, ten, ten-frame, backward, countdown
+
+MATERIALS:
+Ten-frames, double five-frames, counting objects, numeral cards, number line to 10',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Count to 10' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Count to 20 (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Count to 20' AND grade_level = -1),
+  'Count to 20 Teaching Guide',
+  'Comprehensive pedagogical approach for teaching counting to 20 in Pre-K',
+  'COUNT TO 20 - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces teen numbers (11-20) for advanced Pre-K learners. Teen numbers are conceptually challenging because their names don''t follow a clear pattern in English. The focus is on verbal counting to 20 and beginning to understand that teen numbers are "10 and some more."
+
+LEARNING PROGRESSION:
+1. Verbal counting to 20
+2. Recognizing teen number patterns
+3. Understanding teens as "10 and more"
+4. Using double ten-frames
+5. Counting larger collections
+6. Number sequence patterns
+
+DEVELOPMENTAL CONSIDERATIONS:
+This is an advanced skill for Pre-K. Many children will continue developing this in Kindergarten. Teen number names are irregular in English ("eleven" doesn''t sound like "one-teen"). Focus on verbal fluency and beginning conceptual understanding.
+
+COMMON CHALLENGES:
+- Teen number names are confusing (eleven, twelve, thirteen...)
+- May count "ten, eleven, twelve, thirteen, fourteen, fiveteen..."
+- Difficulty connecting verbal count to quantity for large sets
+- May reverse digits when seeing written teens
+
+INSTRUCTIONAL STRATEGIES:
+
+Verbal Fluency First:
+Practice saying numbers to 20 through songs and chants. "1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20!" Make it rhythmic.
+
+Double Ten-Frame:
+Use two ten-frames. Fill one completely (10), then add to the second. 14 is one full frame and 4 more. This visual is essential.
+
+"10 and Some More":
+Emphasize: "13 is 10 and 3 more." Build with objects and ten-frames. The structure matters more than memorization.
+
+Counting Songs:
+Songs that count to 20, like "1-2 Buckle My Shoe" extended, or specialized counting songs.
+
+Counting Collections:
+Provide collections of 11-20 objects. Organize into a group of 10 and extras. Count to find total.
+
+ASSESSMENT INDICATORS:
+- Counts verbally to 20
+- Begins to recognize written numbers 11-20
+- Shows understanding that teens are 10 and some more
+- Uses double ten-frame to represent teens
+
+VOCABULARY TO DEVELOP:
+eleven through twenty, teen, ten and more
+
+MATERIALS:
+Double ten-frames, counters (20+), numeral cards 11-20, number line to 20, counting songs',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Count to 20' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Comparing (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Comparing' AND grade_level = -1),
+  'Comparing Teaching Guide',
+  'Comprehensive pedagogical approach for teaching comparing in Pre-K',
+  'COMPARING - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops the ability to compare quantities using "more," "less/fewer," and "same." Comparison is foundational for understanding relationships between numbers. Children learn to look at two groups and determine which has more without necessarily counting each.
+
+LEARNING PROGRESSION:
+1. Visual comparison of obviously different quantities
+2. Language: more, less, fewer, same, equal
+3. Matching to compare (one-to-one)
+4. Beginning to compare by counting
+5. "Are there enough?" questions
+
+DEVELOPMENTAL CONSIDERATIONS:
+Young children often focus on arrangement rather than quantity. A longer line looks like "more" even if it has fewer objects. One-to-one matching (pairing objects from each group) builds understanding that arrangement doesn''t change quantity.
+
+COMMON CHALLENGES:
+- Thinking a spread-out group has "more"
+- Confusing "more" with "bigger" (size vs. quantity)
+- Not understanding that "fewer" and "less" mean the same thing for quantity
+- Difficulty when groups are close in size
+
+INSTRUCTIONAL STRATEGIES:
+
+Obvious Differences First:
+Start with clearly different quantities: 1 vs. 5, 2 vs. 10. Make the difference unmistakable.
+
+Matching to Compare:
+Place one group above the other, matching objects one-to-one. "Do they match? Which group has extras?"
+
+Same/Different:
+Play "same or different?" games. Make two groups the same, then different. Emphasize the vocabulary.
+
+Everyday Comparisons:
+"Does everyone have a snack?" (Are there enough for each child?) This contextualizes comparison.
+
+Conservation Exploration:
+Spread out one group without adding objects. "Is it still the same amount?" This challenges perceptual thinking.
+
+"More" Hunt:
+"Which basket has MORE blocks?" Have children point and explain.
+
+ASSESSMENT INDICATORS:
+- Uses "more" and "less/fewer" appropriately
+- Compares two groups by matching
+- Identifies when groups are the same
+- Answers "are there enough" questions
+- Beginning to understand arrangement doesn''t change quantity
+
+VOCABULARY TO DEVELOP:
+more, less, fewer, same, equal, enough, compare, match
+
+MATERIALS:
+Counting objects in two colors, matching mats, comparison cards, story books about comparing',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Comparing' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Positions (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Positions' AND grade_level = -1),
+  'Positions Teaching Guide',
+  'Comprehensive pedagogical approach for teaching positions in Pre-K',
+  'POSITIONS - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops spatial vocabulary and positional understanding. Children learn to describe where objects are located using words like "above," "below," "beside," "in front of," and "behind." This spatial reasoning is foundational for geometry and following directions.
+
+LEARNING PROGRESSION:
+1. Inside and outside
+2. Above and below, over and under
+3. In front of and behind
+4. Beside, next to
+5. Left and right (beginning awareness)
+6. Following positional directions
+
+DEVELOPMENTAL CONSIDERATIONS:
+Spatial concepts are relative - "above" depends on your perspective. Young children are egocentric and may struggle with viewpoints different from their own. Use physical experiences extensively.
+
+COMMON CHALLENGES:
+- Confusing above/below, in front/behind
+- Left and right are very difficult (often not mastered until age 6-7)
+- Understanding that position depends on perspective
+- Following multi-step positional directions
+
+INSTRUCTIONAL STRATEGIES:
+
+Body-Based Learning:
+"Put your hands ABOVE your head!" "Sit BEHIND the chair." Use children''s bodies to experience positions.
+
+Object Hiding Games:
+Hide a toy and give positional clues. "The bear is UNDER the table, BESIDE the chair." Children love seeking.
+
+Position Songs:
+Songs with position words, like a modified "Hokey Pokey" or position-based action songs.
+
+Obstacle Courses:
+"Go UNDER the tunnel, OVER the mat, AROUND the cone." Full-body experience of positions.
+
+Story Books:
+Books that emphasize position words, like "Rosie''s Walk" or "Over, Under, Through."
+
+Classroom Directions:
+Use position words throughout the day: "Put your coat IN your cubby." "Sit NEXT TO a friend."
+
+ASSESSMENT INDICATORS:
+- Follows simple positional directions
+- Uses position words to describe location
+- Places objects in specified positions
+- Understands inside/outside, above/below
+
+VOCABULARY TO DEVELOP:
+inside, outside, above, below, over, under, in front of, behind, beside, next to, between
+
+MATERIALS:
+Position word cards, small toys for hiding, obstacle course materials, positional story books',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Positions' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Classify and Sort (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Classify and Sort' AND grade_level = -1),
+  'Classify and Sort Teaching Guide',
+  'Comprehensive pedagogical approach for teaching classification in Pre-K',
+  'CLASSIFY AND SORT - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops the ability to recognize attributes and sort objects into groups. Classification is fundamental mathematical thinking - looking for what''s the same and what''s different. Children sort by one attribute (color, shape, size) and explain their sorting rule.
+
+LEARNING PROGRESSION:
+1. Identifying same and different
+2. Sorting by color
+3. Sorting by shape
+4. Sorting by size
+5. Explaining "how I sorted"
+6. Finding objects that don''t belong
+
+DEVELOPMENTAL CONSIDERATIONS:
+Pre-kindergarteners sort by one attribute at a time. Sorting by two attributes (red AND small) is too complex. Focus on clear, obvious attributes first. The ability to verbalize the sorting rule is emerging.
+
+COMMON CHALLENGES:
+- Switching sorting rules mid-task
+- Difficulty articulating why objects go together
+- May sort by personal preference rather than attribute
+- Focusing on one attribute while ignoring others
+
+INSTRUCTIONAL STRATEGIES:
+
+Free Sorting:
+Give a collection of objects. "Put the ones that go together in the same pile." Observe and discuss their rule.
+
+Color Sorting:
+Start with color - often the most obvious attribute. "Put all the red ones here."
+
+Shape Sorting:
+Sort by shape: all circles, all squares. Use clear shape categories.
+
+Size Sorting:
+Big and small sorting. Start with obviously different sizes.
+
+"What''s My Rule?":
+Sort objects and have children guess the rule. Then let them make a rule for others to guess.
+
+"Which Doesn''t Belong?":
+Show 4 objects where 3 share an attribute. "Which one doesn''t belong? Why?"
+
+ASSESSMENT INDICATORS:
+- Sorts objects by a given attribute
+- Explains their sorting rule
+- Identifies when objects are the same or different
+- Finds objects that don''t belong in a group
+
+VOCABULARY TO DEVELOP:
+same, different, sort, group, color, shape, size, belong
+
+MATERIALS:
+Sorting trays, attribute blocks, colored bears/counters, everyday objects to sort, sorting mats',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Classify and Sort' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Patterns (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Patterns' AND grade_level = -1),
+  'Patterns Teaching Guide',
+  'Comprehensive pedagogical approach for teaching patterns in Pre-K',
+  'PATTERNS - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces the concept of patterns - sequences that repeat in a predictable way. Recognizing and creating patterns develops algebraic thinking foundations. Children work with simple AB patterns (like red-blue-red-blue) and begin to predict "what comes next."
+
+LEARNING PROGRESSION:
+1. Recognizing patterns in the environment
+2. Copying simple AB patterns
+3. Extending AB patterns ("what comes next?")
+4. Creating own AB patterns
+5. Exploring ABB and AAB patterns
+
+DEVELOPMENTAL CONSIDERATIONS:
+Patterns require seeing the repeating unit - a conceptual leap. Start with clear, simple AB patterns using concrete materials. Sound and movement patterns are as important as visual patterns.
+
+COMMON CHALLENGES:
+- Not recognizing the core unit that repeats
+- Creating patterns that don''t repeat
+- Difficulty predicting what comes next
+- Confusing random sequences with patterns
+
+INSTRUCTIONAL STRATEGIES:
+
+Body Patterns:
+Clap-stomp-clap-stomp. Stand-sit-stand-sit. Use body movements to create and copy patterns.
+
+Color Patterns:
+Red-blue-red-blue with blocks. The visual is clear and appealing.
+
+Sound Patterns:
+Clap-snap-clap-snap. Loud-quiet-loud-quiet. Pattern work isn''t just visual.
+
+Pattern Trains:
+Use connecting cubes to build pattern "trains." Extend them together.
+
+Nature Patterns:
+Find patterns in nature: stripes, spots, petals. Patterns are everywhere!
+
+"What Comes Next?":
+Build a pattern and stop. "What comes next?" Children predict and verify.
+
+Error Correction:
+Make a pattern with one mistake. "Is this a pattern? What''s wrong?"
+
+ASSESSMENT INDICATORS:
+- Recognizes simple patterns
+- Copies an AB pattern
+- Extends an AB pattern correctly
+- Creates own simple pattern
+- Says what comes next in a pattern
+
+VOCABULARY TO DEVELOP:
+pattern, repeat, next, same, over and over, core
+
+MATERIALS:
+Pattern blocks, colored cubes, pattern strips, stamps, beads for stringing',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Patterns' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Size (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Size' AND grade_level = -1),
+  'Size Teaching Guide',
+  'Comprehensive pedagogical approach for teaching size in Pre-K',
+  'SIZE - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops understanding of size concepts and comparison. Children learn vocabulary for describing and comparing sizes: big/small, long/short, tall/short, heavy/light. These early measurement concepts prepare for formal measurement in later grades.
+
+LEARNING PROGRESSION:
+1. Big and small
+2. Long and short
+3. Tall and short
+4. Heavy and light
+5. Comparing sizes directly
+6. Ordering by size (small to big)
+
+DEVELOPMENTAL CONSIDERATIONS:
+Size is relative - something can be big compared to one thing and small compared to another. Use direct comparison extensively. Perceptual features may confuse (a thin but tall object vs. short but wide).
+
+COMMON CHALLENGES:
+- Confusing long/short with tall/short
+- Not understanding relative size
+- Difficulty with "medium" concept
+- Confusing size with quantity
+
+INSTRUCTIONAL STRATEGIES:
+
+Direct Comparison:
+Place two objects side by side. "Which is longer? Which is shorter?" Always compare directly.
+
+Body Comparisons:
+Who is taller? Compare children''s heights. Compare hand sizes, foot sizes.
+
+Size Vocabulary:
+Use rich vocabulary: big/small, long/short, tall/short, wide/narrow, heavy/light. Practice in context.
+
+Ordering Activities:
+Order 3 objects by size: small, medium, big. Use nesting cups, stacking rings.
+
+Heavy and Light:
+Hold objects to compare weight. Use a simple balance scale for visual comparison.
+
+Size Sorts:
+Sort objects into "big" and "small" piles. Discuss why each object belongs.
+
+ASSESSMENT INDICATORS:
+- Uses size vocabulary appropriately
+- Compares two objects by size attribute
+- Orders objects from small to big
+- Identifies heavier and lighter objects
+
+VOCABULARY TO DEVELOP:
+big, small, long, short, tall, wide, narrow, heavy, light, medium
+
+MATERIALS:
+Nesting cups, stacking rings, measuring spoons, balance scale, objects of various sizes',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Size' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Money Introduction (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Money Introduction' AND grade_level = -1),
+  'Money Introduction Teaching Guide',
+  'Comprehensive pedagogical approach for introducing money in Pre-K',
+  'MONEY INTRODUCTION - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit provides a very basic introduction to money as a concept. Children learn to recognize coins, understand that money is used to buy things, and begin to identify penny, nickel, dime, and quarter. Values and counting money are not the focus - just recognition and purpose.
+
+LEARNING PROGRESSION:
+1. Understanding money is used to buy things
+2. Recognizing coins as different from other objects
+3. Identifying pennies
+4. Identifying nickels, dimes, quarters by sight
+5. Pretend play with money
+
+DEVELOPMENTAL CONSIDERATIONS:
+Pre-K children don''t need to know coin values. The focus is recognition and the concept that money is exchanged for goods. Pretend play (store, restaurant) provides meaningful context.
+
+COMMON CHALLENGES:
+- Thinking bigger coins are worth more
+- Confusing coins by appearance
+- Not understanding the exchange concept
+- May think more coins = more money
+
+INSTRUCTIONAL STRATEGIES:
+
+Coin Recognition:
+"This is a penny. It''s the brown/copper one." Focus on visual features, not values.
+
+Pretend Store:
+Set up a pretend store. Children use "money" (real coins or play money) to "buy" items. Focus on the exchange.
+
+Coin Sorting:
+Sort coins by type: all pennies here, all nickels here. This is classification practice.
+
+Coin Rubbing:
+Use paper and crayons to make coin rubbings. Children examine details.
+
+Stories About Money:
+Read books about shopping, saving, and using money. Build conceptual understanding.
+
+Real-World Connection:
+Discuss that parents use money to buy groceries, clothes, etc. Money helps us get what we need.
+
+ASSESSMENT INDICATORS:
+- Understands money is used to buy things
+- Recognizes and names common coins
+- Participates in pretend money play
+- Sorts coins by type
+
+VOCABULARY TO DEVELOP:
+money, coin, penny, nickel, dime, quarter, buy, pay, store
+
+MATERIALS:
+Real coins, play money, pretend store setup, coin sorting trays, piggy bank',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Money Introduction' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Flat Shapes (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Flat Shapes' AND grade_level = -1),
+  'Flat Shapes Teaching Guide',
+  'Comprehensive pedagogical approach for teaching 2D shapes in Pre-K',
+  'FLAT SHAPES - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces basic two-dimensional (flat) shapes: circle, square, triangle, and rectangle. Children learn to recognize these shapes in various orientations and sizes, find them in their environment, and describe them using emerging attribute language.
+
+LEARNING PROGRESSION:
+1. Identifying circles
+2. Identifying squares
+3. Identifying triangles
+4. Identifying rectangles
+5. Finding shapes in the environment
+6. Beginning to describe shapes (sides, corners)
+
+DEVELOPMENTAL CONSIDERATIONS:
+Young children recognize shapes by overall appearance. They may only recognize "prototypical" examples (an equilateral triangle "pointing up"). Expose children to varied examples in different orientations, colors, and sizes.
+
+COMMON CHALLENGES:
+- Only recognizing prototypical shapes
+- Confusing squares and rectangles
+- Thinking a rotated square is a "diamond," not a square
+- Not recognizing shapes in the environment
+
+INSTRUCTIONAL STRATEGIES:
+
+Shape Recognition Games:
+Show a shape. "Is this a circle or a square?" Use clear examples first.
+
+Shape Hunts:
+Find circles in the classroom: clock, button, wheel. Shapes are everywhere!
+
+Multiple Examples:
+Show triangles of all types (equilateral, isosceles, scalene) in different orientations. "These are ALL triangles."
+
+Shape Sorting:
+Sort shapes into categories. All circles here, all squares there.
+
+Shape Art:
+Make pictures using shapes. A house = triangle + square. A tree = triangle + rectangle.
+
+Feel the Shape:
+Put shapes in a bag. Feel and identify without looking. Notice sides and corners.
+
+Shape Songs:
+Songs about shapes help memory: "This is a circle, it goes round and round..."
+
+ASSESSMENT INDICATORS:
+- Names circles, squares, triangles, rectangles
+- Finds shapes in the environment
+- Recognizes shapes in various orientations
+- Beginning to describe shapes by attributes
+
+VOCABULARY TO DEVELOP:
+circle, square, triangle, rectangle, shape, side, corner, round, flat
+
+MATERIALS:
+Shape blocks, shape cards, shape puzzles, shape books, shapes in the environment',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Flat Shapes' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
+
+-- Solid Shapes (Pre-K)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Solid Shapes' AND grade_level = -1),
+  'Solid Shapes Teaching Guide',
+  'Comprehensive pedagogical approach for teaching 3D shapes in Pre-K',
+  'SOLID SHAPES - PRE-KINDERGARTEN UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces three-dimensional (solid) shapes: sphere, cube, cylinder, and cone. Children learn that these shapes are different from flat shapes because they can be held and have depth. They explore how solids roll, stack, and slide.
+
+LEARNING PROGRESSION:
+1. Distinguishing flat from solid (2D vs 3D)
+2. Identifying spheres (balls)
+3. Identifying cubes (blocks)
+4. Identifying cylinders (cans)
+5. Identifying cones
+6. Exploring properties: roll, stack, slide
+
+DEVELOPMENTAL CONSIDERATIONS:
+Three-dimensional shapes are more concrete for young children because they can hold them. The challenge is connecting solid shapes to their flat "faces" (a cube has square faces). Use real objects extensively.
+
+COMMON CHALLENGES:
+- Calling a sphere a "circle" (confusing 3D with 2D)
+- Calling a cube a "square"
+- Not understanding that faces are flat shapes on solid shapes
+- Difficulty with vocabulary (cylinder, cone)
+
+INSTRUCTIONAL STRATEGIES:
+
+Real Object Connection:
+"A ball is a sphere. A box is like a cube. A can is a cylinder. An ice cream cone is a cone." Use familiar objects.
+
+Exploration Table:
+Set up an exploration table with 3D shapes to handle, stack, roll, and examine.
+
+Roll or Stack?:
+Explore which shapes roll (sphere, cylinder, cone on side) and which stack (cube). Why?
+
+2D/3D Connection:
+Show the flat faces of 3D shapes. "The face of this cube is a square." Trace around faces.
+
+Shape Hunt 3D:
+Find 3D shapes in the classroom and at home. Balls, boxes, cans, party hats.
+
+Building:
+Build with 3D shapes. Towers, houses, structures. Which shapes are good for building?
+
+Shape Sorting:
+Sort 3D shapes: all spheres here, all cubes there. Describe the shapes.
+
+ASSESSMENT INDICATORS:
+- Identifies sphere, cube, cylinder, cone
+- Distinguishes flat shapes from solid shapes
+- Describes how shapes move (roll, stack, slide)
+- Finds solid shapes in the environment
+
+VOCABULARY TO DEVELOP:
+sphere, cube, cylinder, cone, solid, ball, box, can, roll, stack, slide, face
+
+MATERIALS:
+3D shape sets, balls, boxes, cans, party hats, building blocks, everyday 3D objects',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Solid Shapes' AND grade_level = -1)
+ON CONFLICT DO NOTHING;
 
 -- ============================================================================
 -- KINDERGARTEN MATH UNITS
@@ -1700,6 +2538,716 @@ Pythagorean theorem, hypotenuse, leg, sine, cosine, tangent, opposite, adjacent,
   80
 FROM dual
 WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Right Triangles and Trigonometry' AND grade_level = 10)
+ON CONFLICT DO NOTHING;
+
+-- ============================================================================
+-- CALCULUS MATH UNITS (Grade 13 - Advanced)
+-- ============================================================================
+
+-- Functions Review (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Functions Review' AND grade_level = 13),
+  'Functions Review Teaching Guide',
+  'Comprehensive pedagogical approach for reviewing functions in Calculus',
+  'FUNCTIONS REVIEW - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit reviews and deepens understanding of functions as preparation for calculus. Students must be fluent with function notation, operations, composition, and inverses before studying limits and derivatives. This review identifies gaps while extending prior knowledge.
+
+LEARNING PROGRESSION:
+1. Function definition, domain, and range
+2. Evaluating functions and function notation f(x)
+3. Function operations (sum, difference, product, quotient)
+4. Composition of functions f(g(x))
+5. Inverse functions and their properties
+6. Analyzing functions graphically
+
+PREREQUISITE KNOWLEDGE:
+Students should have studied functions in Algebra II and Pre-Calculus. This unit reviews and solidifies understanding. Gaps in function knowledge will create major obstacles in calculus.
+
+COMMON MISCONCEPTIONS:
+- f(x + h) does not equal f(x) + f(h) (functions are not distributive)
+- Confusing the inverse function f^(-1)(x) with 1/f(x)
+- Not understanding that domain restrictions carry through operations
+- Thinking all functions have inverses (only one-to-one functions do)
+- Difficulty reading function values from graphs
+
+INSTRUCTIONAL STRATEGIES:
+
+Function Notation Fluency:
+Practice evaluating f(3), f(-2), f(a), f(x+h). This notation is used constantly in calculus. Speed and accuracy matter.
+
+Graphical Analysis:
+Given a graph, students should identify domain, range, intercepts, maximum/minimum values, and intervals of increase/decrease.
+
+Composition Understanding:
+f(g(x)) means "apply g first, then f." Use real-world contexts: if g converts Celsius to Fahrenheit and f converts Fahrenheit to Kelvin, what does f(g(x)) do?
+
+Inverse Functions:
+Inverses "undo" functions. If f(2) = 5, then f^(-1)(5) = 2. Graphically, inverses reflect over y = x. Only one-to-one functions have inverses.
+
+Function Transformations:
+Review how parameters affect graphs: shifts, stretches, reflections. This understanding helps with derivative interpretation later.
+
+ASSESSMENT INDICATORS:
+- Evaluates functions for various inputs including expressions
+- Finds and composes functions correctly
+- Determines if a function has an inverse; finds inverses
+- Reads and interprets information from graphs
+- Articulates domain and range in set and interval notation
+
+VOCABULARY TO DEVELOP:
+function, domain, range, composition, inverse, one-to-one, onto, f(x) notation, input, output, vertical line test, horizontal line test
+
+CONNECTIONS TO CALCULUS:
+Understanding f(x+h) is essential for the derivative definition. Composition is used in the chain rule. Inverses are used with inverse trigonometric functions and in related rates.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Functions Review' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Introduction to Limits (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Introduction to Limits' AND grade_level = 13),
+  'Introduction to Limits Teaching Guide',
+  'Comprehensive pedagogical approach for teaching limits in Calculus',
+  'INTRODUCTION TO LIMITS - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces the foundational concept of calculus: the limit. Limits describe behavior as inputs approach particular values, even when the function is undefined there. This concept underlies both derivatives and integrals. Students develop both intuitive understanding and computational skill.
+
+LEARNING PROGRESSION:
+1. Intuitive understanding of limits from graphs and tables
+2. One-sided limits (left and right)
+3. When limits exist and when they don''t
+4. Limit notation and language
+5. Graphical limits vs. function values
+6. Limits involving infinity
+
+CONCEPTUAL FOUNDATION:
+Limits describe what a function APPROACHES, not what it EQUALS. The limit as x approaches 2 of f(x) may exist even if f(2) is undefined. This distinction is subtle but critical.
+
+COMMON MISCONCEPTIONS:
+- Thinking the limit equals the function value (they can differ)
+- Believing limits involve "reaching" or "arriving at" a value
+- Confusing the limit as x→a with f(a)
+- Thinking if f(a) is undefined, the limit must not exist
+- Not distinguishing between left and right limits
+
+INSTRUCTIONAL STRATEGIES:
+
+Graphical Introduction:
+Start with graphs. "As x gets closer and closer to 2, what value is y approaching?" Use visual intuition before formalism.
+
+Table of Values:
+Create tables with x values approaching a from both sides. Watch the y values converge (or not). This builds intuition.
+
+Language Precision:
+Use precise language: "The limit of f(x) as x approaches 2 is 5" means "y values approach 5 as x values approach 2."
+
+One-Sided Limits:
+If left and right limits differ, the two-sided limit doesn''t exist. Use jump discontinuities to illustrate.
+
+Limit vs. Value:
+Show examples where the limit exists but the function value is different or undefined. A hole in the graph has a limit but no value.
+
+Infinity Carefully:
+Limits can "equal" infinity (unbounded behavior) or limits as x approaches infinity (end behavior). Clarify these different uses.
+
+ASSESSMENT INDICATORS:
+- Estimates limits from graphs and tables
+- Distinguishes limits from function values
+- Identifies one-sided limits
+- Recognizes when limits don''t exist and why
+- Uses proper limit notation
+
+VOCABULARY TO DEVELOP:
+limit, approaches, one-sided limit, left-hand limit, right-hand limit, limit does not exist, infinity, unbounded, indeterminate
+
+HISTORICAL CONTEXT:
+The rigorous definition of limits (epsilon-delta) was developed in the 19th century by Cauchy and Weierstrass. Before this, calculus worked but lacked rigorous foundation.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Introduction to Limits' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Calculate Limits (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Calculate Limits' AND grade_level = 13),
+  'Calculate Limits Teaching Guide',
+  'Comprehensive pedagogical approach for calculating limits in Calculus',
+  'CALCULATE LIMITS - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops algebraic techniques for computing limits. While graphical intuition is important, calculus requires precise calculation. Students learn limit laws and strategies for handling indeterminate forms like 0/0.
+
+LEARNING PROGRESSION:
+1. Limit laws (sum, product, quotient, constant multiple)
+2. Direct substitution (when it works)
+3. Polynomial and rational function limits
+4. Factoring to resolve 0/0 forms
+5. Rationalizing techniques
+6. Trigonometric limits (sin x/x as x→0)
+
+COMPUTATIONAL FOCUS:
+This unit is algebraically intensive. Students must be fluent with factoring, simplifying, and algebraic manipulation. Review these skills as needed.
+
+COMMON MISCONCEPTIONS:
+- Thinking 0/0 means the limit is undefined (it''s indeterminate - could be any value)
+- Not recognizing when direct substitution works
+- Errors in factoring and simplification
+- Forgetting domain restrictions after cancellation
+- Misapplying limit laws
+
+INSTRUCTIONAL STRATEGIES:
+
+Direct Substitution First:
+Always try plugging in the value first. If you get a number (not 0/0 or ∞/∞), that''s the limit. Many limits are this simple.
+
+Indeterminate Forms:
+0/0 is "indeterminate" - it could equal any value. Factor, simplify, or rationalize to find the actual limit. 0/0 is not an answer.
+
+Limit Laws:
+The limit of a sum is the sum of limits (if both exist). Same for products. For quotients, denominators can''t approach 0. These laws let us work with pieces.
+
+Factoring Practice:
+Many limits require factoring the numerator and denominator, then canceling the factor causing 0/0. Fluent factoring is essential.
+
+Trigonometric Limits:
+The fundamental limit lim(x→0) sin(x)/x = 1 is derived from geometry. Use it to evaluate other trig limits through algebraic manipulation.
+
+Strategy Comparison:
+Give the same limit to different students using different methods. Compare approaches. Build strategic flexibility.
+
+ASSESSMENT INDICATORS:
+- Evaluates limits using limit laws
+- Recognizes and resolves indeterminate forms
+- Uses factoring and rationalization appropriately
+- Applies trigonometric limit formulas
+- Shows clear, justified work
+
+VOCABULARY TO DEVELOP:
+limit laws, direct substitution, indeterminate form, 0/0, rationalize, conjugate, algebraic manipulation
+
+CONNECTIONS:
+These skills directly prepare for derivative calculations using the limit definition. L''Hopital''s Rule (later) provides another tool for indeterminate forms.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Calculate Limits' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Continuity (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Continuity' AND grade_level = 13),
+  'Continuity Teaching Guide',
+  'Comprehensive pedagogical approach for teaching continuity in Calculus',
+  'CONTINUITY - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit defines continuity precisely using limits and explores its implications. A function is continuous at a point if the limit equals the function value there. Continuous functions have important properties that make calculus work, including the Intermediate Value Theorem.
+
+LEARNING PROGRESSION:
+1. Definition of continuity at a point
+2. Three conditions for continuity
+3. Types of discontinuities (removable, jump, infinite)
+4. Continuity on intervals
+5. Continuity of elementary functions
+6. Intermediate Value Theorem
+
+DEFINITION PRECISION:
+A function f is continuous at x = a if: (1) f(a) exists, (2) lim(x→a) f(x) exists, and (3) lim(x→a) f(x) = f(a). All three conditions must hold.
+
+COMMON MISCONCEPTIONS:
+- Thinking continuous means "smooth" (continuity doesn''t require differentiability)
+- Believing a function with no breaks in its graph is continuous everywhere (must check formally)
+- Confusing different types of discontinuities
+- Not understanding why IVT requires continuity
+- Thinking piecewise functions are always discontinuous
+
+INSTRUCTIONAL STRATEGIES:
+
+Definition Check:
+For any continuity question, systematically check all three conditions. This structured approach prevents errors.
+
+Discontinuity Types:
+Removable discontinuity: hole in graph (limit exists but doesn''t equal value). Jump: left and right limits differ. Infinite: vertical asymptote.
+
+Visual and Algebraic:
+Connect graphical intuition to algebraic verification. Students should identify discontinuities from graphs AND prove continuity algebraically.
+
+Elementary Functions:
+Polynomials are continuous everywhere. Rational functions are continuous except where denominator is zero. These facts simplify many problems.
+
+Intermediate Value Theorem:
+If f is continuous on [a,b] and N is between f(a) and f(b), then f(c) = N for some c in (a,b). This guarantees solutions exist.
+
+IVT Applications:
+Use IVT to show equations have solutions. "f(1) = -2 and f(2) = 3, and f is continuous, so f(c) = 0 for some c between 1 and 2."
+
+ASSESSMENT INDICATORS:
+- Verifies continuity using the three-condition definition
+- Classifies discontinuities by type
+- Identifies where elementary functions are continuous
+- Applies Intermediate Value Theorem correctly
+- Analyzes piecewise function continuity
+
+VOCABULARY TO DEVELOP:
+continuous, discontinuity, removable discontinuity, jump discontinuity, infinite discontinuity, piecewise function, Intermediate Value Theorem
+
+CONNECTIONS:
+Continuity is required for many calculus theorems: IVT, Mean Value Theorem, Extreme Value Theorem. Understanding continuity is essential.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Continuity' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Introduction to Derivatives (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Introduction to Derivatives' AND grade_level = 13),
+  'Introduction to Derivatives Teaching Guide',
+  'Comprehensive pedagogical approach for introducing derivatives in Calculus',
+  'INTRODUCTION TO DERIVATIVES - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces the derivative as the instantaneous rate of change, building from average rate of change. The derivative measures the slope of the tangent line at a point and has profound applications in science, economics, and engineering.
+
+LEARNING PROGRESSION:
+1. Average rate of change (slope of secant line)
+2. Instantaneous rate of change (slope of tangent line)
+3. The derivative as a limit
+4. Derivative at a point vs. derivative function
+5. Differentiability and its relationship to continuity
+6. Notation: f''(x), dy/dx, Df(x)
+
+CONCEPTUAL FOUNDATION:
+The derivative answers: "How fast is y changing when x equals a particular value?" This is instantaneous rate of change, found by taking the limit of average rates over smaller intervals.
+
+COMMON MISCONCEPTIONS:
+- Confusing average and instantaneous rates of change
+- Thinking the derivative IS the tangent line (it''s the SLOPE of the tangent line)
+- Believing differentiable means continuous (differentiable implies continuous, not vice versa)
+- Errors in limit calculations with the definition
+- Not understanding derivative as a function
+
+INSTRUCTIONAL STRATEGIES:
+
+From Secant to Tangent:
+Start with average rate of change (secant line slope). As the two points get closer, the secant approaches the tangent. The limit IS the derivative.
+
+Multiple Representations:
+Show the same derivative as: limit of difference quotient, slope of tangent line, instantaneous velocity, rate of change. Connect interpretations.
+
+The Limit Definition:
+f''(a) = lim(h→0) [f(a+h) - f(a)]/h. Practice using this definition before shortcut rules. Understanding the definition is essential.
+
+Physical Context:
+If position is s(t), then s''(t) is velocity. If velocity is v(t), then v''(t) is acceleration. Physics provides intuition.
+
+Differentiability:
+Corners, cusps, and discontinuities prevent differentiability. Explore graphically why the limit doesn''t exist at these points.
+
+Notation Fluency:
+f''(x), dy/dx, y'', d/dx[f(x)] all mean the same thing. Practice reading and using different notations.
+
+ASSESSMENT INDICATORS:
+- Uses the limit definition to find derivatives
+- Interprets derivative as instantaneous rate of change
+- Finds equations of tangent lines
+- Identifies where functions are not differentiable
+- Translates between notations
+
+VOCABULARY TO DEVELOP:
+derivative, rate of change, instantaneous, tangent line, secant line, difference quotient, differentiable, slope
+
+HISTORICAL CONTEXT:
+Newton and Leibniz independently developed calculus in the 17th century. Their notations (dot notation, dy/dx) reflect different conceptual approaches.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Introduction to Derivatives' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Derivative Rules (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Derivative Rules' AND grade_level = 13),
+  'Derivative Rules Teaching Guide',
+  'Comprehensive pedagogical approach for teaching derivative rules in Calculus',
+  'DERIVATIVE RULES - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops the fundamental rules for differentiation. These rules (power, product, quotient, chain) make finding derivatives efficient without using the limit definition every time. Mastery of these rules is essential for all further calculus work.
+
+LEARNING PROGRESSION:
+1. Constant rule and power rule
+2. Constant multiple and sum/difference rules
+3. Product rule
+4. Quotient rule
+5. Chain rule
+6. Combining rules for complex functions
+
+COMPUTATIONAL FLUENCY:
+This unit requires extensive practice. Students must differentiate fluently to succeed in applications. The rules must become automatic.
+
+COMMON MISCONCEPTIONS:
+- Applying the product rule as d/dx[fg] = f''g'' (it''s f''g + fg'')
+- Forgetting the denominator squared in the quotient rule
+- Not recognizing when to use the chain rule
+- Errors in applying multiple rules together
+- Confusing power rule with chain rule for powers of functions
+
+INSTRUCTIONAL STRATEGIES:
+
+Build from Definition:
+Prove each rule using the limit definition. Students who understand WHY rules work apply them more accurately.
+
+Power Rule Foundation:
+d/dx[x^n] = nx^(n-1) is the most-used rule. Practice with positive, negative, and fractional exponents.
+
+Product Rule Pattern:
+"First times derivative of second, plus second times derivative of first." Create memorable patterns but ensure understanding.
+
+Quotient Rule Pattern:
+"Low d-high minus high d-low, all over low squared." The jingle helps, but algebraic understanding is essential.
+
+Chain Rule Critical:
+The chain rule handles composition: d/dx[f(g(x))] = f''(g(x)) · g''(x). Practice identifying "outside" and "inside" functions.
+
+Combining Rules:
+Complex functions require multiple rules. Show strategy: work from outside in, use chain rule for composition, product/quotient for products/quotients.
+
+ASSESSMENT INDICATORS:
+- Applies each rule correctly
+- Recognizes which rules to use
+- Combines multiple rules accurately
+- Simplifies derivative answers appropriately
+- Works efficiently and accurately
+
+VOCABULARY TO DEVELOP:
+power rule, product rule, quotient rule, chain rule, inside function, outside function, composite function, differentiate
+
+PRACTICE EMPHASIS:
+This unit requires more practice than most. Assign many derivatives of increasing complexity. Speed and accuracy both matter.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Derivative Rules' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Applications of Derivatives (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Applications of Derivatives' AND grade_level = 13),
+  'Applications of Derivatives Teaching Guide',
+  'Comprehensive pedagogical approach for derivative applications in Calculus',
+  'APPLICATIONS OF DERIVATIVES - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit applies derivatives to solve real-world problems. Students use derivatives for optimization, related rates, curve sketching, and understanding function behavior. This is where calculus becomes a powerful problem-solving tool.
+
+LEARNING PROGRESSION:
+1. Related rates problems
+2. Critical points and extrema
+3. First derivative test
+4. Second derivative test
+5. Curve sketching
+6. Optimization problems
+7. Linear approximation
+
+KEY APPLICATIONS:
+Derivatives reveal where functions increase/decrease, have maximum/minimum values, are concave up/down, and how quantities change in relation to each other.
+
+COMMON MISCONCEPTIONS:
+- Confusing relative and absolute extrema
+- Setting f(x) = 0 instead of f''(x) = 0 to find critical points
+- Forgetting to check endpoints in closed interval problems
+- Errors in setting up related rates equations
+- Not verifying that a critical point is actually a maximum/minimum
+
+INSTRUCTIONAL STRATEGIES:
+
+Related Rates Framework:
+1. Draw and label diagram
+2. Identify known and unknown rates
+3. Write equation relating quantities
+4. Differentiate implicitly with respect to time
+5. Substitute and solve
+
+Optimization Framework:
+1. Understand what''s being optimized
+2. Write objective function
+3. Use constraints to get function of one variable
+4. Find critical points
+5. Verify maximum or minimum
+
+Curve Sketching Checklist:
+Domain, intercepts, symmetry, asymptotes, first derivative (increase/decrease, extrema), second derivative (concavity, inflection points).
+
+First vs. Second Derivative Tests:
+First derivative test: sign changes of f'' determine local max/min.
+Second derivative test: f''''(c) < 0 means local max, f''''(c) > 0 means local min.
+
+Real-World Context:
+Optimization: minimum cost, maximum profit, minimum material.
+Related rates: expanding circles, filling tanks, moving objects.
+
+ASSESSMENT INDICATORS:
+- Sets up and solves related rates problems
+- Finds and classifies critical points
+- Determines absolute extrema on intervals
+- Sketches curves using calculus analysis
+- Solves optimization word problems
+
+VOCABULARY TO DEVELOP:
+critical point, local maximum, local minimum, absolute maximum, absolute minimum, extrema, optimization, related rates, increasing, decreasing, concave up, concave down, inflection point
+
+PROBLEM-SOLVING EMPHASIS:
+Applications require setting up problems, not just computing. Practice the process of translating words to mathematics.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Applications of Derivatives' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Introduction to Integration (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Introduction to Integration' AND grade_level = 13),
+  'Introduction to Integration Teaching Guide',
+  'Comprehensive pedagogical approach for introducing integration in Calculus',
+  'INTRODUCTION TO INTEGRATION - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit introduces the integral as the accumulation of quantities, starting with area under curves. The definite integral represents the signed area between a function and the x-axis. Riemann sums provide the foundation for understanding why integration works.
+
+LEARNING PROGRESSION:
+1. Area approximation with rectangles
+2. Riemann sums (left, right, midpoint)
+3. Sigma notation
+4. The definite integral as a limit
+5. Properties of definite integrals
+6. The Fundamental Theorem of Calculus
+
+CONCEPTUAL FOUNDATION:
+Integration is "continuous summation." Just as adding discrete quantities gives a sum, integrating continuous quantities gives an integral. Area is the simplest example, but integration applies to any accumulation.
+
+COMMON MISCONCEPTIONS:
+- Thinking integration is just "anti-differentiation" (it''s accumulation)
+- Confusing definite and indefinite integrals
+- Not understanding why negative values give negative area
+- Errors in Riemann sum calculations
+- Not connecting the integral to its limit definition
+
+INSTRUCTIONAL STRATEGIES:
+
+Riemann Sums Foundation:
+Start with rectangles approximating area. More rectangles give better approximations. The limit of this process IS the integral.
+
+Left, Right, Midpoint:
+Compare approximation methods. For increasing functions, left underestimates, right overestimates. Midpoint is often better.
+
+Sigma Notation Practice:
+Students must read and write sigma notation fluently. Practice converting between summation and expanded forms.
+
+Signed Area:
+Area below the x-axis contributes negatively to the integral. The integral gives NET signed area, not total area.
+
+Properties Use:
+∫[a to b] f + ∫[b to c] f = ∫[a to c] f. Properties simplify calculations and build understanding.
+
+FTC Connection:
+The Fundamental Theorem connects derivatives and integrals. If F''(x) = f(x), then ∫[a to b] f(x)dx = F(b) - F(a). This is profound and powerful.
+
+ASSESSMENT INDICATORS:
+- Approximates integrals using Riemann sums
+- Evaluates definite integrals using FTC
+- Applies properties of integrals
+- Interprets integrals as accumulated quantities
+- Understands signed area concept
+
+VOCABULARY TO DEVELOP:
+integral, integrate, Riemann sum, definite integral, indefinite integral, antiderivative, Fundamental Theorem of Calculus, area, accumulation
+
+HISTORICAL CONTEXT:
+Newton and Leibniz discovered that integration and differentiation are inverse operations. This insight - the Fundamental Theorem - unified calculus.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Introduction to Integration' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Antiderivatives (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Antiderivatives' AND grade_level = 13),
+  'Antiderivatives Teaching Guide',
+  'Comprehensive pedagogical approach for teaching antiderivatives in Calculus',
+  'ANTIDERIVATIVES - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit develops techniques for finding antiderivatives (indefinite integrals). An antiderivative of f is a function F such that F'' = f. Finding antiderivatives is essential for evaluating definite integrals using the Fundamental Theorem.
+
+LEARNING PROGRESSION:
+1. Understanding antiderivatives and the constant C
+2. Power rule for integration
+3. Antiderivatives of exponential functions
+4. Antiderivatives of trigonometric functions
+5. Basic substitution (u-substitution)
+6. Initial value problems
+
+REVERSE DIFFERENTIATION:
+Finding antiderivatives reverses differentiation. If d/dx[x^3] = 3x^2, then ∫3x^2 dx = x^3 + C. Knowledge of derivatives is essential.
+
+COMMON MISCONCEPTIONS:
+- Forgetting the constant of integration +C
+- Misapplying the power rule (not adding 1 to exponent first)
+- Confusing ∫1/x dx = ln|x| + C with power rule
+- Errors in u-substitution (forgetting to substitute dx)
+- Not checking answers by differentiating
+
+INSTRUCTIONAL STRATEGIES:
+
+Connection to Derivatives:
+Every antiderivative problem is a derivative problem in reverse. Ask: "What function has this as its derivative?"
+
+The +C Requirement:
+If F''(x) = f(x), then (F(x) + 3)'' = f(x) too. Any constant works. The family of antiderivatives differs by constants, hence +C.
+
+Power Rule Inverse:
+∫x^n dx = x^(n+1)/(n+1) + C (except n = -1). The "+1, divide" pattern reverses the "-1, multiply" of differentiation.
+
+Special Cases:
+∫1/x dx = ln|x| + C (not the power rule!)
+∫e^x dx = e^x + C (exponential is its own antiderivative)
+
+Check by Differentiating:
+Always verify by taking the derivative of your answer. This catches errors and builds understanding.
+
+U-Substitution:
+When the integrand contains a function and its derivative, use substitution. "Let u = [inside function], then du = [its derivative]dx."
+
+ASSESSMENT INDICATORS:
+- Finds antiderivatives of polynomials, exponentials, and trig functions
+- Always includes +C for indefinite integrals
+- Applies u-substitution correctly
+- Solves initial value problems
+- Verifies answers by differentiation
+
+VOCABULARY TO DEVELOP:
+antiderivative, indefinite integral, constant of integration, u-substitution, initial value problem, general solution, particular solution
+
+PRACTICE EMPHASIS:
+Like derivatives, antiderivatives require extensive practice. Pattern recognition develops through many examples.',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Antiderivatives' AND grade_level = 13)
+ON CONFLICT DO NOTHING;
+
+-- Applications of Integration (Calculus)
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, unit_id, name, description, prompt_content, priority
+)
+SELECT
+  'unit_global',
+  (SELECT id FROM subjects WHERE name = 'Math'),
+  (SELECT id FROM units WHERE name = 'Applications of Integration' AND grade_level = 13),
+  'Applications of Integration Teaching Guide',
+  'Comprehensive pedagogical approach for integration applications in Calculus',
+  'APPLICATIONS OF INTEGRATION - CALCULUS UNIT GUIDE
+
+UNIT OVERVIEW:
+This unit applies integration to solve problems involving area between curves, average values, and accumulation in real-world contexts. Students see how integration answers questions about total quantities from rate information.
+
+LEARNING PROGRESSION:
+1. Area between curves
+2. Average value of a function
+3. Position from velocity
+4. Interpreting integrals in context
+5. Differential equations (introduction)
+6. Applications in physics and economics
+
+CONCEPTUAL APPLICATION:
+Integration answers: "If I know the rate, what''s the total?" Velocity gives position, rate of change gives accumulated change, marginal cost gives total cost.
+
+COMMON MISCONCEPTIONS:
+- Setting up area integrals with wrong bounds or wrong order
+- Forgetting absolute value for total distance vs. displacement
+- Not identifying which function is "top" and which is "bottom"
+- Confusing rate and amount in word problems
+- Errors in reading problems to set up integrals
+
+INSTRUCTIONAL STRATEGIES:
+
+Area Between Curves:
+∫[a to b] (top - bottom) dx gives area between curves. Identify intersection points (bounds) and which curve is higher.
+
+Vertical vs. Horizontal:
+Some regions are easier to compute integrating with respect to y. Consider both approaches.
+
+Average Value:
+f_avg = (1/(b-a)) ∫[a to b] f(x)dx. The average value is the height of a rectangle with the same area.
+
+Motion Applications:
+∫v(t)dt gives displacement. ∫|v(t)|dt gives total distance. The difference matters when velocity changes sign.
+
+Real-World Problems:
+Economics: ∫MC(x)dx gives total cost. Physics: ∫F(x)dx gives work. Biology: ∫r(t)dt gives total growth.
+
+Differential Equations:
+Simple DEs like dy/dx = f(x) are solved by antidifferentiation. More complex DEs preview future courses.
+
+ASSESSMENT INDICATORS:
+- Sets up and evaluates area integrals
+- Computes average values
+- Solves motion problems with integrals
+- Interprets integrals in applied contexts
+- Connects rate to accumulated quantity
+
+VOCABULARY TO DEVELOP:
+area between curves, average value, displacement, distance, differential equation, initial condition, accumulated change
+
+REAL-WORLD CONNECTIONS:
+Integration has applications in every quantitative field: physics (work, center of mass), engineering (design optimization), economics (consumer/producer surplus), biology (population growth).',
+  80
+FROM dual
+WHERE EXISTS (SELECT 1 FROM units WHERE name = 'Applications of Integration' AND grade_level = 13)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================

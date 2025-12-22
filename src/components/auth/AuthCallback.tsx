@@ -31,8 +31,20 @@ export default function AuthCallback() {
           // No profile found - new user, go to onboarding
           navigate('/onboarding/profile', { replace: true });
         } else if (data) {
-          // Profile exists - returning user, go to dashboard
-          navigate('/', { replace: true });
+          // Profile exists - check if user is admin
+          const { data: adminData } = await supabase
+            .from('admin_users')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
+
+          if (adminData) {
+            // User is admin - redirect to admin dashboard
+            navigate('/admin', { replace: true });
+          } else {
+            // Regular user - go to dashboard
+            navigate('/dashboard', { replace: true });
+          }
         } else if (error) {
           console.error('Error checking profile:', error);
           // Default to onboarding on error

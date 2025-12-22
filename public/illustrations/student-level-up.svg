@@ -1,0 +1,57 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Level Up Your Skills: Progress and growth -->
+  <defs>
+    <linearGradient id="levelOrange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="levelGreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Level up arrow -->
+  <path d="M100 130 L100 45" stroke="url(#levelGreen)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M80 65 L100 40 L120 65" stroke="url(#levelGreen)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Level badges -->
+  <!-- Level 1 -->
+  <rect x="30" y="110" width="40" height="30" rx="6" fill="#1e293b"/>
+  <circle cx="50" cy="120" r="8" fill="#334155"/>
+  <text x="50" y="124" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#64748b" text-anchor="middle">1</text>
+  <text x="50" y="136" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Beginner</text>
+
+  <!-- Level 2 -->
+  <rect x="80" y="80" width="40" height="30" rx="6" fill="#1e293b"/>
+  <circle cx="100" cy="90" r="8" fill="#0ea5e9"/>
+  <text x="100" y="94" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="white" text-anchor="middle">2</text>
+  <text x="100" y="106" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Rising</text>
+
+  <!-- Level 3 (current) -->
+  <rect x="130" y="50" width="45" height="35" rx="6" fill="url(#levelOrange)"/>
+  <circle cx="152" cy="62" r="10" fill="white" opacity="0.3"/>
+  <text x="152" y="67" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="white" text-anchor="middle">3</text>
+  <text x="152" y="80" font-family="Inter, sans-serif" font-size="7" font-weight="600" fill="white" text-anchor="middle">Expert!</text>
+
+  <!-- XP progress -->
+  <rect x="45" y="145" width="110" height="10" rx="5" fill="#1e293b"/>
+  <rect x="47" y="147" width="80" height="6" rx="3" fill="url(#levelOrange)"/>
+  <text x="135" y="153" font-family="Inter, sans-serif" font-size="7" fill="#64748b">80%</text>
+
+  <!-- Skill icons -->
+  <circle cx="35" cy="55" r="15" fill="#1e293b"/>
+  <text x="35" y="59" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">📐</text>
+  <rect x="25" y="72" width="20" height="4" rx="2" fill="#334155"/>
+  <rect x="25" y="72" width="18" height="4" rx="2" fill="#22c55e"/>
+
+  <circle cx="65" cy="35" r="15" fill="#1e293b"/>
+  <text x="65" y="39" font-family="Inter, sans-serif" font-size="12" text-anchor="middle">📖</text>
+  <rect x="55" y="52" width="20" height="4" rx="2" fill="#334155"/>
+  <rect x="55" y="52" width="14" height="4" rx="2" fill="#0ea5e9"/>
+
+  <!-- Sparkles -->
+  <circle cx="165" cy="35" r="5" fill="#facc15"/>
+  <circle cx="180" cy="50" r="3" fill="#facc15" opacity="0.7"/>
+  <circle cx="25" cy="90" r="3" fill="#facc15" opacity="0.6"/>
+</svg>

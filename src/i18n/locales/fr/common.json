@@ -1,0 +1,49 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "forParents": "Pour les Parents",
+    "forTeachers": "Pour les Enseignants",
+    "forStudents": "Pour les Étudiants",
+    "pricing": "Tarifs",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "dashboard": "Tableau de Bord",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "footer": {
+    "product": "Produit",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "testimonials": "Témoignages",
+    "company": "Entreprise",
+    "about": "À Propos",
+    "careers": "Carrières",
+    "contact": "Contact",
+    "legal": "Mentions Légales",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation",
+    "cookies": "Politique des Cookies",
+    "copyright": "© {{year}} Tulomi. Tous droits réservés."
+  },
+  "buttons": {
+    "getStarted": "Commencer",
+    "learnMore": "En Savoir Plus",
+    "tryFree": "Essayer Gratuitement",
+    "startLearning": "Commencer à Apprendre",
+    "signUp": "S'inscrire",
+    "logIn": "Se Connecter",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "back": "Retour",
+    "next": "Suivant",
+    "continue": "Continuer"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur s'est produite",
+    "success": "Succès!",
+    "or": "ou"
+  }
+}

@@ -1,0 +1,52 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gamified Experience: Trophy, stars, badges, XP bar -->
+
+  <defs>
+    <linearGradient id="gameGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="gamePurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="gameBlue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- XP Progress bar at top -->
+  <rect x="30" y="15" width="140" height="12" rx="6" fill="#1e293b" opacity="0.3"/>
+  <rect x="30" y="15" width="100" height="12" rx="6" fill="url(#gameBlue)"/>
+  <text x="170" y="24" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#0ea5e9">750 XP</text>
+
+  <!-- Trophy (center) -->
+  <path d="M85 50 L85 45 L115 45 L115 50 L120 50 C125 50 130 55 130 65 C130 72 125 77 118 77 L115 77 L115 90 L105 100 L95 100 L85 90 L85 77 L82 77 C75 77 70 72 70 65 C70 55 75 50 80 50 Z" fill="url(#gameGold)"/>
+  <ellipse cx="100" cy="52" rx="12" ry="5" fill="#fcd34d"/>
+
+  <!-- Trophy base -->
+  <rect x="90" y="100" width="20" height="6" rx="2" fill="#92400e"/>
+  <rect x="85" y="105" width="30" height="8" rx="2" fill="#78350f"/>
+
+  <!-- Stars around trophy -->
+  <polygon points="50,60 52,66 58,66 53,70 55,76 50,72 45,76 47,70 42,66 48,66" fill="#facc15"/>
+  <polygon points="150,55 152,61 158,61 153,65 155,71 150,67 145,71 147,65 142,61 148,61" fill="#facc15"/>
+  <polygon points="65,95 66,99 70,99 67,102 68,106 65,103 62,106 63,102 60,99 64,99" fill="#facc15" opacity="0.8"/>
+  <polygon points="135,90 136,94 140,94 137,97 138,101 135,98 132,101 133,97 130,94 134,94" fill="#facc15" opacity="0.8"/>
+
+  <!-- Badges -->
+  <circle cx="45" cy="130" r="18" fill="url(#gamePurple)"/>
+  <circle cx="45" cy="130" r="12" fill="#c084fc"/>
+  <text x="45" y="135" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="white" text-anchor="middle">1</text>
+
+  <circle cx="100" cy="135" r="15" fill="#10b981"/>
+  <path d="M93 135 L98 140 L108 130" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <circle cx="155" cy="130" r="18" fill="url(#gameGold)"/>
+  <polygon points="155,120 157,127 164,127 158,132 160,139 155,135 150,139 152,132 146,127 153,127" fill="white"/>
+
+  <!-- Streak flame -->
+  <path d="M175 70 Q180 55 175 45 Q185 55 182 70 Q190 60 185 75 Q180 85 175 70" fill="#f97316"/>
+  <text x="178" y="95" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#f97316">7</text>
+</svg>

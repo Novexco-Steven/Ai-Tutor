@@ -1,0 +1,63 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Classroom Management: Dashboard with student grid -->
+  <defs>
+    <linearGradient id="eduPurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Main dashboard -->
+  <rect x="25" y="25" width="150" height="110" rx="10" fill="#1e293b"/>
+
+  <!-- Header -->
+  <rect x="25" y="25" width="150" height="25" rx="10" fill="url(#eduPurple)"/>
+  <rect x="25" y="40" width="150" height="10" fill="url(#eduPurple)"/>
+  <text x="100" y="42" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="white" text-anchor="middle">My Classroom</text>
+
+  <!-- Student grid -->
+  <rect x="35" y="58" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="47" cy="67" r="6" fill="#22c55e"/>
+  <circle cx="47" cy="65" r="3" fill="white"/>
+  <text x="47" y="79" font-family="Inter, sans-serif" font-size="5" fill="#64748b" text-anchor="middle">Emma</text>
+
+  <rect x="65" y="58" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="77" cy="67" r="6" fill="#0ea5e9"/>
+  <circle cx="77" cy="65" r="3" fill="white"/>
+  <text x="77" y="79" font-family="Inter, sans-serif" font-size="5" fill="#64748b" text-anchor="middle">Alex</text>
+
+  <rect x="95" y="58" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="107" cy="67" r="6" fill="#f97316"/>
+  <circle cx="107" cy="65" r="3" fill="white"/>
+  <text x="107" y="79" font-family="Inter, sans-serif" font-size="5" fill="#64748b" text-anchor="middle">Sam</text>
+
+  <rect x="125" y="58" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="137" cy="67" r="6" fill="#ec4899"/>
+  <circle cx="137" cy="65" r="3" fill="white"/>
+  <text x="137" y="79" font-family="Inter, sans-serif" font-size="5" fill="#64748b" text-anchor="middle">Mia</text>
+
+  <!-- Second row -->
+  <rect x="35" y="88" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="47" cy="97" r="6" fill="#8b5cf6"/>
+  <circle cx="47" cy="95" r="3" fill="white"/>
+
+  <rect x="65" y="88" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="77" cy="97" r="6" fill="#22c55e"/>
+  <circle cx="77" cy="95" r="3" fill="white"/>
+
+  <rect x="95" y="88" width="25" height="25" rx="5" fill="#0f172a"/>
+  <circle cx="107" cy="97" r="6" fill="#0ea5e9"/>
+  <circle cx="107" cy="95" r="3" fill="white"/>
+
+  <!-- Add student button -->
+  <rect x="125" y="88" width="25" height="25" rx="5" fill="#334155" stroke="#64748b" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="137" y="103" font-family="Inter, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">+</text>
+
+  <!-- Student count badge -->
+  <rect x="155" y="118" width="35" height="18" rx="4" fill="url(#eduPurple)"/>
+  <text x="172" y="130" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white" text-anchor="middle">28</text>
+
+  <!-- Decorative -->
+  <circle cx="180" cy="35" r="3" fill="#facc15" opacity="0.6"/>
+  <circle cx="20" cy="130" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

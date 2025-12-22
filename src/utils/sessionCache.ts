@@ -5,7 +5,7 @@
 
 import type { LessonContent, Question, AIAssessAnswerResponse } from '@/types';
 
-const CACHE_PREFIX = 'learnlit_session_';
+const CACHE_PREFIX = 'tulomi_session_';
 const DEFAULT_EXPIRY_HOURS = 24;
 
 interface CachedLesson {

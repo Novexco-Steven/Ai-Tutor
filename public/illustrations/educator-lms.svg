@@ -1,0 +1,56 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- LMS Integration: Connected platforms -->
+  <defs>
+    <linearGradient id="lmsPurple" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Central Tulomi hub -->
+  <circle cx="100" cy="80" r="28" fill="#1e293b"/>
+  <circle cx="100" cy="80" r="22" fill="url(#lmsPurple)"/>
+  <text x="100" y="84" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="white" text-anchor="middle">Tulomi</text>
+
+  <!-- Google Classroom -->
+  <rect x="25" y="35" width="45" height="35" rx="6" fill="#1e293b"/>
+  <rect x="32" y="42" width="12" height="12" rx="2" fill="#4285F4"/>
+  <rect x="46" y="42" width="12" height="12" rx="2" fill="#34A853"/>
+  <rect x="32" y="56" width="12" height="12" rx="2" fill="#FBBC04"/>
+  <rect x="46" y="56" width="12" height="12" rx="2" fill="#EA4335"/>
+  <text x="47" y="78" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Google</text>
+
+  <!-- Canvas -->
+  <rect x="130" y="35" width="45" height="35" rx="6" fill="#1e293b"/>
+  <circle cx="152" cy="52" r="12" fill="#E03C31"/>
+  <text x="152" y="56" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="white" text-anchor="middle">C</text>
+  <text x="152" y="78" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Canvas</text>
+
+  <!-- Schoology -->
+  <rect x="25" y="95" width="45" height="35" rx="6" fill="#1e293b"/>
+  <circle cx="47" cy="110" r="10" fill="#1B6BC2"/>
+  <text x="47" y="114" font-family="Inter, sans-serif" font-size="8" font-weight="700" fill="white" text-anchor="middle">S</text>
+  <text x="47" y="135" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Schoology</text>
+
+  <!-- Clever -->
+  <rect x="130" y="95" width="45" height="35" rx="6" fill="#1e293b"/>
+  <rect x="142" y="102" width="20" height="16" rx="3" fill="#2B73B7"/>
+  <text x="152" y="114" font-family="Inter, sans-serif" font-size="8" font-weight="700" fill="white" text-anchor="middle">✓</text>
+  <text x="152" y="135" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Clever</text>
+
+  <!-- Connection lines -->
+  <line x1="70" y1="52" x2="78" y2="68" stroke="#64748b" stroke-width="2"/>
+  <line x1="130" y1="52" x2="122" y2="68" stroke="#64748b" stroke-width="2"/>
+  <line x1="70" y1="110" x2="78" y2="92" stroke="#64748b" stroke-width="2"/>
+  <line x1="130" y1="110" x2="122" y2="92" stroke="#64748b" stroke-width="2"/>
+
+  <!-- Sync indicators -->
+  <circle cx="78" cy="68" r="4" fill="#22c55e"/>
+  <circle cx="122" cy="68" r="4" fill="#22c55e"/>
+  <circle cx="78" cy="92" r="4" fill="#22c55e"/>
+  <circle cx="122" cy="92" r="4" fill="#22c55e"/>
+
+  <!-- Decorative -->
+  <circle cx="100" cy="25" r="3" fill="#facc15" opacity="0.6"/>
+  <circle cx="100" cy="145" r="2" fill="#facc15" opacity="0.5"/>
+</svg>

@@ -6,6 +6,7 @@ import { db } from '@/services/supabase';
 import { generateQuestions, assessAnswer, provideSocraticGuidance } from '@/services/ai';
 import { speakText, listenForSpeech } from '@/services/voice';
 import { sessionCache } from '@/utils/sessionCache';
+import { useVoiceSession } from '@/hooks/useVoiceSession';
 import Button from '../shared/Button';
 import Card from '../shared/Card';
 import Loading from '../shared/Loading';
@@ -14,7 +15,7 @@ import StudyTimer from '../shared/StudyTimer';
 import QuestionCard from './QuestionCard';
 import SocraticFeedback from './SocraticFeedback';
 import type { Question, AIAssessAnswerResponse, AISocraticGuidanceResponse, Topic, ChatContext } from '@/types';
-import { Mic, ArrowRight, AlertCircle, RefreshCw, ArrowLeft, Trophy, Target, Brain } from 'lucide-react';
+import { Mic, ArrowRight, AlertCircle, RefreshCw, ArrowLeft, Trophy, Target, Brain, Volume2, VolumeX } from 'lucide-react';
 import { cn, getEffectiveDifficulty } from '@/utils/helpers';
 import { ChatTutor } from '../chat';
 
@@ -23,6 +24,7 @@ export default function PracticeQuiz() {
   const navigate = useNavigate();
   const { profile, interests } = useUser();
   const { settings } = useSettings();
+  const { voiceState, isVoiceEnabled, speak, stopSpeaking: stopVoice } = useVoiceSession();
 
   const [topic, setTopic] = useState<Topic | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -270,6 +272,25 @@ export default function PracticeQuiz() {
     }
   };
 
+  const handleReadQuestion = () => {
+    if (!questions[currentIndex]) return;
+
+    if (voiceState === 'speaking') {
+      stopVoice();
+      return;
+    }
+
+    const question = questions[currentIndex];
+    let textToRead = question.question;
+
+    // If multiple choice, include options
+    if (question.type === 'multiple_choice' && question.options) {
+      textToRead += '. Options are: ' + question.options.map((opt, i) => `${String.fromCharCode(65 + i)}, ${opt}`).join('. ');
+    }
+
+    speak(textToRead);
+  };
+
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
@@ -352,16 +373,35 @@ export default function PracticeQuiz() {
               <span className="text-slate-400">/</span>
               <span className="text-sm text-slate-400">{feedback.size}</span>
             </div>
-            {settings.audio.voiceMode && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleVoiceInput}
-                disabled={listening || !!currentAnswer}
-                className="text-slate-300 hover:text-white hover:bg-slate-700"
-              >
-                <Mic className={cn("w-5 h-5", listening && "text-red-500 animate-pulse")} />
-              </Button>
+            {isVoiceEnabled && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleReadQuestion}
+                  className={cn(
+                    "text-slate-300 hover:text-white hover:bg-slate-700",
+                    voiceState === 'speaking' && "text-green-400"
+                  )}
+                  title={voiceState === 'speaking' ? "Stop reading" : "Read question aloud"}
+                >
+                  {voiceState === 'speaking' ? (
+                    <VolumeX className="w-5 h-5" />
+                  ) : (
+                    <Volume2 className="w-5 h-5" />
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleVoiceInput}
+                  disabled={listening || !!currentAnswer}
+                  className="text-slate-300 hover:text-white hover:bg-slate-700"
+                  title="Voice answer"
+                >
+                  <Mic className={cn("w-5 h-5", listening && "text-red-500 animate-pulse")} />
+                </Button>
+              </>
             )}
           </div>
         }

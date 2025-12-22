@@ -1,0 +1,55 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Your Personal AI Tutor: Friendly robot helper -->
+  <defs>
+    <linearGradient id="aiOrange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="aiBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- AI tutor body -->
+  <circle cx="100" cy="70" r="40" fill="#1e293b"/>
+  <circle cx="100" cy="70" r="35" fill="url(#aiBlue)" opacity="0.2"/>
+
+  <!-- Face -->
+  <circle cx="100" cy="65" r="28" fill="url(#aiOrange)"/>
+
+  <!-- Eyes -->
+  <circle cx="88" cy="60" r="8" fill="white"/>
+  <circle cx="112" cy="60" r="8" fill="white"/>
+  <circle cx="90" cy="60" r="4" fill="#1e293b"/>
+  <circle cx="114" cy="60" r="4" fill="#1e293b"/>
+  <circle cx="91" cy="59" r="1.5" fill="white"/>
+  <circle cx="115" cy="59" r="1.5" fill="white"/>
+
+  <!-- Happy smile -->
+  <path d="M88 75 Q100 88 112 75" stroke="#1e293b" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Antenna -->
+  <line x1="100" y1="35" x2="100" y2="25" stroke="url(#aiOrange)" stroke-width="3"/>
+  <circle cx="100" cy="22" r="5" fill="url(#aiBlue)"/>
+
+  <!-- Speech bubble -->
+  <rect x="130" y="35" width="55" height="35" rx="8" fill="white"/>
+  <polygon points="130,55 125,60 130,65" fill="white"/>
+  <text x="157" y="50" font-family="Inter, sans-serif" font-size="8" fill="#1e293b" text-anchor="middle">I can</text>
+  <text x="157" y="62" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="#f97316" text-anchor="middle">help! 💡</text>
+
+  <!-- Available 24/7 badge -->
+  <rect x="35" y="100" width="50" height="22" rx="6" fill="#1e293b"/>
+  <circle cx="48" cy="111" r="5" fill="#22c55e"/>
+  <text x="75" y="114" font-family="Inter, sans-serif" font-size="7" fill="white" text-anchor="end">24/7</text>
+
+  <!-- Question examples -->
+  <rect x="90" y="115" width="80" height="35" rx="6" fill="#1e293b"/>
+  <text x="130" y="128" font-family="Inter, sans-serif" font-size="7" fill="#64748b" text-anchor="middle">Ask me anything!</text>
+  <text x="130" y="142" font-family="Inter, sans-serif" font-size="8" fill="url(#aiBlue)" text-anchor="middle">"How do I solve this?"</text>
+
+  <!-- Sparkles -->
+  <circle cx="55" cy="45" r="3" fill="#facc15"/>
+  <circle cx="145" cy="90" r="3" fill="#facc15"/>
+</svg>

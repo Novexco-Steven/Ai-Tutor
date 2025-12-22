@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, BookOpen, Target, Clock } from 'lucide-react';
 import Card from '../shared/Card';
 import TopicCard from './TopicCard';
@@ -10,6 +10,8 @@ interface UnitCardProps {
   progress: UserProgress[];
   subjectColor?: string;
   defaultExpanded?: boolean;
+  isHighlighted?: boolean;
+  highlightedTopicId?: string | null;
 }
 
 export default function UnitCard({
@@ -18,8 +20,21 @@ export default function UnitCard({
   progress,
   subjectColor = '#3b82f6',
   defaultExpanded = false,
+  isHighlighted = false,
+  highlightedTopicId,
 }: UnitCardProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  // Auto-expand when highlighted or when a topic in this unit is highlighted
+  const hasHighlightedTopic = highlightedTopicId && unit.topics?.some(t => t.id === highlightedTopicId);
+  const shouldHighlight = isHighlighted || hasHighlightedTopic;
+
+  // Auto-expand when highlighted
+  useEffect(() => {
+    if (shouldHighlight) {
+      setIsExpanded(true);
+    }
+  }, [shouldHighlight]);
 
   // Calculate unit progress
   const topics = unit.topics || [];
@@ -41,7 +56,8 @@ export default function UnitCard({
       <Card
         interactive
         onClick={() => setIsExpanded(!isExpanded)}
-        className="transition-all duration-200"
+        className={`transition-all duration-200 ${shouldHighlight ? 'ring-2 ring-offset-2' : ''}`}
+        style={shouldHighlight ? { '--tw-ring-color': subjectColor } as React.CSSProperties : undefined}
       >
         <div className="flex items-start gap-4">
           {/* Unit Icon & Number */}
@@ -168,6 +184,7 @@ export default function UnitCard({
               index={idx}
               progress={getTopicProgress(topic.id)}
               subjectColor={subjectColor}
+              isHighlighted={highlightedTopicId === topic.id}
             />
           ))}
 

@@ -1,4 +1,4 @@
-# 🎓 LearnLit Educational Framework
+# 🎓 Tulomi Educational Framework
 
 ## Overview
 

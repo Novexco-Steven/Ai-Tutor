@@ -1,0 +1,36 @@
+{
+  "greeting": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening"
+  },
+  "subtitle": "Ready to learn something awesome today?",
+  "stats": {
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "totalTopics": "Total Topics"
+  },
+  "sections": {
+    "continueLearning": "Continue Learning",
+    "exploreSubjects": "Explore Subjects",
+    "recentBadges": "Recent Badges"
+  },
+  "emptyState": {
+    "title": "Let's Get Started!",
+    "message": "Choose a subject above to begin your learning journey"
+  },
+  "progress": {
+    "started": "Started",
+    "topicsCompleted": "{{count}} / {{total}} topics completed",
+    "gradeCurriculum": "Grade {{grade}} Curriculum"
+  },
+  "gamification": {
+    "xp": "XP",
+    "level": "Level",
+    "streak": "Streak",
+    "days": "days",
+    "badges": "Badges",
+    "dailyGoal": "Daily Goal",
+    "weeklyGoal": "Weekly Goal"
+  }
+}

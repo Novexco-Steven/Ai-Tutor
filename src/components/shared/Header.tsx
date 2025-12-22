@@ -1,7 +1,9 @@
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Settings, X } from 'lucide-react';
+import { ArrowLeft, Settings, X, Shield, Users, LogOut } from 'lucide-react';
 import { useUser } from '@/contexts/UserContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUserRole } from '@/hooks/useUserRole';
 import { cn } from '@/utils/helpers';
 import Button from './Button';
 import ThemeToggle from './ThemeToggle';
@@ -33,6 +35,7 @@ interface HeaderProps {
   showThemeToggle?: boolean;
   showVoiceToggle?: boolean;
   showSettingsButton?: boolean;
+  showLogoutButton?: boolean;
 
   // Progress Bar
   progressBar?: ProgressBarProps;
@@ -41,6 +44,10 @@ interface HeaderProps {
   leftContent?: ReactNode;
   rightContent?: ReactNode;
   bottomContent?: ReactNode;
+
+  // Role-based visibility
+  showAdminIcon?: boolean;
+  showParentIcon?: boolean;
 
   // Styling
   variant?: 'default' | 'dark';
@@ -61,16 +68,26 @@ export default function Header({
   showThemeToggle = false,
   showVoiceToggle = false,
   showSettingsButton = false,
+  showLogoutButton = false,
   progressBar,
   leftContent,
   rightContent,
   bottomContent,
+  showAdminIcon = false,
+  showParentIcon = false,
   variant = 'default',
   sticky = false,
   className,
 }: HeaderProps) {
   const navigate = useNavigate();
   const { profile } = useUser();
+  const { signOut } = useAuth();
+  const { isAdmin, isParent } = useUserRole();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
 
   const isDark = variant === 'dark';
 
@@ -171,6 +188,27 @@ export default function Header({
 
           {/* Right Section */}
           <div className="flex items-center gap-3 flex-shrink-0">
+            {/* Role Icons */}
+            {showAdminIcon && isAdmin && (
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/admin')}
+                aria-label="Admin Dashboard"
+                className="text-amber-600 hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300"
+              >
+                <Shield className="w-5 h-5" />
+              </Button>
+            )}
+            {showParentIcon && isParent && (
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/parent')}
+                aria-label="Parent Dashboard"
+                className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+              >
+                <Users className="w-5 h-5" />
+              </Button>
+            )}
             {rightContent}
             {showThemeToggle && <ThemeToggle />}
             {showVoiceToggle && <VoiceToggle />}
@@ -181,6 +219,16 @@ export default function Header({
                 aria-label="Settings"
               >
                 <Settings className="w-5 h-5" />
+              </Button>
+            )}
+            {showLogoutButton && (
+              <Button
+                variant="ghost"
+                onClick={handleLogout}
+                aria-label="Log out"
+                className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+              >
+                <LogOut className="w-5 h-5" />
               </Button>
             )}
           </div>

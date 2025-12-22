@@ -3,12 +3,30 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNotification } from '@/contexts/NotificationContext';
 import { db } from '@/services/supabase';
 import { storage } from '@/utils/helpers';
+import {
+  getAnalyticsSummary,
+  getLearningVelocity,
+  generateInsights,
+  getTrendIndicator,
+  type AnalyticsSummary,
+  type LearningVelocity,
+  type LearningInsight,
+} from '@/services/analytics';
 import Header from '../shared/Header';
 import Card from '../shared/Card';
 import Button from '../shared/Button';
 import Modal from '../shared/Modal';
 import Loading from '../shared/Loading';
 import { AvatarDisplay } from '../avatar';
+import {
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+} from 'recharts';
 import {
   Users,
   Plus,
@@ -19,12 +37,17 @@ import {
   BookOpen,
   Target,
   TrendingUp,
+  TrendingDown,
+  Minus,
   ChevronRight,
   BarChart3,
   Calendar,
   Mail,
   AlertCircle,
-  UserPlus
+  UserPlus,
+  Brain,
+  Lightbulb,
+  ArrowRight
 } from 'lucide-react';
 import { cn } from '@/utils/helpers';
 import type { ParentSettings, AvatarConfig } from '@/types';
@@ -99,7 +122,7 @@ export default function ParentDashboard() {
   useEffect(() => {
     loadChildren();
 
-    const savedSettings = storage.get<ParentSettings>('learnlit_parent_settings', defaultParentSettings);
+    const savedSettings = storage.get<ParentSettings>('tulomi_parent_settings', defaultParentSettings);
     setSettings(savedSettings);
   }, [loadChildren]);
 
@@ -296,7 +319,7 @@ export default function ParentDashboard() {
             settings={settings}
             onSave={(newSettings) => {
               setSettings(newSettings);
-              storage.set('learnlit_parent_settings', newSettings);
+              storage.set('tulomi_parent_settings', newSettings);
               setShowSettings(false);
               success('Settings saved', 'Your preferences have been updated.');
             }}
@@ -548,8 +571,70 @@ interface ChildDetailModalContentProps {
 }
 
 function ChildDetailModalContent({ child, onClose }: ChildDetailModalContentProps) {
+  const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState<AnalyticsSummary | null>(null);
+  const [velocity, setVelocity] = useState<LearningVelocity | null>(null);
+  const [insights, setInsights] = useState<LearningInsight[]>([]);
+  const [weeklyData, setWeeklyData] = useState<Array<{ date: string; time: number; score: number; topics: number }>>([]);
+
+  useEffect(() => {
+    loadChildAnalytics();
+  }, [child.child_id]);
+
+  const loadChildAnalytics = async () => {
+    setLoading(true);
+    try {
+      const [summaryData, velocityData, dailyStats] = await Promise.all([
+        getAnalyticsSummary(child.child_id),
+        getLearningVelocity(child.child_id),
+        db.getDailyStats(child.child_id, 7),
+      ]);
+
+      // Enhance summary with child data
+      const enhancedSummary = {
+        ...summaryData,
+        currentStreak: child.current_streak || 0,
+        totalXP: child.total_xp || 0,
+        currentLevel: child.current_level || 1,
+      };
+
+      setSummary(enhancedSummary);
+      setVelocity(velocityData);
+
+      // Generate insights
+      const generatedInsights = generateInsights(enhancedSummary, velocityData);
+      setInsights(generatedInsights);
+
+      // Prepare chart data
+      const chartData = dailyStats.map((s) => ({
+        date: new Date(s.date).toLocaleDateString('en-US', { weekday: 'short' }),
+        time: Math.round((s.total_time_seconds || 0) / 60),
+        score: s.questions_attempted
+          ? Math.round(((s.questions_correct || 0) / s.questions_attempted) * 100)
+          : 0,
+        topics: s.topics_completed || 0,
+      }));
+      setWeeklyData(chartData);
+    } catch (error) {
+      console.error('Failed to load child analytics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const TrendIcon = velocity?.trend === 'improving' ? TrendingUp : velocity?.trend === 'declining' ? TrendingDown : Minus;
+  const trendInfo = velocity ? getTrendIndicator(velocity.trend) : null;
+
+  if (loading) {
+    return (
+      <div className="py-8 flex items-center justify-center">
+        <Loading message="Loading analytics..." />
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="max-h-[80vh] overflow-y-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         {child.child_avatar ? (
@@ -559,11 +644,22 @@ function ChildDetailModalContent({ child, onClose }: ChildDetailModalContentProp
             <Users className="w-8 h-8 text-slate-400" />
           </div>
         )}
-        <div>
+        <div className="flex-1">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{child.child_name}</h2>
           <p className="text-gray-500 dark:text-slate-400">Level {child.current_level || 1} Learner</p>
           <p className="text-gray-400 dark:text-slate-500 text-sm">{child.child_email}</p>
         </div>
+        {velocity && trendInfo && (
+          <div className={cn(
+            "flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium",
+            velocity.trend === 'improving' ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400" :
+            velocity.trend === 'declining' ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" :
+            "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+          )}>
+            <TrendIcon className="w-4 h-4" />
+            {trendInfo.label}
+          </div>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -589,6 +685,89 @@ function ChildDetailModalContent({ child, onClose }: ChildDetailModalContentProp
           <p className="text-gray-500 dark:text-slate-400">Avg Score</p>
         </div>
       </div>
+
+      {/* Learning Velocity */}
+      {velocity && (
+        <div className="p-4 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl mb-6 border border-indigo-100 dark:border-indigo-800">
+          <div className="flex items-center gap-2 mb-3">
+            <Brain className="w-5 h-5 text-indigo-500" />
+            <span className="text-gray-900 dark:text-white font-semibold">Learning Velocity</span>
+          </div>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{velocity.topicsPerWeek}</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Topics/Week</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{velocity.averageQuizScore}%</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Quiz Avg</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{velocity.averageTimePerTopic}m</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">Min/Topic</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Weekly Activity Chart */}
+      {weeklyData.length > 0 && (
+        <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <BarChart3 className="w-5 h-5 text-blue-500" />
+            <span className="text-gray-900 dark:text-white font-semibold">Weekly Activity</span>
+          </div>
+          <div className="h-40">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={weeklyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                <XAxis dataKey="date" tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <YAxis tick={{ fontSize: 12, fill: '#9CA3AF' }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#1F2937',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: '#fff'
+                  }}
+                  formatter={(value: number, name: string) => [
+                    name === 'time' ? `${value} min` : name === 'topics' ? `${value} topics` : `${value}%`,
+                    name === 'time' ? 'Study Time' : name === 'topics' ? 'Topics' : 'Accuracy'
+                  ]}
+                />
+                <Bar dataKey="time" fill="#6366F1" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* Learning Insights */}
+      {insights.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Lightbulb className="w-5 h-5 text-yellow-500" />
+            <span className="text-gray-900 dark:text-white font-semibold">Insights</span>
+          </div>
+          <div className="space-y-2">
+            {insights.slice(0, 3).map((insight) => (
+              <div
+                key={insight.id}
+                className={cn(
+                  "p-3 rounded-lg border",
+                  insight.type === 'celebration' ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800" :
+                  insight.type === 'achievement' ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800" :
+                  insight.type === 'warning' ? "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" :
+                  "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800"
+                )}
+              >
+                <p className="font-medium text-gray-900 dark:text-white text-sm">{insight.title}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-xs">{insight.message}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Time Limit Setting */}
       <div className="p-4 bg-gray-100 dark:bg-slate-700/50 rounded-xl mb-6">
@@ -618,6 +797,21 @@ function ChildDetailModalContent({ child, onClose }: ChildDetailModalContentProp
           </div>
         )}
       </div>
+
+      {/* Reviews Due */}
+      {summary && summary.reviewsDueToday > 0 && (
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl mb-6 border border-amber-200 dark:border-amber-800">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Brain className="w-5 h-5 text-amber-500" />
+              <span className="text-amber-800 dark:text-amber-200 font-medium">
+                {summary.reviewsDueToday} review{summary.reviewsDueToday !== 1 ? 's' : ''} due today
+              </span>
+            </div>
+            <ArrowRight className="w-5 h-5 text-amber-500" />
+          </div>
+        </div>
+      )}
 
       <Button
         variant="secondary"

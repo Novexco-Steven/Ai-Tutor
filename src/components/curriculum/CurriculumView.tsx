@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState, useMemo } from 'react';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { db } from '@/services/supabase';
 import { useUser } from '@/contexts/UserContext';
 import Button from '../shared/Button';
@@ -8,20 +8,34 @@ import Loading from '../shared/Loading';
 import Header from '../shared/Header';
 import UnitCard from './UnitCard';
 import TopicCard from './TopicCard';
-import type { Subject, UnitWithTopics, Topic } from '@/types';
+import CurriculumChat from './CurriculumChat';
+import ReadAloudButton from '../shared/ReadAloudButton';
+import type { Subject, UnitWithTopics, Topic, CurriculumChatContext } from '@/types';
 import { GraduationCap, BookOpen, Sparkles, AlertCircle } from 'lucide-react';
 
 export default function CurriculumView() {
   const { subjectId } = useParams<{ subjectId: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { profile, progress, refreshProgress } = useUser();
   const [subject, setSubject] = useState<Subject | null>(null);
   const [units, setUnits] = useState<UnitWithTopics[]>([]);
   const [standaloneTopics, setStandaloneTopics] = useState<Topic[]>([]);
+  const [allSubjects, setAllSubjects] = useState<Subject[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [highlightedUnit, setHighlightedUnit] = useState<string | null>(null);
+  const [highlightedTopic, setHighlightedTopic] = useState<string | null>(null);
 
   const gradeLevel = profile?.grade_level || 7;
+  const prefillMessage = searchParams.get('prefill');
+
+  // Clear prefill from URL after reading it
+  useEffect(() => {
+    if (prefillMessage) {
+      setSearchParams({}, { replace: true });
+    }
+  }, [prefillMessage, setSearchParams]);
 
   useEffect(() => {
     loadCurriculum();
@@ -36,6 +50,7 @@ export default function CurriculumView() {
     try {
       // Load subject info
       const subjects = await db.getAllSubjects();
+      setAllSubjects(subjects);
       const subjectData = subjects.find(s => s.id === subjectId);
 
       if (!subjectData) {
@@ -72,6 +87,28 @@ export default function CurriculumView() {
   ).length;
   const overallProgress = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
 
+  // Generate text for read-aloud feature
+  const readAloudText = useMemo(() => {
+    if (!subject) return '';
+
+    let text = `Welcome to ${subject.name}. ${subject.description || ''}\n\n`;
+    text += `You have completed ${completedTopics} of ${totalTopics} topics, which is ${overallProgress}% of this subject.\n\n`;
+
+    if (units.length > 0) {
+      text += `This curriculum has ${units.length} units:\n\n`;
+      units.forEach((unit, index) => {
+        const unitTopics = unit.topics || [];
+        text += `Unit ${index + 1}: ${unit.name}. `;
+        if (unit.description) {
+          text += `${unit.description} `;
+        }
+        text += `This unit has ${unitTopics.length} topics.\n`;
+      });
+    }
+
+    return text;
+  }, [subject, units, completedTopics, totalTopics, overallProgress]);
+
   if (loading) {
     return <Loading fullScreen message="Loading curriculum..." />;
   }
@@ -104,60 +141,98 @@ export default function CurriculumView() {
         showVoiceToggle
         bottomContent={
           <div className="flex items-start gap-4 mt-2">
-            {/* Subject Icon */}
-            <div
-              className="text-5xl p-4 rounded-xl flex-shrink-0"
-              style={{ backgroundColor: `${subject.color}20` }}
-            >
-              {subject.icon}
-            </div>
-
-            {/* Subject Info */}
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold" style={{ color: subject.color }}>
-                {subject.name}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 mt-1">
-                {subject.description}
-              </p>
-
-              {/* Progress Summary */}
-              <div className="mt-4 flex items-center gap-6">
-                <div>
-                  <p className="text-sm text-gray-500">Progress</p>
-                  <p className="text-2xl font-bold" style={{ color: subject.color }}>
-                    {overallProgress}%
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Units</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {units.length}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Topics</p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {totalTopics}
-                  </p>
-                </div>
+            {/* Left side: Subject Icon + Info */}
+            <div className="flex items-start gap-4 flex-1">
+              {/* Subject Icon */}
+              <div
+                className="text-5xl p-4 rounded-xl flex-shrink-0"
+                style={{ backgroundColor: `${subject.color}20` }}
+              >
+                {subject.icon}
               </div>
 
-              {/* Overall Progress Bar */}
-              <div className="mt-3 max-w-md">
-                <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{
-                      width: `${overallProgress}%`,
-                      backgroundColor: overallProgress === 100 ? '#10b981' : subject.color,
-                    }}
+              {/* Subject Info */}
+              <div className="flex-1">
+                <h1 className="text-3xl font-bold" style={{ color: subject.color }}>
+                  {subject.name}
+                </h1>
+                <p className="text-gray-600 dark:text-gray-300 mt-1">
+                  {subject.description}
+                </p>
+
+                {/* Progress Summary */}
+                <div className="mt-4 flex items-center gap-6">
+                  <div>
+                    <p className="text-sm text-gray-500">Progress</p>
+                    <p className="text-2xl font-bold" style={{ color: subject.color }}>
+                      {overallProgress}%
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Units</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {units.length}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Topics</p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {totalTopics}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Overall Progress Bar */}
+                <div className="mt-3 max-w-md">
+                  <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${overallProgress}%`,
+                        backgroundColor: overallProgress === 100 ? '#10b981' : subject.color,
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {completedTopics} of {totalTopics} topics completed
+                  </p>
+                </div>
+
+                {/* Read Aloud Button */}
+                <div className="mt-4">
+                  <ReadAloudButton
+                    text={readAloudText}
+                    label="Read Overview"
+                    showDropdown
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  {completedTopics} of {totalTopics} topics completed
-                </p>
               </div>
+            </div>
+
+            {/* Right side: Curriculum Chat */}
+            <div className="w-1/2 flex-shrink-0 hidden lg:block">
+              <CurriculumChat
+                context={{
+                  subjectId: subject.id,
+                  subjectName: subject.name,
+                  subjectColor: subject.color,
+                  gradeLevel,
+                  units: units.map(u => ({
+                    id: u.id,
+                    name: u.name,
+                    description: u.description || '',
+                    topics: (u.topics || []).map(t => ({
+                      id: t.id,
+                      name: t.name,
+                      description: t.description || ''
+                    }))
+                  })),
+                  allSubjects: allSubjects.map(s => ({ id: s.id, name: s.name }))
+                } as CurriculumChatContext}
+                onHighlightUnit={setHighlightedUnit}
+                onHighlightTopic={setHighlightedTopic}
+                initialMessage={prefillMessage || undefined}
+              />
             </div>
           </div>
         }
@@ -185,6 +260,8 @@ export default function CurriculumView() {
                   progress={progress.filter(p => p.subject_id === subjectId)}
                   subjectColor={subject.color}
                   defaultExpanded={idx === 0 && units.length <= 3}
+                  isHighlighted={highlightedUnit === unit.id}
+                  highlightedTopicId={highlightedTopic}
                 />
               ))}
             </div>
@@ -210,6 +287,7 @@ export default function CurriculumView() {
                   index={idx}
                   progress={progress.find(p => p.topic_id === topic.id)}
                   subjectColor={subject.color}
+                  isHighlighted={highlightedTopic === topic.id}
                 />
               ))}
             </div>

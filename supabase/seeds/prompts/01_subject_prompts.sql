@@ -326,16 +326,16 @@ All students should:
 FROM subjects WHERE name = 'Science'
 ON CONFLICT DO NOTHING;
 
--- Reading Subject Global Prompt
+-- Language Arts Subject Global Prompt
 INSERT INTO prompt_templates (
   prompt_type, subject_id, name, description, prompt_content, priority
 )
 SELECT
   'subject_global',
   id,
-  'Reading Teaching Philosophy',
-  'Comprehensive pedagogical approach for reading/ELA instruction',
-  'READING AND ENGLISH LANGUAGE ARTS TEACHING PHILOSOPHY
+  'Language Arts Teaching Philosophy',
+  'Comprehensive pedagogical approach for language arts instruction',
+  'LANGUAGE ARTS TEACHING PHILOSOPHY AND METHODOLOGY
 
 CORE PHILOSOPHY:
 Reading is meaning-making. Skilled readers actively construct understanding by connecting what they read to what they know, questioning, visualizing, inferring, and synthesizing. Reading instruction should develop both the skills and the love of reading, creating lifelong learners who read for pleasure and purpose.
@@ -507,7 +507,7 @@ For struggling readers:
 - Monitor progress frequently
 - Maintain access to grade-level content',
   100
-FROM subjects WHERE name = 'Reading'
+FROM subjects WHERE name = 'Language Arts'
 ON CONFLICT DO NOTHING;
 
 -- History Subject Global Prompt
@@ -691,6 +691,341 @@ Help students understand time:
 - Connect events across time',
   100
 FROM subjects WHERE name = 'History'
+ON CONFLICT DO NOTHING;
+
+-- Social Studies Subject Global Prompt
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, name, description, prompt_content, priority
+)
+SELECT
+  'subject_global',
+  id,
+  'Social Studies Teaching Philosophy',
+  'Comprehensive pedagogical approach for social studies instruction',
+  'SOCIAL STUDIES TEACHING PHILOSOPHY AND METHODOLOGY
+
+CORE PHILOSOPHY:
+Social studies education prepares students to be informed, engaged citizens who understand how societies function and can participate effectively in democratic life. It integrates knowledge from geography, economics, civics, and cultural studies to help students understand their community, country, and the world.
+
+FOUNDATIONAL PRINCIPLES:
+
+1. CIVIC UNDERSTANDING
+   - Democracy requires informed, engaged citizens
+   - Rights come with responsibilities
+   - Civic participation takes many forms
+   - Understanding government structures and processes
+
+2. GEOGRAPHIC LITERACY
+   - Understanding spatial relationships
+   - Human-environment interactions
+   - How place influences culture and history
+   - Maps as tools for understanding the world
+
+3. ECONOMIC AWARENESS
+   - Basic economic concepts and systems
+   - Personal financial literacy
+   - Understanding global economics
+   - Making informed economic decisions
+
+4. CULTURAL COMPETENCE
+   - Appreciating diverse perspectives
+   - Understanding cultural development
+   - Respecting differences while finding commonalities
+   - Building inclusive communities
+
+INSTRUCTIONAL STRATEGIES:
+
+Inquiry-Based Learning:
+- Start with compelling questions about society
+- Investigate using multiple sources
+- Consider various perspectives
+- Draw evidence-based conclusions
+
+Community Connections:
+- Connect learning to students'' communities
+- Use local examples and resources
+- Invite community members as resources
+- Apply learning through community action
+
+Simulations and Role-Play:
+- Experience civic processes firsthand
+- Understand different perspectives
+- Practice decision-making skills
+- Apply concepts to realistic scenarios
+
+GEOGRAPHIC EDUCATION:
+
+Five Themes of Geography:
+1. Location (absolute and relative)
+2. Place (physical and human characteristics)
+3. Human-Environment Interaction
+4. Movement (people, goods, ideas)
+5. Regions (formal, functional, perceptual)
+
+Map Skills Development:
+- Reading and interpreting maps
+- Understanding scale and direction
+- Using geographic technology
+- Creating maps to communicate
+
+ECONOMIC EDUCATION:
+
+Core Economic Concepts:
+- Scarcity and choice
+- Opportunity cost
+- Supply and demand
+- Types of economic systems
+- Role of government in economy
+
+Personal Financial Literacy:
+- Earning and income
+- Saving and investing
+- Spending wisely
+- Credit and debt
+- Financial planning and goals
+
+CIVIC EDUCATION:
+
+Foundations of Democracy:
+- Constitutional principles
+- Branches of government
+- Federalism and levels of government
+- Rights and responsibilities
+- Rule of law
+
+Civic Participation:
+- Voting and elections
+- Community involvement
+- Advocacy and activism
+- Informed citizenship
+- Media literacy
+
+ASSESSMENT APPROACHES:
+
+Performance Tasks:
+- Apply knowledge to real situations
+- Demonstrate civic skills
+- Show geographic and economic reasoning
+- Present evidence-based arguments
+
+Formative Assessment:
+- Check understanding during instruction
+- Use discussion and questioning
+- Monitor collaborative work
+- Adjust instruction based on needs
+
+CURRENT EVENTS INTEGRATION:
+
+Connect learning to current events:
+- Age-appropriate news analysis
+- Multiple source evaluation
+- Historical context for current issues
+- Distinguish fact from opinion
+- Understand media literacy
+
+CROSS-CURRICULAR CONNECTIONS:
+
+Social Studies connects to:
+- Language Arts in reading informational text and argument writing
+- Math in data analysis and economic calculations
+- Science in environmental studies
+- Arts in cultural expression
+
+EQUITY AND INCLUSION:
+
+Social studies should:
+- Include diverse perspectives and voices
+- Address historical injustices honestly
+- Examine ongoing equity issues
+- Empower all students as citizens
+- Create safe spaces for difficult conversations
+
+LOCAL TO GLOBAL PERSPECTIVE:
+
+Help students understand:
+- Their place in community, country, world
+- Connections between local and global issues
+- Responsibilities at multiple levels
+- How individual actions have broader impacts',
+  100
+FROM subjects WHERE name = 'Social Studies'
+ON CONFLICT DO NOTHING;
+
+-- Computer Science Subject Global Prompt
+INSERT INTO prompt_templates (
+  prompt_type, subject_id, name, description, prompt_content, priority
+)
+SELECT
+  'subject_global',
+  id,
+  'Computer Science Teaching Philosophy',
+  'Comprehensive pedagogical approach for computer science instruction',
+  'COMPUTER SCIENCE TEACHING PHILOSOPHY AND METHODOLOGY
+
+CORE PHILOSOPHY:
+Computer science is about computational thinking—a problem-solving approach that helps students understand how to break down complex problems, recognize patterns, design solutions, and think algorithmically. It is not just about learning to code, but about developing fundamental thinking skills that apply across all disciplines and in everyday life.
+
+FOUNDATIONAL PRINCIPLES:
+
+1. COMPUTATIONAL THINKING
+   - Decomposition: Breaking problems into smaller parts
+   - Pattern recognition: Finding similarities and trends
+   - Abstraction: Focusing on essential information
+   - Algorithmic thinking: Designing step-by-step solutions
+
+2. PROBLEM-SOLVING FOCUS
+   - Programming is a tool, not the end goal
+   - Multiple solutions exist for most problems
+   - Creativity and logic work together
+   - Iterative improvement is expected
+
+3. INCLUSIVE PARTICIPATION
+   - All students can learn computer science
+   - Diverse perspectives improve technology
+   - CS is for creators, not just consumers
+   - Breaking down stereotypes about who "does" CS
+
+4. ETHICAL RESPONSIBILITY
+   - Technology impacts people and society
+   - Privacy, security, and safety matter
+   - Responsible digital citizenship
+   - Understanding bias in technology
+
+INSTRUCTIONAL STRATEGIES:
+
+Scaffolded Progression:
+- Start unplugged (without computers)
+- Move to visual/block-based programming
+- Progress to text-based languages
+- Build complexity gradually
+
+Project-Based Learning:
+- Authentic, meaningful projects
+- Student choice and creativity
+- Iteration and improvement cycles
+- Showcasing and reflection
+
+Pair Programming:
+- Two students, one computer
+- Driver (typing) and navigator (guiding)
+- Switch roles regularly
+- Develop collaboration skills
+
+Debugging as Learning:
+- Errors are expected and valuable
+- Systematic error-finding strategies
+- Growth mindset about mistakes
+- Teaching persistence and resilience
+
+DIGITAL LITERACY FOUNDATION (K-2):
+
+Build foundational skills:
+- Basic computer operation
+- Digital citizenship and safety
+- Following instructions precisely
+- Understanding technology in daily life
+
+INTRODUCTORY CONCEPTS (3-5):
+
+Develop understanding of:
+- Sequences and order
+- Loops and repetition
+- Conditionals (if-then)
+- Events and triggers
+- Block-based programming (Scratch)
+
+FOUNDATIONAL PROGRAMMING (6-8):
+
+Expand to include:
+- Variables and data types
+- Functions and procedures
+- Basic data structures
+- Algorithm design
+- Introduction to text-based coding
+
+ADVANCED CONCEPTS (9-12):
+
+Deep exploration of:
+- Object-oriented programming
+- Data structures and algorithms
+- Software development practices
+- Databases and data management
+- Specialization options (AI, web, etc.)
+
+COMMON MISCONCEPTIONS:
+
+About CS Itself:
+- "CS is just coding" (it''s problem-solving)
+- "You have to be a math genius" (not required)
+- "CS is for certain types of people" (for everyone)
+- "Computers are always right" (they do what they''re told)
+
+Programming Concepts:
+- Variables are like boxes (they''re more like labels)
+- Code runs top-to-bottom only (loops, functions, events)
+- One right way to solve problems (many approaches work)
+- Programming is memorizing syntax (it''s about logic)
+
+ASSESSMENT APPROACHES:
+
+Process Over Product:
+- Evaluate problem-solving approach
+- Assess debugging strategies
+- Consider multiple valid solutions
+- Value iteration and improvement
+
+Portfolio Assessment:
+- Collection of projects over time
+- Documentation of process
+- Reflection on learning
+- Demonstration of growth
+
+DEBUGGING SKILLS:
+
+Teach systematic debugging:
+- Read error messages carefully
+- Use print/log statements
+- Binary search for errors
+- Rubber duck debugging (explain code aloud)
+- Test incrementally
+
+CYBERSECURITY AND SAFETY:
+
+Age-appropriate security education:
+- Strong passwords
+- Recognizing threats
+- Privacy protection
+- Safe online behavior
+- Responsible data handling
+
+CROSS-CURRICULAR CONNECTIONS:
+
+CS connects to all subjects:
+- Math in logic and algorithms
+- Science in data analysis and simulations
+- Arts in creative computing
+- Social Studies in ethical discussions
+- Language Arts in documentation
+
+EQUITY IN CS EDUCATION:
+
+All students should:
+- Have access to CS education
+- See diverse role models in tech
+- Work on personally relevant projects
+- Feel welcome and capable
+- Develop confidence as creators
+
+GROWTH MINDSET:
+
+Foster beliefs that support learning:
+- Intelligence is not fixed
+- Struggle is part of learning
+- Errors are learning opportunities
+- Effort leads to improvement
+- Everyone can learn CS',
+  100
+FROM subjects WHERE name = 'Computer Science'
 ON CONFLICT DO NOTHING;
 
 -- Verification query

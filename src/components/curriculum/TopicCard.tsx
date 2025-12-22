@@ -9,6 +9,7 @@ interface TopicCardProps {
   progress?: UserProgress;
   isLocked?: boolean;
   subjectColor?: string;
+  isHighlighted?: boolean;
 }
 
 export default function TopicCard({
@@ -17,6 +18,7 @@ export default function TopicCard({
   progress,
   isLocked = false,
   subjectColor = '#3b82f6',
+  isHighlighted = false,
 }: TopicCardProps) {
   const navigate = useNavigate();
 
@@ -61,7 +63,10 @@ export default function TopicCard({
       onClick={() => !isLocked && navigate(`/lesson/${topic.id}`)}
       className={`transition-all duration-200 ${
         isLocked ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md'
-      } ${isInProgress ? 'ring-2 ring-primary-300 dark:ring-primary-700' : ''}`}
+      } ${isInProgress ? 'ring-2 ring-primary-300 dark:ring-primary-700' : ''} ${
+        isHighlighted ? 'ring-2 ring-offset-2 animate-pulse' : ''
+      }`}
+      style={isHighlighted ? { '--tw-ring-color': subjectColor } as React.CSSProperties : undefined}
     >
       <div className="flex items-center gap-4">
         {/* Topic Number */}

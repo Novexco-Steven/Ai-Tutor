@@ -1,0 +1,50 @@
+<svg width="200" height="160" viewBox="0 0 200 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Earn Badges & Rewards: Trophy and badges -->
+  <defs>
+    <linearGradient id="badgeGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <linearGradient id="badgeOrange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Central trophy -->
+  <rect x="75" y="45" width="50" height="60" rx="8" fill="#1e293b"/>
+
+  <!-- Trophy cup -->
+  <path d="M85 55 L115 55 L112 85 L88 85 Z" fill="url(#badgeGold)"/>
+  <rect x="93" y="85" width="14" height="8" fill="url(#badgeGold)"/>
+  <rect x="88" y="92" width="24" height="6" rx="2" fill="url(#badgeGold)"/>
+
+  <!-- Trophy handles -->
+  <path d="M85 60 L78 60 Q72 60 72 68 Q72 75 78 75 L85 75" fill="none" stroke="url(#badgeGold)" stroke-width="3"/>
+  <path d="M115 60 L122 60 Q128 60 128 68 Q128 75 122 75 L115 75" fill="none" stroke="url(#badgeGold)" stroke-width="3"/>
+
+  <!-- Star on trophy -->
+  <path d="M100 62 L102 68 L108 68 L103 72 L105 78 L100 74 L95 78 L97 72 L92 68 L98 68 Z" fill="white"/>
+
+  <!-- Badge 1 - left -->
+  <circle cx="35" cy="70" r="22" fill="#1e293b"/>
+  <circle cx="35" cy="70" r="18" fill="#8b5cf6"/>
+  <text x="35" y="74" font-family="Inter, sans-serif" font-size="12" fill="white" text-anchor="middle">⭐</text>
+  <text x="35" y="100" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">First Win</text>
+
+  <!-- Badge 2 - right -->
+  <circle cx="165" cy="70" r="22" fill="#1e293b"/>
+  <circle cx="165" cy="70" r="18" fill="#22c55e"/>
+  <text x="165" y="74" font-family="Inter, sans-serif" font-size="12" fill="white" text-anchor="middle">📚</text>
+  <text x="165" y="100" font-family="Inter, sans-serif" font-size="6" fill="#64748b" text-anchor="middle">Bookworm</text>
+
+  <!-- XP bar -->
+  <rect x="35" y="120" width="130" height="20" rx="10" fill="#1e293b"/>
+  <rect x="40" y="125" width="85" height="10" rx="5" fill="url(#badgeOrange)"/>
+  <text x="135" y="133" font-family="Inter, sans-serif" font-size="8" font-weight="600" fill="white">850 XP</text>
+
+  <!-- Stars decorative -->
+  <circle cx="60" cy="35" r="4" fill="#facc15"/>
+  <circle cx="140" cy="35" r="4" fill="#facc15"/>
+  <circle cx="100" cy="25" r="3" fill="#facc15" opacity="0.7"/>
+</svg>
